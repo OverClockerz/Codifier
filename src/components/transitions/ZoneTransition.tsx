@@ -138,23 +138,23 @@ export function ZoneTransition({
               </motion.div>
 
               {/* Title animates ONLY ONCE per zone */}
-              {shouldAnimateTitle ? (
-                <motion.h2
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  onAnimationComplete={() => {
-                    animatedTitleZoneRef.current = zone;
-                  }}
-                  className="text-4xl md:text-6xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
-                >
-                  {config.title}
-                </motion.h2>
+              {/* {shouldAnimateTitle ? (
+                // <motion.h2
+                //   initial={{ y: 20, opacity: 0 }}
+                //   animate={{ y: 0, opacity: 1 }}
+                //   transition={{ delay: 0.2 }}
+                //   onAnimationComplete={() => {
+                //     animatedTitleZoneRef.current = zone;
+                //   }}
+                //   className="text-4xl md:text-6xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+                // >
+                //   {config.title}
+                // </motion.h2>
               ) : (
                 <h2 className="text-4xl md:text-6xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   {config.title}
                 </h2>
-              )}
+              )} */}
             </div>
           </motion.div>
         )}
