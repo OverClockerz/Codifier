@@ -129,6 +129,8 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
           </div>
         </div>
       </header>
+      {/* Add margin below header for spacing */}
+      <div className="h-20 md:h-20" />
 
       {/* Main Content */}
       <main className="pt-[100px] md:pt-[90px] pb-16 px-4 md:px-6">
