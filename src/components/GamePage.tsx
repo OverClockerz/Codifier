@@ -172,7 +172,6 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
 
       {/* Main Content */}
       <main className="pt-20 md:pt-24 pb-16 px-4 md:px-6 min-h-screen">
-        <ZoneTransition zone={selectedZone}>
           <div className="max-w-7xl mx-auto">
             {/* Welcome Banner */}
             {!selectedZone && (
@@ -215,7 +214,6 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
               )}
             </div>
           </div>
-        </ZoneTransition>
       </main>
 
       {/* Active Quest Modal */}
