@@ -80,11 +80,22 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
   return (
     <div className="min-h-screen bg-[#0a0f1c] text-white">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0f1c]/95 backdrop-blur-xl border-b border-gray-800">
+      <header className="fixed top-0 left-0 right-0 z-10 bg-[#0a0f1c]/95 backdrop-blur-xl border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo & User */}
             <div className="flex items-center gap-4">
+              {/* Back Button */}
+              <motion.button
+                onClick={onNavigateBack}
+                whileHover={{ scale: 1.05, x: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center justify-center w-10 h-10 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 hover:border-gray-600 rounded-lg transition-all text-gray-400 hover:text-white"
+                title="Back to Dashboard"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </motion.button>
+              
               <h1 className="text-xl md:text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 <ScrambleTextOnHover text="OFFICE" />
               </h1>
@@ -116,202 +127,12 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               </button>
             </div>
           </div>
-
-          {/* Top Stats Bar */}
-          <div className="mt-4 flex items-center justify-between">
-            {/* Quick Stats */}
-            <div className="flex flex-wrap gap-2">
-              {/* Level */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-blue-900/30 border border-blue-800/50 rounded-lg">
-                <TrendingUp className="w-4 h-4 text-blue-400" />
-                <div>
-                  <p className="text-xs text-gray-400">Level</p>
-                  <p className="text-sm text-white">{player.level}</p>
-                </div>
-              </div>
-
-              {/* Currency */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-yellow-900/30 border border-yellow-800/50 rounded-lg">
-                <DollarSign className="w-4 h-4 text-yellow-400" />
-                <div>
-                  <p className="text-xs text-gray-400">Salary</p>
-                  <p className="text-sm text-white">${player.currency}</p>
-                </div>
-              </div>
-
-              {/* Day/Month */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-purple-900/30 border border-purple-800/50 rounded-lg">
-                <Calendar className="w-4 h-4 text-purple-400" />
-                <div>
-                  <p className="text-xs text-gray-400">Day / Month</p>
-                  <p className="text-sm text-white">{player.currentDay} / {player.currentMonth}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Icons */}
-            <div className="hidden md:flex items-center gap-2">
-              <button className="relative w-10 h-10 flex items-center justify-center bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 rounded-lg transition-all">
-                <Bell className="w-4 h-4 text-gray-400" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs flex items-center justify-center rounded-full">
-                  1
-                </span>
-              </button>
-              <button className="w-10 h-10 flex items-center justify-center bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 rounded-lg transition-all">
-                <Settings className="w-4 h-4 text-gray-400" />
-              </button>
-            </div>
-          </div>
-
-          {/* Progress Bars */}
-          <div className="mt-4 space-y-2">
-            {/* Mood */}
-            <div>
-              <div className="flex justify-between text-xs text-gray-400 mb-1">
-                <div className="flex items-center gap-1">
-                  <Heart className="w-3 h-3 text-green-400" />
-                  <span>Mood</span>
-                </div>
-                <span>{player.mood}/100</span>
-              </div>
-              <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${player.mood}%` }}
-                  className="h-full bg-green-500"
-                />
-              </div>
-            </div>
-
-            {/* Stress */}
-            <div>
-              <div className="flex justify-between text-xs text-gray-400 mb-1">
-                <div className="flex items-center gap-1">
-                  <Zap className="w-3 h-3 text-red-400" />
-                  <span>Stress</span>
-                </div>
-                <span>{player.stress}/100</span>
-              </div>
-              <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${player.stress}%` }}
-                  className="h-full bg-red-500"
-                />
-              </div>
-            </div>
-
-            {/* EXP */}
-            <div>
-              <div className="flex justify-between text-xs text-gray-400 mb-1">
-                <div className="flex items-center gap-1">
-                  <Award className="w-3 h-3 text-blue-400" />
-                  <span>EXP</span>
-                </div>
-                <span>{player.experience}/{player.experienceToNextLevel}</span>
-              </div>
-              <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${levelProgress}%` }}
-                  className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Stats Row */}
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="bg-gray-900/50 rounded-lg p-3 text-center">
-              <p className="text-xs text-gray-500">Salary</p>
-              <p className="text-lg text-white">${player.baseSalary}</p>
-              <p className="text-xs text-gray-400">{player.currentMonthEarnings}</p>
-            </div>
-            <div className="bg-gray-900/50 rounded-lg p-3 text-center">
-              <p className="text-xs text-gray-500">Code Quality</p>
-              <p className="text-lg text-white">75</p>
-              <p className="text-xs text-gray-400">%</p>
-            </div>
-            <div className="bg-gray-900/50 rounded-lg p-3 text-center">
-              <p className="text-xs text-gray-500">Soft Skills</p>
-              <p className="text-lg text-white">75</p>
-              <p className="text-xs text-gray-400">%</p>
-            </div>
-            <div className="bg-gray-900/50 rounded-lg p-3 text-center">
-              <p className="text-xs text-gray-500">Reputation</p>
-              <p className="text-lg text-green-400">+9%</p>
-              <p className="text-xs text-gray-400">This month</p>
-            </div>
-          </div>
-
-          {/* Zone Navigation */}
-          <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-            <button
-              onClick={() => setSelectedTab('overview')}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm transition-all ${
-                selectedTab === 'overview'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50'
-              }`}
-            >
-              📊 Overview
-            </button>
-            <button
-              onClick={() => setSelectedTab('workspace')}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm transition-all flex items-center gap-2 ${
-                selectedTab === 'workspace'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50'
-              }`}
-            >
-              <Code className="w-4 h-4" /> Workspace
-            </button>
-            <button
-              onClick={() => setSelectedTab('game-lounge')}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm transition-all flex items-center gap-2 ${
-                selectedTab === 'game-lounge'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50'
-              }`}
-            >
-              <Gamepad2 className="w-4 h-4" /> Game Lounge
-            </button>
-            <button
-              onClick={() => setSelectedTab('meeting-room')}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm transition-all flex items-center gap-2 ${
-                selectedTab === 'meeting-room'
-                  ? 'bg-orange-600 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50'
-              }`}
-            >
-              <Users className="w-4 h-4" /> Meeting Room
-            </button>
-            <button
-              onClick={() => setSelectedTab('cafeteria')}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm transition-all flex items-center gap-2 ${
-                selectedTab === 'cafeteria'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50'
-              }`}
-            >
-              <Coffee className="w-4 h-4" /> Cafeteria
-            </button>
-          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="pt-[400px] md:pt-[380px] pb-16 px-4 md:px-6">
+      <main className="pt-[100px] md:pt-[90px] pb-16 px-4 md:px-6">
         <div className="max-w-7xl mx-auto space-y-6">
-          {/* Back Button */}
-          <button
-            onClick={onNavigateBack}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 rounded-lg transition-all text-gray-300 hover:text-white"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Dashboard</span>
-          </button>
-
           {/* Player Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
