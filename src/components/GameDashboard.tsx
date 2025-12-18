@@ -22,8 +22,9 @@ import {
 import { useState } from 'react';
 import { ZoneType } from '../types/game';
 import { getDifficultyLabel } from '../data/quests';
+import { PlayerCard } from './PlayerCard';
 
-export function GameDashboard() {
+export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void }) {
   const { player, activeQuests, activeBuffs } = useGame();
   const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
@@ -90,17 +91,7 @@ export function GameDashboard() {
       >
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           {/* Player Info */}
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-              <User className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-xl text-white">{user?.username || 'Player'}</h2>
-              <p className="text-sm text-gray-400">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p>
-              <p className="text-sm text-gray-500">OmniTech Solutions</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-600" />
-          </div>
+          <PlayerCard onClick={() => onProfileClick?.()} />
 
           {/* Quick Stats */}
           <div className="flex flex-wrap gap-3">

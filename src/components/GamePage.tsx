@@ -195,7 +195,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
             {/* Dashboard - Show when no zone selected */}
             {!selectedZone && (
               <div className="mb-12">
-                <GameDashboard />
+                <GameDashboard onProfileClick={onNavigateToProfile} />
               </div>
             )}
 
