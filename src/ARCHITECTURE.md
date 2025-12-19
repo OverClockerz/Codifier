@@ -4,23 +4,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                          App.tsx                                 │
-│                      (Root Component)                            │
+│                          App.tsx                                │
+│                      (Root Component)                           │
 └────────────────────────┬────────────────────────────────────────┘
                          │
         ┌────────────────┴────────────────┐
         │                                  │
         ▼                                  ▼
-┌───────────────┐                  ┌──────────────┐
-│ AuthContext   │                  │ GameContext  │
-│ (Auth State)  │                  │ (Game State) │
-└───────┬───────┘                  └──────┬───────┘
+┌───────────────┐                   ┌──────────────┐
+│ AuthContext   │                   │ GameContext  │
+│ (Auth State)  │                   │ (Game State) │
+└───────┬───────┘                   └──────┬───────┘
         │                                  │
         └──────────────┬───────────────────┘
                        │
         ┌──────────────┴──────────────┐
-        │                              │
-        ▼                              ▼
+        │                             │
+        ▼                             ▼
 ┌────────────────┐            ┌────────────────┐
 │  LandingPage   │            │   GamePage     │
 │ (Before Auth)  │            │  (After Auth)  │
@@ -42,10 +42,10 @@
 │   Overview    │    │   Zone Tabs  │    │ PlayerCard   │
 │   Dashboard   │    │ (4 Zones)    │    │              │
 └───────────────┘    └──────┬───────┘    └──────────────┘
-                             │
-        ┌────────────────────┼────────────────────┬─────────────┐
-        │                    │                    │             │
-        ▼                    ▼                    ▼             ▼
+                            │
+        ┌───────────────────┼────────────────────┬─────────────┐
+        │                   │                    │             │
+        ▼                   ▼                    ▼             ▼
 ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  ┌──────────────┐
 │  Workspace   │    │ GameLounge   │    │ MeetingRoom  │  │  Cafeteria   │
 │              │    │              │    │              │  │              │
@@ -175,15 +175,15 @@ App.tsx
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    QuestCard.tsx                        │
-│                                                          │
+│                                                         │
 │  theme prop: 'blue' | 'purple' | 'orange'               │
-│                                                          │
+│                                                         │
 │  const themeColors = {                                  │
-│    blue:   { button: 'bg-blue-600',   hover: '...' }   │
-│    purple: { button: 'bg-purple-600', hover: '...' }   │
-│    orange: { button: 'bg-orange-600', hover: '...' }   │
-│  }                                                       │
-│                                                          │
+│    blue:   { button: 'bg-blue-600',   hover: '...' }    │
+│    purple: { button: 'bg-purple-600', hover: '...' }    │
+│    orange: { button: 'bg-orange-600', hover: '...' }    │
+│  }                                                      │
+│                                                         │
 │  Applied to:                                            │
 │  - Button background                                    │
 │  - Hover border color                                   │
@@ -196,17 +196,17 @@ App.tsx
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                       GameContext                           │
-│                                                              │
+│                                                             │
 │  State:                          Actions:                   │
-│  ├─ player                      ├─ startQuest()            │
-│  ├─ activeQuests                ├─ completeQuest()         │
-│  ├─ completedQuests             ├─ failQuest()             │
-│  ├─ inventory                   ├─ purchaseItem()          │
-│  ├─ activeBuffs                 ├─ useItem()               │
-│  ├─ monthlyReports              ├─ updateMoodStress()      │
-│  └─ notifications               ├─ addExperience()         │
-│                                  ├─ advanceDay()            │
-│                                  └─ resetCareer()           │
+│  ├─ player                      ├─ startQuest()             │
+│  ├─ activeQuests                ├─ completeQuest()          │
+│  ├─ completedQuests             ├─ failQuest()              │
+│  ├─ inventory                   ├─ purchaseItem()           │
+│  ├─ activeBuffs                 ├─ useItem()                │
+│  ├─ monthlyReports              ├─ updateMoodStress()       │
+│  └─ notifications               ├─ addExperience()          │
+│                                 ├─ advanceDay()             │
+│                                 └─ resetCareer()            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -233,18 +233,18 @@ zones/Workspace.tsx
 └────────┬─────────┘
          │
          ▼
-┌──────────────────┐
-│ GameContext      │
+┌───────────────────┐
+│ GameContext       │
 │ initializeQuests()│
-└────────┬─────────┘
+└────────┬──────────┘
          │
          ├─────────────┬─────────────┬─────────────┐
          │             │             │             │
          ▼             ▼             ▼             ▼
-┌──────────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
+┌──────────────┐  ┌──────────┐  ┌───────────┐  ┌──────────┐
 │ 6x Daily     │  │ 4x Weekly│  │ 3x Monthly│  │ Total    │
-│ Quests       │  │ Quests   │  │ Quests   │  │ 13 quests│
-└──────┬───────┘  └────┬─────┘  └────┬─────┘  └──────────┘
+│ Quests       │  │ Quests   │  │ Quests    │  │ 13 quests│
+└──────┬───────┘  └────┬─────┘  └─────┬─────┘  └──────────┘
        │               │              │
        └───────────────┴──────────────┘
                        │
