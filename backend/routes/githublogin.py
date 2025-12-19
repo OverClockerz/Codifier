@@ -1,14 +1,13 @@
-from flask import request, jsonify,Blueprint
+from flask import Flask,request, jsonify,Blueprint
 from dotenv import load_dotenv
 import os
 import requests
 
-load_dotenv()
 
 githublogin_bp=Blueprint('githublogin',__name__)
 
-GITHUB_CLIENT_ID = os.getenv('GITHUB_CLIENT_ID')   # Replace with your actual Client ID
-GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET') # Replace with your actual Client Secret
+GITHUB_CLIENT_SECRET='y9678f82192593c1d88caafa74538af97af382675'
+GITHUB_CLIENT_ID='Ov23liUDTzLVxvXU0Y40'
 
 @githublogin_bp.route('/github/callback', methods=['GET','POST'])
 def github_callback():
