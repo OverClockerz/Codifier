@@ -93,8 +93,8 @@ export function GameLounge() {
         <MathChallenge
           questId={activeChallenge}
           onClose={() => setActiveChallenge(null)}
-          onComplete={(performance) => {
-            completeQuest(activeChallenge, performance);
+          onComplete={(questId, performance) => {
+            completeQuest(questId, performance);
             setActiveChallenge(null);
           }}
         />
@@ -106,10 +106,10 @@ export function GameLounge() {
 interface MathChallengeProps {
   questId: string;
   onClose: () => void;
-  onComplete: (performance: number) => void;
+  onComplete: (questId: string, performance: number) => void;
 }
 
-function MathChallenge({ onClose, onComplete }: MathChallengeProps) {
+function MathChallenge({ questId, onClose, onComplete }: MathChallengeProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -137,7 +137,7 @@ function MathChallenge({ onClose, onComplete }: MathChallengeProps) {
 
     if (currentQuestion + 1 >= totalQuestions) {
       const performance = (score / totalQuestions) * 100;
-      onComplete(performance);
+      onComplete(questId, performance);
     } else {
       setCurrentQuestion(currentQuestion + 1);
       setAnswer('');

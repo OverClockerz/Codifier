@@ -13,7 +13,7 @@ interface GameContextType {
   monthlyReports: MonthlyReport[];
   notifications: Notification[];
   showLevelUp: boolean;
-  
+
   // Actions
   startQuest: (questId: string) => void;
   completeQuest: (questId: string, performanceScore: number) => void;
