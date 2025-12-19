@@ -1,5 +1,8 @@
 @custom-variant dark (&:is(.dark *));
 
+@source "../zones";
+@source "../components";
+
 :root {
   --font-size: 16px;
   --background: #ffffff;

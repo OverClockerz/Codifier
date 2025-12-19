@@ -1,32 +1,27 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { useGame } from '../contexts/GameContext';
-import { useAuth } from '../contexts/AuthContext';
 import {
   TrendingUp,
-  Heart,
-  Zap,
   DollarSign,
   Calendar,
-  Award,
-  AlertTriangle,
   Shield,
-  User,
-  ChevronRight,
   Code,
   Gamepad2,
   Users,
   Coffee,
-  Clock,
   AlertCircle,
 } from 'lucide-react';
 import { useState } from 'react';
 import { ZoneType } from '../types/game';
 import { getDifficultyLabel } from '../data/quests';
 import { PlayerCard } from './PlayerCard';
+import { Workspace } from './zones/Workspace';
+import { GameLounge } from './zones/GameLounge';
+import { MeetingRoom } from './zones/MeetingRoom';
+import { Cafeteria } from './zones/Cafeteria';
 
 export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void }) {
   const { player, activeQuests, activeBuffs } = useGame();
-  const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
 
   // Calculate progress to next level
@@ -39,8 +34,8 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
     return daysLeft <= 3;
   });
 
-  // Calculate completed quests this month
-  const completedThisMonth = player.currentMonthTasksCompleted || 0;
+  // Count completed quests
+  const completedThisMonth = activeQuests.filter(q => q.status === 'completed').length;
 
   // Get zone icon
   const getZoneIcon = (zone: ZoneType) => {
@@ -262,158 +257,171 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
         </button>
       </motion.div>
 
-      {/* Career Dashboard */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <h2 className="text-2xl mb-4">Career Dashboard</h2>
-        
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          {/* Active Quests */}
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-            <p className="text-sm text-gray-400 mb-1">Active Quests</p>
-            <p className="text-3xl text-white">{activeQuests.length}</p>
-          </div>
+      {/* Conditional Content Based on Selected Tab */}
+      {selectedTab === 'overview' ? (
+        <>
+          {/* Career Dashboard */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h2 className="text-2xl mb-4">Career Dashboard</h2>
+            
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              {/* Active Quests */}
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                <p className="text-sm text-gray-400 mb-1">Active Quests</p>
+                <p className="text-3xl text-white">{activeQuests.length}</p>
+              </div>
 
-          {/* Completed This Month */}
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-            <p className="text-sm text-gray-400 mb-1">Completed This Month</p>
-            <p className="text-3xl text-white">{completedThisMonth}</p>
-          </div>
+              {/* Completed This Month */}
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                <p className="text-sm text-gray-400 mb-1">Completed This Month</p>
+                <p className="text-3xl text-white">{completedThisMonth}</p>
+              </div>
 
-          {/* Urgent */}
-          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-            <p className="text-sm text-gray-400 mb-1">Urgent (≤2 days)</p>
-            <p className="text-3xl text-red-400">{urgentQuests.length}</p>
-          </div>
-        </div>
-
-        {/* Urgent Deadlines Section */}
-        {urgentQuests.length > 0 && (
-          <div className="bg-red-950/20 border border-red-900/50 rounded-xl p-4 mb-6">
-            <div className="flex items-center gap-2 text-red-400 mb-3">
-              <AlertCircle className="w-5 h-5" />
-              <h3 className="text-lg">Urgent Deadlines</h3>
+              {/* Urgent */}
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
+                <p className="text-sm text-gray-400 mb-1">Urgent (≤2 days)</p>
+                <p className="text-3xl text-red-400">{urgentQuests.length}</p>
+              </div>
             </div>
-            <div className="space-y-2">
-              {urgentQuests.map(quest => {
+
+            {/* Urgent Deadlines Section */}
+            {urgentQuests.length > 0 && (
+              <div className="bg-red-950/20 border border-red-900/50 rounded-xl p-4 mb-6">
+                <div className="flex items-center gap-2 text-red-400 mb-3">
+                  <AlertCircle className="w-5 h-5" />
+                  <h3 className="text-lg">Urgent Deadlines</h3>
+                </div>
+                <div className="space-y-2">
+                  {urgentQuests.map(quest => {
+                    const daysLeft = quest.deadline 
+                      ? Math.ceil((quest.deadline - Date.now()) / (1000 * 60 * 60 * 24))
+                      : 0;
+                    return (
+                      <div key={quest.id} className="text-sm">
+                        <span className="text-white">• {quest.title}</span>
+                        <span className="text-red-400"> - {daysLeft} day{daysLeft !== 1 ? 's' : ''} remaining</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </motion.div>
+
+          {/* All Quests */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h2 className="text-2xl mb-4">All Quests</h2>
+            
+            <div className="space-y-3">
+              {activeQuests.map((quest, index) => {
                 const daysLeft = quest.deadline 
                   ? Math.ceil((quest.deadline - Date.now()) / (1000 * 60 * 60 * 24))
-                  : 0;
+                  : null;
+
                 return (
-                  <div key={quest.id} className="text-sm">
-                    <span className="text-white">• {quest.title}</span>
-                    <span className="text-red-400"> - {daysLeft} day{daysLeft !== 1 ? 's' : ''} remaining</span>
-                  </div>
+                  <motion.div
+                    key={quest.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + index * 0.05 }}
+                    className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <AlertCircle className="w-5 h-5 text-yellow-400" />
+                          <h3 className="text-lg text-white">{quest.title}</h3>
+                        </div>
+                        
+                        <p className="text-sm text-gray-400 mb-3">{quest.description}</p>
+                        
+                        <div className="flex flex-wrap gap-2">
+                          {/* Zone Badge */}
+                          <span className={`px-3 py-1 rounded-full text-xs ${getZoneColor(quest.zone)}`}>
+                            {quest.zone.replace('-', ' ')}
+                          </span>
+                          
+                          {/* Difficulty Badge */}
+                          {quest.difficulty && (
+                            <span className={`px-3 py-1 rounded-full text-xs ${getDifficultyColor(quest.difficulty)}`}>
+                              {getDifficultyLabel(quest.difficulty)}
+                            </span>
+                          )}
+                          
+                          {/* Rewards */}
+                          {quest.expReward > 0 && (
+                            <span className="px-3 py-1 rounded-full text-xs bg-cyan-900/50 text-cyan-400">
+                              +{quest.expReward} EXP
+                            </span>
+                          )}
+                          {quest.currencyReward > 0 && (
+                            <span className="px-3 py-1 rounded-full text-xs bg-yellow-900/50 text-yellow-400">
+                              +${quest.currencyReward} Salary
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Days Remaining */}
+                      {daysLeft !== null && (
+                        <div className="text-right ml-4">
+                          <p className={`text-2xl ${daysLeft <= 2 ? 'text-red-400' : 'text-white'}`}>
+                            {daysLeft}
+                          </p>
+                          <p className="text-xs text-gray-500">day{daysLeft !== 1 ? 's' : ''}</p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
                 );
               })}
             </div>
-          </div>
-        )}
-      </motion.div>
+          </motion.div>
 
-      {/* All Quests */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <h2 className="text-2xl mb-4">All Quests</h2>
-        
-        <div className="space-y-3">
-          {activeQuests.map((quest, index) => {
-            const daysLeft = quest.deadline 
-              ? Math.ceil((quest.deadline - Date.now()) / (1000 * 60 * 60 * 24))
-              : null;
-
-            return (
-              <motion.div
-                key={quest.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + index * 0.05 }}
-                className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-all cursor-pointer"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <AlertCircle className="w-5 h-5 text-yellow-400" />
-                      <h3 className="text-lg text-white">{quest.title}</h3>
-                    </div>
-                    
-                    <p className="text-sm text-gray-400 mb-3">{quest.description}</p>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      {/* Zone Badge */}
-                      <span className={`px-3 py-1 rounded-full text-xs ${getZoneColor(quest.zone)}`}>
-                        {quest.zone.replace('-', ' ')}
-                      </span>
-                      
-                      {/* Difficulty Badge */}
-                      {quest.difficulty && (
-                        <span className={`px-3 py-1 rounded-full text-xs ${getDifficultyColor(quest.difficulty)}`}>
-                          {getDifficultyLabel(quest.difficulty)}
-                        </span>
-                      )}
-                      
-                      {/* Rewards */}
-                      {quest.expReward > 0 && (
-                        <span className="px-3 py-1 rounded-full text-xs bg-cyan-900/50 text-cyan-400">
-                          +{quest.expReward} EXP
-                        </span>
-                      )}
-                      {quest.currencyReward > 0 && (
-                        <span className="px-3 py-1 rounded-full text-xs bg-yellow-900/50 text-yellow-400">
-                          +${quest.currencyReward} Salary
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Days Remaining */}
-                  {daysLeft !== null && (
-                    <div className="text-right ml-4">
-                      <p className={`text-2xl ${daysLeft <= 2 ? 'text-red-400' : 'text-white'}`}>
-                        {daysLeft}
-                      </p>
-                      <p className="text-xs text-gray-500">day{daysLeft !== 1 ? 's' : ''}</p>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </motion.div>
-
-      {/* Active Buffs */}
-      {activeBuffs.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-gray-900/50 border border-gray-800 rounded-xl p-4"
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <Shield className="w-4 h-4 text-purple-400" />
-            <span className="text-sm text-gray-400">Active Buffs</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {activeBuffs.map((buff) => (
-              <div key={buff.itemId} className="bg-purple-900/20 border border-purple-800/50 rounded-lg p-3">
-                <div className="text-white mb-1">{buff.name}</div>
-                {buff.expiresAt && (
-                  <div className="text-xs text-gray-500">
-                    {Math.floor((buff.expiresAt - Date.now()) / 60000)}m remaining
-                  </div>
-                )}
+          {/* Active Buffs */}
+          {activeBuffs.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-gray-900/50 border border-gray-800 rounded-xl p-4"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Shield className="w-4 h-4 text-purple-400" />
+                <span className="text-sm text-gray-400">Active Buffs</span>
               </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {activeBuffs.map((buff) => (
+                  <div key={buff.itemId} className="bg-purple-900/20 border border-purple-800/50 rounded-lg p-3">
+                    <div className="text-white mb-1">{buff.name}</div>
+                    {buff.expiresAt && (
+                      <div className="text-xs text-gray-500">
+                        {Math.floor((buff.expiresAt - Date.now()) / 60000)}m remaining
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </>
+      ) : selectedTab === 'workspace' ? (
+        <Workspace />
+      ) : selectedTab === 'game-lounge' ? (
+        <GameLounge />
+      ) : selectedTab === 'meeting-room' ? (
+        <MeetingRoom />
+      ) : selectedTab === 'cafeteria' ? (
+        <Cafeteria />
+      ) : null}
     </div>
   );
 }

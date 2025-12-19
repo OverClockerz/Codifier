@@ -207,12 +207,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                   onBack={() => setSelectedZone(null)}
                   onStartQuest={handleStartQuest}
                 />
-              ) : (
-                <div>
-                  <h3 className="text-2xl md:text-3xl mb-6 text-center md:text-left">Choose Your Zone</h3>
-                  <ZoneSelector onSelectZone={handleZoneSelect} />
-                </div>
-              )}
+              ) : null}
             </div>
           </div>
         </ZoneTransition>
