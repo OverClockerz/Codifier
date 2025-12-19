@@ -64,6 +64,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
       totalExperience: 0,
       monthsWorked: 0,
     },
+    reputation: 0, // Start at +0%
+    skills: {}, // Empty skills object
+    permanentBuffs: [], // No permanent buffs initially
   });
 
   const [player, setPlayer] = useState<PlayerState>(createNewPlayer);
@@ -77,7 +80,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Initialize quests on mount or day change
   useEffect(() => {
-    if (activeQuests.length === 0) {
+    // Only initialize if no quests exist and user is logged in
+    if (activeQuests.length === 0 && user?.id) {
       initializeQuests();
       
       // Add welcome notifications on first load
@@ -110,21 +114,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
         ]);
       }
     }
-  }, [player.currentDay]);
+  }, [activeQuests.length, user?.id]);
 
-  // Save game on changes
-  useEffect(() => {
-    if (user?.id) {
-      saveGame();
-    }
-  }, [player, activeQuests, completedQuests, inventory]);
-
-  // Load game on mount
+  // Load game on mount FIRST
   useEffect(() => {
     if (user?.id) {
       loadGame();
     }
   }, [user?.id]);
+
+  // Save game on changes
+  useEffect(() => {
+    if (user?.id && activeQuests.length > 0) {
+      saveGame();
+    }
+  }, [player, activeQuests, completedQuests, inventory]);
 
   // Check for expired buffs
   useEffect(() => {
@@ -136,15 +140,39 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
+  // Check for expired quest deadlines
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      activeQuests.forEach(quest => {
+        if (quest.deadline && quest.status === 'in-progress' && now > quest.deadline) {
+          // Auto-fail quest that missed deadline
+          failQuest(quest.id);
+          
+          // Add notification
+          addNotification({
+            type: 'alert',
+            title: 'Quest Failed - Deadline Missed',
+            message: `Failed: "${quest.title}". Your reputation has been affected. Complete tasks on time to maintain good standing.`,
+          });
+        }
+      });
+    }, 30000); // Check every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [activeQuests]);
+
   const initializeQuests = () => {
-    const dailies = getRandomQuests('daily', 3);
-    const weeklies = player.currentDay % 7 === 1 ? getRandomQuests('weekly', 2) : [];
-    const monthlies = player.currentDay === 1 ? getRandomQuests('monthly', 1) : [];
+    // Generate a good mix of quests for all zones
+    const dailies = getRandomQuests('daily', 6);  // Increased from 3 to 6
+    const weeklies = getRandomQuests('weekly', 4);  // Increased from 2 to 4
+    const monthlies = getRandomQuests('monthly', 3);  // Increased from 1 to 3
     
     setActiveQuests(prev => {
       // Keep existing in-progress quests
       const inProgress = prev.filter(q => q.status === 'in-progress');
-      return [...inProgress, ...dailies, ...weeklies, ...monthlies];
+      const allQuests = [...inProgress, ...dailies, ...weeklies, ...monthlies];
+      return allQuests;
     });
   };
 
@@ -183,21 +211,88 @@ export function GameProvider({ children }: { children: ReactNode }) {
     addExperience(finalExp);
     addCurrency(finalCurrency);
 
-    // Apply mood/stress changes
-    let stressChange = quest.stressImpact;
-    let moodChange = quest.moodImpact;
+    // Apply mood/stress changes based on zone and performance
+    let stressChange = 0;
+    let moodChange = 0;
+
+    if (quest.zone === 'workspace') {
+      // Workspace: reduce mood, increase stress (scaled by performance)
+      stressChange = Math.floor(quest.stressImpact * multiplier);
+      moodChange = Math.floor(quest.moodImpact * multiplier);
+    } else if (quest.zone === 'game-lounge') {
+      // Game Lounge: increase mood, reduce stress (scaled by performance)
+      moodChange = Math.floor(Math.abs(quest.moodImpact) * multiplier);
+      stressChange = -Math.floor(Math.abs(quest.stressImpact) * multiplier);
+    } else if (quest.zone === 'meeting-room') {
+      // Meeting Room: varies based on performance
+      // Good performance (>70): increase mood, reduce stress
+      // Poor performance (<70): decrease mood, increase stress
+      if (performanceScore >= 70) {
+        moodChange = Math.floor(Math.abs(quest.moodImpact) * multiplier);
+        stressChange = -Math.floor(quest.stressImpact * (multiplier * 0.5));
+      } else {
+        moodChange = Math.floor(quest.moodImpact * multiplier);
+        stressChange = Math.floor(quest.stressImpact * multiplier);
+      }
+    }
 
     // Apply stress reduction buffs
     activeBuffs.forEach(buff => {
       if (buff.effect.stressReduction) {
-        stressChange -= Math.floor(quest.stressImpact * (buff.effect.stressReduction / 100));
+        stressChange -= Math.floor(Math.abs(stressChange) * (buff.effect.stressReduction / 100));
       }
       if (buff.effect.moodIncrease) {
-        moodChange += Math.floor(Math.abs(quest.moodImpact) * (buff.effect.moodIncrease / 100));
+        moodChange += Math.floor(10 * (buff.effect.moodIncrease / 100));
       }
     });
 
     updateMoodStress(moodChange, stressChange);
+
+    // Calculate reputation gain/loss based on difficulty and performance
+    let reputationChange = 0;
+    
+    // Poor performance (< 50%): lose reputation
+    if (performanceScore < 50) {
+      if (quest.difficulty <= 2) reputationChange = -0.5; // Easy task failed
+      else if (quest.difficulty <= 3) reputationChange = -1.5; // Medium task failed
+      else reputationChange = -3; // Hard task failed
+    }
+    // Average performance (50-70%): minimal gain
+    else if (performanceScore < 70) {
+      if (quest.difficulty <= 2) reputationChange = 0.005 * multiplier;
+      else if (quest.difficulty <= 3) reputationChange = 0.02 * multiplier;
+      else reputationChange = 0.1 * multiplier;
+    }
+    // Good performance (70%+): normal gain
+    else {
+      if (quest.difficulty <= 2) reputationChange = 0.01 * multiplier; // Easy
+      else if (quest.difficulty <= 3) reputationChange = 0.05 * multiplier; // Medium
+      else reputationChange = 0.2 * multiplier; // Hard
+    }
+
+    // Add skills gained
+    const skillsGained: Record<string, number> = {};
+    if (quest.skills) {
+      quest.skills.forEach(skill => {
+        const skillGain = Math.floor(5 * (performanceScore / 100));
+        skillsGained[skill] = skillGain;
+      });
+    }
+
+    // Increment completed quests counter and update reputation/skills
+    setPlayer(prev => {
+      const newSkills = { ...prev.skills };
+      Object.entries(skillsGained).forEach(([skill, gain]) => {
+        newSkills[skill] = Math.min(100, (newSkills[skill] || 0) + gain);
+      });
+
+      return {
+        ...prev,
+        currentMonthTasksCompleted: (prev.currentMonthTasksCompleted || 0) + 1,
+        reputation: prev.reputation + reputationChange,
+        skills: newSkills,
+      };
+    });
 
     // Move quest to completed
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
@@ -213,6 +308,32 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     // Penalty for failing
     updateMoodStress(-10, 15);
+
+    // Calculate reputation loss based on deadline miss and difficulty
+    let reputationLoss = 0;
+    if (quest.deadline && Date.now() > quest.deadline) {
+      // Missed deadline - apply reputation penalty
+      if (quest.difficulty <= 2) reputationLoss = -2; // Easy: -2%
+      else if (quest.difficulty <= 3) reputationLoss = -1.5; // Medium: -1.5%
+      else reputationLoss = -0.5; // Hard: -0.5%
+    }
+
+    setPlayer(prev => ({
+      ...prev,
+      reputation: prev.reputation + reputationLoss,
+    }));
+
+    // Check for firing (reputation below -20%)
+    setPlayer(prev => {
+      if (prev.reputation < -20) {
+        // Player gets fired - trigger game over
+        setTimeout(() => {
+          alert('You have been fired due to poor reputation! Starting a new career...');
+          resetCareer();
+        }, 100);
+      }
+      return prev;
+    });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
     setCompletedQuests(prev => [
@@ -298,8 +419,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
           )
           .filter(i => i.quantity > 0)
       );
-    } else {
-      // Permanent buff - add to activeBuffs permanently
+    } else if (item.type === 'permanent-buff') {
+      // Permanent buff - add to player's permanent buffs and active buffs
+      setPlayer(prev => {
+        // Don't add if already owned
+        if ((prev.permanentBuffs || []).includes(itemId)) return prev;
+        return {
+          ...prev,
+          permanentBuffs: [...(prev.permanentBuffs || []), itemId],
+        };
+      });
+
       setActiveBuffs(prev => {
         // Don't add if already active
         if (prev.some(b => b.itemId === itemId)) return prev;
@@ -313,6 +443,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
           },
         ];
       });
+      
+      // Remove from inventory after use
+      setInventory(prev =>
+        prev
+          .map(i =>
+            i.item.id === itemId
+              ? { ...i, quantity: i.quantity - 1 }
+              : i
+          )
+          .filter(i => i.quantity > 0)
+      );
     }
   };
 
@@ -500,6 +641,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (saved) {
       try {
         const gameState = JSON.parse(saved);
+        console.log('📥 Loading saved game:', gameState);
         setPlayer(gameState.player);
         setActiveQuests(gameState.activeQuests || []);
         setCompletedQuests(gameState.completedQuests || []);
@@ -507,9 +649,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setActiveBuffs(gameState.activeBuffs || []);
         setMonthlyReports(gameState.monthlyReports || []);
         setNotifications(gameState.notifications || []);
+        
+        // If no quests were saved, initialize them
+        if (!gameState.activeQuests || gameState.activeQuests.length === 0) {
+          console.log('📭 No saved quests, initializing...');
+          setTimeout(() => initializeQuests(), 100); // Delay to ensure state is set
+        }
       } catch (error) {
         console.error('Failed to load game:', error);
+        // If load fails, initialize fresh quests
+        setTimeout(() => initializeQuests(), 100);
       }
+    } else {
+      // No saved game, initialize fresh quests
+      console.log('🆕 No saved game found, initializing quests...');
+      setTimeout(() => initializeQuests(), 100);
     }
   };
 

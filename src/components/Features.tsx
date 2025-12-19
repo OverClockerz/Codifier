@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'motion/react';
 import { TrendingUp, Calendar } from 'lucide-react';
 import { ScrollReveal } from './effects/ScrollReveal';
@@ -49,7 +48,8 @@ const additionalFeatures = [
 ];
 
 export function Features() {
-  return <section id="features" className="relative bg-black overflow-hidden">
+  return (
+    <section id="features" className="relative bg-black overflow-hidden">
       {/* Header Section */}
       <div className="relative py-32 px-6">
         {/* Background */}
@@ -146,5 +146,5 @@ export function Features() {
         </div>
       </div>
     </section>
-  ;
+  );
 }

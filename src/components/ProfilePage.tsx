@@ -80,8 +80,8 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
   return (
     <div className="min-h-screen bg-[#0a0f1c] text-white">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-10 bg-[#0a0f1c]/95 backdrop-blur-xl border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0f1c]/95 backdrop-blur-xl border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2.5">
           <div className="flex items-center justify-between">
             {/* Logo & User */}
             <div className="flex items-center gap-4">
@@ -120,7 +120,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               
               <button
                 onClick={logout}
-                className="flex items-center gap-2 px-3 md:px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-2.5 md:px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden md:inline">Logout</span>
@@ -129,11 +129,9 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
           </div>
         </div>
       </header>
-      {/* Add margin below header for spacing */}
-      <div className="h-20 md:h-20" />
 
       {/* Main Content */}
-      <main className="pt-[100px] md:pt-[90px] pb-16 px-4 md:px-6">
+      <main className="pt-[80px] md:pt-[75px] pb-16 px-4 md:px-6">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Player Card */}
           <motion.div
@@ -201,15 +199,30 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <div className={`w-2 h-2 ${(player.reputation ?? 0) >= 0 ? 'bg-green-400' : 'bg-red-400'} rounded-full`}></div>
                 <h3 className="text-lg text-white">Reputation</h3>
               </div>
-              <span className="text-green-400 text-xl">+5%</span>
+              <span className={`${(player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'} text-xl`}>
+                {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
+              </span>
             </div>
             <div className="h-3 bg-gray-800 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500" style={{ width: '75%' }}></div>
+              <div 
+                className={`h-full ${
+                  (player.reputation ?? 0) >= 0 
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
+                    : 'bg-gradient-to-r from-red-500 to-orange-500'
+                }`}
+                style={{ width: `${Math.min(100, Math.abs((player.reputation ?? 0) / 20) * 100)}%` }}
+              ></div>
             </div>
-            <p className="text-xs text-gray-500 mt-2">Reputation affects monthly salary and job security</p>
+            <p className="text-xs text-gray-500 mt-2">
+              {(player.reputation ?? 0) < -20 
+                ? 'Critical! You will be fired!'
+                : (player.reputation ?? 0) < 0 
+                ? 'Warning: Improve reputation to avoid termination'
+                : 'Reputation affects monthly salary and job security'}
+            </p>
           </motion.div>
 
           {/* Professional Attributes */}
@@ -277,29 +290,31 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               <h3 className="text-lg text-white">Skill Breakdown</h3>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {skillCategories.map((category, idx) => (
-                <div key={idx}>
-                  <h4 className="text-sm text-gray-400 mb-4 flex items-center gap-2">
-                    <span>{category.icon}</span>
-                    {category.title}
-                  </h4>
-                  <div className="space-y-3">
-                    {category.skills.map((skill, skillIdx) => (
-                      <div key={skillIdx} className="bg-gray-800/30 rounded-lg p-3 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${skill.color}`}></div>
-                          <span className="text-sm text-white">{skill.name}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-green-400 text-lg">+{skill.level}</span>
-                        </div>
-                      </div>
-                    ))}
+            {Object.keys(player.skills ?? {}).length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-400">No skills acquired yet</p>
+                <p className="text-sm text-gray-500 mt-2">Complete quests to gain skills!</p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-4">
+                {Object.entries(player.skills ?? {}).map(([skillName, level], idx) => (
+                  <div key={idx} className="bg-gray-800/30 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-white">{skillName}</span>
+                      <span className="text-purple-400">{level}/100</span>
+                    </div>
+                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${level}%` }}
+                        transition={{ delay: 0.3 + idx * 0.05 }}
+                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </motion.div>
 
           {/* Career Statistics */}

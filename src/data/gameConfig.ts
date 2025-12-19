@@ -2,9 +2,9 @@ import { GameConfig } from '../types/game';
 
 export const GAME_CONFIG: GameConfig = {
   startingLevel: 1,
-  startingCurrency: 100,
-  startingMood: 80,
-  startingStress: 10,
+  startingCurrency: 1000,
+  startingMood: 100,
+  startingStress: 0,
   startingPaidLeaves: 5,
   baseSalary: 1000,
   hoursPerDay: 8,

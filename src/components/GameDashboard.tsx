@@ -1,28 +1,47 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useGame } from '../contexts/GameContext';
+import { useAuth } from '../contexts/AuthContext';
 import {
   TrendingUp,
+  Heart,
+  Zap,
   DollarSign,
   Calendar,
+  Award,
+  AlertTriangle,
   Shield,
+  User,
+  ChevronRight,
   Code,
   Gamepad2,
   Users,
   Coffee,
+  Clock,
   AlertCircle,
 } from 'lucide-react';
 import { useState } from 'react';
 import { ZoneType } from '../types/game';
 import { getDifficultyLabel } from '../data/quests';
 import { PlayerCard } from './PlayerCard';
-import { Workspace } from './zones/Workspace';
-import { GameLounge } from './zones/GameLounge';
-import { MeetingRoom } from './zones/MeetingRoom';
-import { Cafeteria } from './zones/Cafeteria';
+import { Workspace } from '../zones/Workspace';
+import { GameLounge } from '../zones/GameLounge';
+import { MeetingRoom } from '../zones/MeetingRoom';
+import { Cafeteria } from '../zones/Cafeteria';
+import { Tooltip } from './Tooltip';
 
 export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void }) {
   const { player, activeQuests, activeBuffs } = useGame();
+  const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
+
+  // DEBUG: Log quest counts
+  console.log('🎮 GameDashboard - Active Quests:', activeQuests.length);
+  console.log('📍 Quest distribution:', {
+    workspace: activeQuests.filter(q => q.zone === 'workspace').length,
+    'game-lounge': activeQuests.filter(q => q.zone === 'game-lounge').length,
+    'meeting-room': activeQuests.filter(q => q.zone === 'meeting-room').length,
+    total: activeQuests.length,
+  });
 
   // Calculate progress to next level
   const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
@@ -34,8 +53,13 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
     return daysLeft <= 3;
   });
 
-  // Count completed quests
-  const completedThisMonth = activeQuests.filter(q => q.status === 'completed').length;
+  // Calculate completed quests this month
+  const completedThisMonth = player.currentMonthTasksCompleted || 0;
+
+  // Get counts for each zone
+  const workspaceCount = activeQuests.filter(q => q.zone === 'workspace').length;
+  const gameLoungeCount = activeQuests.filter(q => q.zone === 'game-lounge').length;
+  const meetingRoomCount = activeQuests.filter(q => q.zone === 'meeting-room').length;
 
   // Get zone icon
   const getZoneIcon = (zone: ZoneType) => {
@@ -192,7 +216,9 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500">Reputation</p>
-            <p className="text-xl text-green-400">+9%</p>
+            <p className={`text-xl ${(player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
+            </p>
             <p className="text-xs text-gray-500">This month</p>
           </div>
         </div>
@@ -332,6 +358,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 + index * 0.05 }}
+                    onClick={() => setSelectedTab(quest.zone)}
                     className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-all cursor-pointer"
                   >
                     <div className="flex items-start justify-between">

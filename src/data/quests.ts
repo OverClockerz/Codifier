@@ -15,6 +15,7 @@ export const DAILY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complete
     moodImpact: -5,
     deadline: 4,
     assignedBy: 'manager-alex',
+    skills: ['Code Review', 'Quality Assurance', 'Team Collaboration'],
   },
   {
     title: 'Daily Standup',
@@ -30,6 +31,7 @@ export const DAILY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complete
     deadline: 2,
     timeLimit: 300,
     assignedBy: 'hr-sarah',
+    skills: ['Communication', 'Team Collaboration'],
   },
   {
     title: 'Logic Warm-up',
@@ -44,6 +46,7 @@ export const DAILY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complete
     moodImpact: 15,
     deadline: 3,
     assignedBy: 'games-coordinator',
+    skills: ['Problem Solving', 'Pattern Recognition'],
   },
   {
     title: 'Bug Fix',
@@ -58,6 +61,7 @@ export const DAILY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complete
     moodImpact: -10,
     deadline: 6,
     assignedBy: 'lead-marcus',
+    skills: ['Debugging', 'Problem Solving', 'JavaScript'],
   },
   {
     title: 'Email Response',
@@ -73,6 +77,7 @@ export const DAILY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complete
     deadline: 3,
     timeLimit: 600,
     assignedBy: 'hr-sarah',
+    skills: ['Written Communication', 'Professionalism'],
   },
   {
     title: 'API Integration',
@@ -87,6 +92,7 @@ export const DAILY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complete
     moodImpact: -8,
     deadline: 5,
     assignedBy: 'lead-marcus',
+    skills: ['API Development', 'Backend Integration', 'RESTful Services'],
   },
   {
     title: 'Unit Tests',
@@ -101,6 +107,7 @@ export const DAILY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complete
     moodImpact: -3,
     deadline: 4,
     assignedBy: 'manager-alex',
+    skills: ['Testing', 'Quality Assurance', 'Test Automation'],
   },
   {
     title: 'Database Query Optimization',
@@ -115,6 +122,7 @@ export const DAILY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complete
     moodImpact: -12,
     deadline: 6,
     assignedBy: 'lead-marcus',
+    skills: ['Database Management', 'Performance Optimization', 'SQL'],
   },
 ];
 
@@ -133,6 +141,7 @@ export const WEEKLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complet
     moodImpact: -15,
     deadline: 48,
     assignedBy: 'manager-alex',
+    skills: ['Software Development', 'Project Planning', 'React', 'TypeScript'],
   },
   {
     title: 'Team Presentation',
@@ -148,6 +157,7 @@ export const WEEKLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complet
     deadline: 36,
     timeLimit: 900,
     assignedBy: 'hr-sarah',
+    skills: ['Public Speaking', 'Presentation Skills', 'Communication'],
   },
   {
     title: 'Algorithm Challenge',
@@ -162,6 +172,7 @@ export const WEEKLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complet
     moodImpact: 25,
     deadline: 40,
     assignedBy: 'games-coordinator',
+    skills: ['Algorithms', 'Data Structures', 'Problem Solving', 'Critical Thinking'],
   },
   {
     title: 'Code Refactoring',
@@ -176,6 +187,7 @@ export const WEEKLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complet
     moodImpact: -5,
     deadline: 32,
     assignedBy: 'lead-marcus',
+    skills: ['Code Refactoring', 'Best Practices', 'Clean Code'],
   },
   {
     title: 'Professional Development',
@@ -191,6 +203,7 @@ export const WEEKLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complet
     deadline: 24,
     timeLimit: 1200,
     assignedBy: 'hr-sarah',
+    skills: ['Written Communication', 'Time Management'],
   },
   {
     title: 'Security Audit',
@@ -205,6 +218,7 @@ export const WEEKLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complet
     moodImpact: -12,
     deadline: 40,
     assignedBy: 'manager-alex',
+    skills: ['Security', 'Vulnerability Testing', 'Risk Assessment'],
   },
   {
     title: 'Architecture Design',
@@ -219,6 +233,7 @@ export const WEEKLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complet
     moodImpact: -18,
     deadline: 56,
     assignedBy: 'lead-marcus',
+    skills: ['System Design', 'Architecture', 'Scalability', 'Design Patterns'],
   },
   {
     title: 'Performance Testing',
@@ -233,6 +248,7 @@ export const WEEKLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'complet
     moodImpact: -8,
     deadline: 30,
     assignedBy: 'manager-alex',
+    skills: ['Performance Testing', 'Optimization', 'Profiling'],
   },
 ];
 
@@ -252,6 +268,7 @@ export const MONTHLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'comple
     deadline: 160,
     assignedBy: 'manager-alex',
     isInterconnected: true,
+    skills: ['Project Management', 'DevOps', 'CI/CD', 'Production Deployment', 'Leadership'],
   },
   {
     title: 'Quarterly Review',
@@ -267,6 +284,7 @@ export const MONTHLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'comple
     deadline: 120,
     timeLimit: 1800,
     assignedBy: 'hr-sarah',
+    skills: ['Self-Assessment', 'Professional Development', 'Goal Setting', 'Communication'],
   },
   {
     title: 'Innovation Sprint',
@@ -281,6 +299,7 @@ export const MONTHLY_QUESTS: Omit<Quest, 'id' | 'status' | 'startedAt' | 'comple
     moodImpact: 40,
     deadline: 140,
     assignedBy: 'games-coordinator',
+    skills: ['Innovation', 'Creative Thinking', 'Problem Solving', 'Strategic Planning'],
   },
 ];
 

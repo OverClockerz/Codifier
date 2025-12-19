@@ -6,28 +6,24 @@ export type QuestStatus = 'available' | 'in-progress' | 'completed' | 'failed';
 export type SkillCategory = 'technical' | 'critical-thinking' | 'soft-skills';
 export type NotificationType = 'quest' | 'salary' | 'bonus' | 'buff' | 'warning' | 'achievement';
 
-// Quest Types
+// Quest System
 export interface Quest {
   id: string;
   title: string;
   description: string;
   zone: ZoneType;
-  frequency: QuestFrequency;
-  skillCategory: SkillCategory;
+  frequency: 'daily' | 'weekly' | 'monthly';
   difficulty: number; // 1-5
   expReward: number;
   currencyReward: number;
-  stressImpact: number; // Positive = adds stress, negative = reduces stress
-  moodImpact: number; // Positive = adds mood, negative = reduces mood
-  deadline: number; // Hours until deadline
-  timeLimit?: number; // Optional: seconds for timed tasks
-  status: QuestStatus;
-  assignedBy: string; // NPC name
-  startedAt?: number; // Timestamp
+  moodImpact: number;
+  stressImpact: number;
+  deadline?: number;
+  status: 'available' | 'in-progress' | 'completed' | 'failed';
+  startedAt?: number;
   completedAt?: number;
-  isInterconnected?: boolean;
-  connectedQuestIds?: string[];
   requirements?: QuestRequirement[];
+  skills?: string[]; // Skills that can be gained/improved
 }
 
 export interface QuestRequirement {
@@ -59,12 +55,16 @@ export interface PlayerState {
   isBurntOut: boolean;
   baseSalary: number;
   currentMonthEarnings: number;
+  currentMonthTasksCompleted?: number; // Track completed quests this month
   paidLeaves: number;
   currentDay: number; // In-game day counter
   currentMonth: number;
   lastLoginDate: string;
   careerHistory: CareerRun[];
   currentRun: CareerRun;
+  reputation: number; // Reputation score
+  skills: Record<string, number>; // Skill name -> level (0-100)
+  permanentBuffs: string[]; // IDs of purchased permanent buffs
 }
 
 export interface CareerRun {

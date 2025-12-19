@@ -208,30 +208,64 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                 <div className="bg-black/30 rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-500 mb-1">Salary</p>
                   <p className="text-xl text-white mb-1">${player.baseSalary}</p>
-                  <p className="text-xs text-gray-400">{player.currentMonthEarnings}</p>
-                  <p className="text-xs text-gray-600">%</p>
+                  <p className="text-xs text-green-400">+{player.currentMonthEarnings}</p>
                 </div>
 
                 {/* Code Quality */}
                 <div className="bg-black/30 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-500 mb-1">Code Quality</p>
-                  <p className="text-xl text-white mb-1">75</p>
-                  <p className="text-xs text-gray-600">%</p>
+                  <p className="text-xs text-gray-500 mb-1">Skills</p>
+                  <p className="text-xl text-white mb-1">{Object.keys(player.skills ?? {}).length}</p>
+                  <p className="text-xs text-gray-600">acquired</p>
                 </div>
 
                 {/* Soft Skills */}
                 <div className="bg-black/30 rounded-xl p-4 text-center">
-                  <p className="text-xs text-gray-500 mb-1">Soft Skills</p>
-                  <p className="text-xl text-white mb-1">75</p>
-                  <p className="text-xs text-gray-600">%</p>
+                  <p className="text-xs text-gray-500 mb-1">Tasks</p>
+                  <p className="text-xl text-white mb-1">{player.currentMonthTasksCompleted || 0}</p>
+                  <p className="text-xs text-gray-600">completed</p>
                 </div>
 
                 {/* Reputation */}
                 <div className="bg-black/30 rounded-xl p-4 text-center">
                   <p className="text-xs text-gray-500 mb-1">Reputation</p>
-                  <p className="text-xl text-green-400 mb-1">+9%</p>
-                  <p className="text-xs text-gray-600">%</p>
+                  <p
+                    className={`text-xl ${
+                      (player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'
+                    } mb-1`}
+                  >
+                    {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
+                  </p>
+                  <p className="text-xs text-gray-600">this month</p>
                 </div>
+              </div>
+
+              {/* Reputation Bar */}
+              <div className="mb-6">
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-400">Reputation Status</span>
+                  <span
+                    className={`${(player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}
+                  >
+                    {(player.reputation ?? 0) >= 0 ? 'Good Standing' : 'Warning'}
+                  </span>
+                </div>
+                <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{
+                      width: `${Math.min(100, Math.abs((player.reputation ?? 0) / 20) * 100)}%`,
+                    }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    className={`h-full ${
+                      (player.reputation ?? 0) >= 0
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-500'
+                        : 'bg-gradient-to-r from-red-500 to-orange-500'
+                    }`}
+                  />
+                </div>
+                {(player.reputation ?? 0) < -10 && (
+                  <p className="text-xs text-red-400 mt-1">⚠️ Reputation at risk! Complete tasks to improve.</p>
+                )}
               </div>
 
               {/* Additional Info */}

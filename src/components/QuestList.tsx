@@ -1,7 +1,8 @@
 import { motion } from 'motion/react';
 import { useGame } from '../contexts/GameContext';
 import { Quest, ZoneType } from '../types/game';
-import { Clock, Trophy, DollarSign, TrendingUp, Play, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
+import { Clock, Trophy, DollarSign, TrendingUp, Play, CheckCircle, XCircle } from 'lucide-react';
+import { ZoneHeader } from './ZoneHeader';
 
 interface QuestListProps {
   zone: ZoneType;
@@ -15,16 +16,6 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
   const zoneQuests = activeQuests.filter((q) => q.zone === zone);
   const availableQuests = zoneQuests.filter((q) => q.status === 'available');
   const inProgressQuests = zoneQuests.filter((q) => q.status === 'in-progress');
-
-  const getZoneTitle = (zoneType: ZoneType): string => {
-    const titles = {
-      workspace: 'The Workspace',
-      'game-lounge': 'The Game Lounge',
-      'meeting-room': 'The Meeting Room',
-      cafeteria: 'The Cafeteria',
-    };
-    return titles[zoneType];
-  };
 
   const getDifficultyColor = (difficulty: number): string => {
     if (difficulty === 1) return 'text-green-400 border-green-400/30 bg-green-400/10';
@@ -144,22 +135,12 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <motion.button
-          whileHover={{ scale: 1.05, x: -2 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onBack}
-          className="w-10 h-10 bg-gray-900 border border-gray-800 rounded-lg flex items-center justify-center hover:border-gray-700 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </motion.button>
-        <div>
-          <h2 className="text-3xl">{getZoneTitle(zone)}</h2>
-          <p className="text-gray-400 text-sm">
-            {availableQuests.length} available, {inProgressQuests.length} in progress
-          </p>
-        </div>
-      </div>
+      <ZoneHeader
+        zone={zone}
+        onBack={onBack}
+        availableCount={availableQuests.length}
+        inProgressCount={inProgressQuests.length}
+      />
 
       {/* In Progress Quests */}
       {inProgressQuests.length > 0 && (
