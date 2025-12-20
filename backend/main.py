@@ -14,7 +14,7 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = os.getenv("MONGODB_URL")
+# app.config["MONGO_URI"] = os.getenv("MONGODB_URL")
 app.config["MONGO_URI"] = "mongodb://localhost:27017/mydatabase"
 mongo.init_app(app)
 CORS(app)
