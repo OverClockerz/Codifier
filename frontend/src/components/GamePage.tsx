@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
 import { ZoneType, Quest } from '../types/game';
 import { GameDashboard } from './GameDashboard';
-import { ZoneSelector } from './ZoneSelector';
 import { QuestList } from './QuestList';
 import { SimpleQuestModal } from './activities/SimpleQuestModal';
 import { ZoneTransition } from './transitions/ZoneTransition';
@@ -14,6 +13,7 @@ import { LevelUpTransition } from './transitions/LevelUpTransition';
 import { ScrambleTextOnHover } from './effects/ScrambleText';
 import { ProfileModal } from './ProfileModal';
 import { NotificationsModal } from './NotificationsModal';
+import { DigitalClock } from './DigitalClock';
 
 export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => void }) {
   const { user, logout } = useAuth();
@@ -37,10 +37,6 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
         setActiveQuestModal(quest);
       }, 1800);
     }
-  };
-
-  const handleZoneSelect = (zone: ZoneType) => {
-    setSelectedZone(zone);
   };
 
   return (
@@ -85,6 +81,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                 <span className="text-xs text-gray-400">$</span>
                 <span className="text-sm text-yellow-400">{player.currency}</span>
               </div>
+              <DigitalClock />
             </div>
 
             {/* Actions */}

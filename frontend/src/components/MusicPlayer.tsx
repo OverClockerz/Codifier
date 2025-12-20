@@ -8,6 +8,8 @@ import {
   ChevronDown,
   SkipForward,
   List,
+  Volume1,
+
 } from "lucide-react";
 
 // Music track configuration
@@ -467,9 +469,9 @@ export function MusicPlayer() {
             }
           >
             {showControls ? (
-              <ChevronDown className="w-4 h-4" />
+              <Volume2 className="w-4 h-4" />
             ) : (
-              <ChevronUp className="w-4 h-4" />
+              <Volume1 className="w-4 h-4" />
             )}
           </motion.button>
 
