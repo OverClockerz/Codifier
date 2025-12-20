@@ -1,6 +1,6 @@
-node_modules
-build
-.vercel
+frontend/node_modules
+frontend/build
+frontend/.vercel
 __pycache__
 backend/env/
-.env
+backend/.env
