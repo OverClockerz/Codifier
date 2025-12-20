@@ -9,7 +9,7 @@ const navItems = [
   { label: 'About', id: 'about' },
   { label: 'Features', id: 'features' },
   { label: 'Gallery', id: 'gallery' },
-  { label: 'Contact', id: 'contact' },
+  { label: 'Credits', id: 'credits' },
 ];
 
 interface NavigationProps {

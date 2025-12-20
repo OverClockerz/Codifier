@@ -3,21 +3,46 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
 gsap.registerPlugin(ScrollToPlugin);
 
-export const smoothScrollToElement = (elementId: string, duration: number = 1.2) => {
+/**
+ * Performs an immediate, high-performance smooth scroll to a specific element.
+ * Optimized for speed to reduce perceived delay during routing.
+ */
+export const smoothScrollToElement = (elementId, duration = 0.8) => {
   const element = document.getElementById(elementId);
   
   if (element) {
-    // Stop any ongoing scrolls to prevent conflicts
-    gsap.killTweensOf(window); 
+    // 1. Immediately kill all active window tweens to take control
+    gsap.killTweensOf(window);
 
+    // 2. Execute scroll with faster easing and lower duration for instant feel
     gsap.to(window, {
       duration,
       scrollTo: {
         y: element,
-        autoKill: false, // Set to false so user touching mouse doesn't break the initial nav jump
-        offsetY: 80, 
+        autoKill: false,
+        offsetY: 80,
       },
-      ease: 'power4.inOut', // Power4 is slightly more dramatic/premium
+      // power2.out provides a very fast start that tapers off quickly,
+      // which feels more "instant" than power4's slow buildup.
+      ease: "power2.out",
+      overwrite: "all"
     });
   }
+};
+
+/**
+ * Scrolls to a specific numeric position or target instantly.
+ */
+export const smoothScrollTo = (target, duration = 0.8) => {
+  gsap.killTweensOf(window);
+  
+  gsap.to(window, {
+    duration,
+    scrollTo: {
+      y: target,
+      autoKill: true,
+    },
+    ease: "power2.out",
+    overwrite: "all"
+  });
 };

@@ -6,7 +6,7 @@ import { Hero } from './Hero';
 import { About } from './About';
 import { Features } from './Features';
 import { Gallery } from './Gallery';
-import { Contact } from './Contact';
+import { Credits } from './Credits';
 import { Footer } from './Footer';
 import { VideoBackground } from './VideoBackground';
 import { smoothScrollToElement } from '../utils/smoothScroll';
@@ -117,8 +117,8 @@ export function LandingPage({ onStartCareer }: LandingPageProps) {
             <Gallery />
           </section>
 
-          <section id="contact" className="scroll-mt-24 py-20">
-            <Contact />
+          <section id="credits" className="scroll-mt-24 py-20">
+           <Credits />
           </section>
         </main>
 
