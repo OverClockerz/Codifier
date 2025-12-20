@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { User, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
 import { Tooltip } from './Tooltip';
@@ -21,7 +21,11 @@ export function PlayerCard({ onClick }: PlayerCardProps) {
         className="flex items-center gap-4 cursor-pointer group transition-all hover:bg-gray-800/30 rounded-lg p-2 -m-2"
       >
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center group-hover:from-blue-500 group-hover:to-purple-500 transition-all">
-          <User className="w-6 h-6 text-white" />
+          <img
+                  src={user?.avatar}
+                  alt={user?.username}
+                  className="w-8 h-8 rounded-full"
+                />
         </div>
         <div className="text-left">
           <h2 className="text-xl text-white">{user?.username || 'Player'}</h2>

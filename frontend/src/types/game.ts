@@ -42,41 +42,6 @@ export interface QuestChain {
   chainBonus: number; // Extra reward for completing all
 }
 
-// Player State
-export interface PlayerState {
-  id: string;
-  username: string;
-  level: number;
-  experience: number;
-  experienceToNextLevel: number;
-  currency: number;
-  mood: number; // 0-100
-  stress: number; // 0-100
-  isBurntOut: boolean;
-  baseSalary: number;
-  currentMonthEarnings: number;
-  currentMonthTasksCompleted?: number; // Track completed quests this month
-  paidLeaves: number;
-  currentDay: number; // In-game day counter
-  currentMonth: number;
-  lastLoginDate: string;
-  careerHistory: CareerRun[];
-  currentRun: CareerRun;
-  reputation: number; // Reputation score
-  skills: Record<string, number>; // Skill name -> level (0-100)
-  permanentBuffs: string[]; // IDs of purchased permanent buffs
-}
-
-export interface CareerRun {
-  runNumber: number;
-  startLevel: number;
-  maxLevelAchieved: number;
-  totalExperience: number;
-  monthsWorked: number;
-  reasonForEnd?: 'fired' | 'quit' | 'active';
-  endDate?: string;
-}
-
 // Items & Shop
 export interface ShopItem {
   id: string;
@@ -101,6 +66,46 @@ export interface InventoryItem {
   item: ShopItem;
   quantity: number;
   purchasedAt: number;
+}
+
+// Player State
+export interface PlayerState {
+  id: string;
+  username: string;
+  level: number;
+  experience: number;
+  experienceToNextLevel: number;
+  currency: number;
+  mood: number; // 0-100
+  stress: number; // 0-100
+  isBurntOut: boolean;
+  baseSalary: number;
+  currentMonthEarnings: number;
+  currentMonthTasksCompleted?: number; // Track completed quests this month
+  paidLeaves: number;
+  currentDay: number; // In-game day counter
+  currentMonth: number;
+  lastLoginDate: string;
+  careerHistory: CareerRun[];
+  currentRun: CareerRun;
+  reputation: number; // Reputation score
+  skills: Record<string, number>; // Skill name -> level (0-100)
+  permanentBuffs: string[]; // IDs of purchased permanent buffs
+  
+  // These fields are populated from the backend mock DB
+  activeQuests?: Quest[];
+  completedQuests?: Quest[];
+  inventory?: InventoryItem[];
+}
+
+export interface CareerRun {
+  runNumber: number;
+  startLevel: number;
+  maxLevelAchieved: number;
+  totalExperience: number;
+  monthsWorked: number;
+  reasonForEnd?: 'fired' | 'quit' | 'active';
+  endDate?: string;
 }
 
 // NPCs

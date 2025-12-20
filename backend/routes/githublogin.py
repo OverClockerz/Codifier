@@ -1,4 +1,4 @@
-from flask import request, jsonify,Blueprint
+from flask import request, jsonify,Blueprint, session
 from dotenv import load_dotenv
 import os
 import requests
@@ -52,8 +52,21 @@ def github_callback():
 
     # --- PRINT TO TERMINAL ---
     username = user_data.get('login', 'Unknown')
+    github_email = user_data.get('email') or f"{username}@no-email.github.com"
+    github_id = user_data.get('id')
+    avatar_url = user_data.get('avatar_url')
+
+    session['user'] = username
+    session['email'] = github_email
+    session['avatar'] = avatar_url
+    session['github_id'] = github_id
+    session.permanent = True
+    
     print("\n" + "="*40)
     print(f"🚀 LOGIN SUCCESSFUL: {username}")
+    print(f"🚀 USER EMAIL: {github_email}")
+    print(f"🚀 GITHUB ID: {github_id}")
+    print(f"🚀 AVATAR URL: {avatar_url}")
     print("="*40 + "\n")
 
     return jsonify({

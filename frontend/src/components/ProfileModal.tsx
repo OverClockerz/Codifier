@@ -97,7 +97,11 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                    <User className="w-6 h-6 text-white" />
+                    <img
+                  src={user?.avatar}
+                  alt={user?.username}
+                  className="w-8 h-8 rounded-full"
+                />
                   </div>
                   <div>
                     <h2 className="text-lg text-white">{user?.username || 'Player'}</h2>
