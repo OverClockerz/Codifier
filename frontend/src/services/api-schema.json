@@ -1,0 +1,1075 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OFFICE Game - Backend API Schema Documentation",
+  "version": "1.0.0",
+  "description": "Complete API specification for all backend service calls in the OFFICE gamified career simulation RPG. This document serves as a contract between frontend and backend.",
+  "baseUrl": "https://api.office-game.com/v1",
+  
+  "authentication": {
+    "type": "Bearer Token (JWT)",
+    "header": "Authorization: Bearer {token}",
+    "description": "All authenticated endpoints require a valid JWT token obtained from the auth endpoints"
+  },
+
+  "endpoints": {
+    
+    "authentication": {
+      "githubOAuth": {
+        "method": "POST",
+        "path": "/auth/github",
+        "description": "Authenticate user via GitHub OAuth",
+        "requiresAuth": false,
+        "request": {
+          "body": {
+            "code": "string - GitHub OAuth authorization code",
+            "redirectUri": "string - OAuth redirect URI"
+          },
+          "example": {
+            "code": "1234567890abcdef",
+            "redirectUri": "https://office-game.com/auth/callback"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "token": "string - JWT authentication token",
+              "user": {
+                "id": "string - Unique user ID",
+                "username": "string - GitHub username",
+                "avatar": "string - Avatar URL",
+                "email": "string - User email",
+                "githubId": "number - GitHub user ID",
+                "createdAt": "string - ISO 8601 timestamp"
+              },
+              "isNewUser": "boolean - True if first time login"
+            },
+            "example": {
+              "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+              "user": {
+                "id": "user_123456",
+                "username": "johndoe",
+                "avatar": "https://avatars.githubusercontent.com/u/123456",
+                "email": "john@example.com",
+                "githubId": 123456,
+                "createdAt": "2024-01-15T10:30:00Z"
+              },
+              "isNewUser": false
+            }
+          },
+          "error": {
+            "status": 401,
+            "body": {
+              "error": "string - Error code",
+              "message": "string - Human readable error message"
+            },
+            "example": {
+              "error": "INVALID_OAUTH_CODE",
+              "message": "The provided OAuth code is invalid or expired"
+            }
+          }
+        }
+      },
+
+      "refreshToken": {
+        "method": "POST",
+        "path": "/auth/refresh",
+        "description": "Refresh an expired JWT token",
+        "requiresAuth": true,
+        "request": {
+          "body": {
+            "refreshToken": "string - Refresh token"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "token": "string - New JWT token",
+              "expiresAt": "string - ISO 8601 timestamp"
+            }
+          }
+        }
+      },
+
+      "logout": {
+        "method": "POST",
+        "path": "/auth/logout",
+        "description": "Invalidate current session",
+        "requiresAuth": true,
+        "request": {
+          "body": {}
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "Successfully logged out"
+            }
+          }
+        }
+      }
+    },
+
+    "player": {
+      "getPlayer": {
+        "method": "GET",
+        "path": "/player",
+        "description": "Fetch complete player state including stats, skills, inventory, and current run",
+        "requiresAuth": true,
+        "request": {
+          "queryParams": {},
+          "headers": {
+            "Authorization": "Bearer {token}"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "id": "string - Player ID",
+              "username": "string - Player username",
+              "level": "number - Current level (1-50)",
+              "experience": "number - Current XP",
+              "experienceToNextLevel": "number - XP needed for next level",
+              "currency": "number - Available in-game currency",
+              "mood": "number - Mood percentage (0-100)",
+              "stress": "number - Stress percentage (0-100)",
+              "isBurntOut": "boolean - Burnout status",
+              "baseSalary": "number - Base monthly salary",
+              "currentMonthEarnings": "number - Total earnings this month",
+              "currentMonthTasksCompleted": "number - Quests completed this month",
+              "paidLeaves": "number - Available paid leaves",
+              "currentDay": "number - In-game day counter",
+              "currentMonth": "number - Current month in simulation",
+              "lastLoginDate": "string - ISO 8601 timestamp",
+              "reputation": "number - Reputation score (-20 to 100)",
+              "skills": {
+                "technical": {
+                  "programming": "number (0-100)",
+                  "debugging": "number (0-100)",
+                  "systemDesign": "number (0-100)",
+                  "testing": "number (0-100)",
+                  "databases": "number (0-100)"
+                },
+                "criticalThinking": {
+                  "problemSolving": "number (0-100)",
+                  "analyticalReasoning": "number (0-100)",
+                  "strategicPlanning": "number (0-100)",
+                  "decisionMaking": "number (0-100)"
+                },
+                "softSkills": {
+                  "communication": "number (0-100)",
+                  "teamwork": "number (0-100)",
+                  "leadership": "number (0-100)",
+                  "timeManagement": "number (0-100)",
+                  "emotionalIntelligence": "number (0-100)"
+                }
+              },
+              "permanentBuffs": ["string - Array of active permanent buff IDs"],
+              "currentRun": {
+                "runNumber": "number - Current career run number",
+                "startLevel": "number - Starting level of this run",
+                "maxLevelAchieved": "number - Highest level reached",
+                "totalExperience": "number - Total XP in this run",
+                "monthsWorked": "number - Months in current position",
+                "reasonForEnd": "string | null - 'fired' | 'quit' | null if active",
+                "endDate": "string | null - ISO 8601 timestamp if ended"
+              },
+              "careerHistory": [
+                {
+                  "runNumber": "number",
+                  "startLevel": "number",
+                  "maxLevelAchieved": "number",
+                  "totalExperience": "number",
+                  "monthsWorked": "number",
+                  "reasonForEnd": "string - 'fired' | 'quit'",
+                  "endDate": "string - ISO 8601 timestamp"
+                }
+              ]
+            },
+            "example": {
+              "id": "player_abc123",
+              "username": "johndoe",
+              "level": 5,
+              "experience": 2500,
+              "experienceToNextLevel": 1500,
+              "currency": 12500,
+              "mood": 75,
+              "stress": 35,
+              "isBurntOut": false,
+              "baseSalary": 5000,
+              "currentMonthEarnings": 8750,
+              "currentMonthTasksCompleted": 12,
+              "paidLeaves": 3,
+              "currentDay": 45,
+              "currentMonth": 2,
+              "lastLoginDate": "2024-12-20T14:30:00Z",
+              "reputation": 85,
+              "skills": {
+                "technical": {
+                  "programming": 65,
+                  "debugging": 55,
+                  "systemDesign": 40,
+                  "testing": 50,
+                  "databases": 45
+                },
+                "criticalThinking": {
+                  "problemSolving": 70,
+                  "analyticalReasoning": 60,
+                  "strategicPlanning": 45,
+                  "decisionMaking": 55
+                },
+                "softSkills": {
+                  "communication": 75,
+                  "teamwork": 80,
+                  "leadership": 50,
+                  "timeManagement": 65,
+                  "emotionalIntelligence": 70
+                }
+              },
+              "permanentBuffs": ["productivity_master", "focus_enhancer"],
+              "currentRun": {
+                "runNumber": 1,
+                "startLevel": 1,
+                "maxLevelAchieved": 5,
+                "totalExperience": 12500,
+                "monthsWorked": 2,
+                "reasonForEnd": null,
+                "endDate": null
+              },
+              "careerHistory": []
+            }
+          },
+          "error": {
+            "status": 404,
+            "body": {
+              "error": "PLAYER_NOT_FOUND",
+              "message": "Player profile does not exist"
+            }
+          }
+        }
+      },
+
+      "updatePlayer": {
+        "method": "PATCH",
+        "path": "/player",
+        "description": "Update player state (mood, stress, currency, etc.)",
+        "requiresAuth": true,
+        "request": {
+          "body": {
+            "mood": "number (optional) - New mood value (0-100)",
+            "stress": "number (optional) - New stress value (0-100)",
+            "currency": "number (optional) - Currency adjustment (can be negative)",
+            "experience": "number (optional) - XP adjustment",
+            "paidLeaves": "number (optional) - Paid leaves adjustment",
+            "reputation": "number (optional) - Reputation adjustment"
+          },
+          "example": {
+            "mood": 80,
+            "stress": 25,
+            "currency": -500
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "Player state updated successfully",
+              "player": "{Complete PlayerState object}"
+            }
+          }
+        }
+      },
+
+      "resetCareer": {
+        "method": "POST",
+        "path": "/player/reset-career",
+        "description": "Start a new career run after game over",
+        "requiresAuth": true,
+        "request": {
+          "body": {
+            "reason": "string - 'fired' | 'quit'",
+            "preserveSkills": "boolean - Whether to keep skill progress"
+          },
+          "example": {
+            "reason": "fired",
+            "preserveSkills": true
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "Career run reset successfully",
+              "newRun": {
+                "runNumber": "number",
+                "startLevel": "number",
+                "resetAt": "string - ISO 8601 timestamp"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "quests": {
+      "getQuests": {
+        "method": "GET",
+        "path": "/quests",
+        "description": "Fetch available quests, optionally filtered by zone",
+        "requiresAuth": true,
+        "request": {
+          "queryParams": {
+            "zone": "string (optional) - 'workspace' | 'game-lounge' | 'meeting-room' | 'cafeteria'",
+            "status": "string (optional) - 'available' | 'in-progress' | 'completed'",
+            "difficulty": "number (optional) - Filter by difficulty (1-5)"
+          },
+          "example": "/quests?zone=workspace&status=available"
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "quests": [
+                {
+                  "id": "string - Unique quest ID",
+                  "title": "string - Quest title",
+                  "description": "string - Quest description",
+                  "zone": "string - 'workspace' | 'game-lounge' | 'meeting-room' | 'cafeteria'",
+                  "frequency": "string - 'daily' | 'weekly' | 'monthly'",
+                  "difficulty": "number - 1 to 5",
+                  "expReward": "number - XP reward",
+                  "currencyReward": "number - Currency reward",
+                  "moodImpact": "number - Mood change (positive or negative)",
+                  "stressImpact": "number - Stress change (positive or negative)",
+                  "deadline": "number (optional) - Unix timestamp",
+                  "status": "string - 'available' | 'in-progress' | 'completed' | 'failed'",
+                  "startedAt": "number (optional) - Unix timestamp",
+                  "completedAt": "number (optional) - Unix timestamp",
+                  "requirements": [
+                    {
+                      "type": "string - 'skill-level' | 'quest-completion' | 'item'",
+                      "value": "string | number - Requirement value"
+                    }
+                  ],
+                  "skills": ["array of strings - Skills improved by this quest"],
+                  "questions": [
+                    {
+                      "id": "string - Question ID",
+                      "text": "string - Question text",
+                      "options": [
+                        {
+                          "id": "string - Option ID",
+                          "text": "string - Option text"
+                        }
+                      ],
+                      "correctAnswer": "string - Correct option ID (backend only, not sent to frontend)",
+                      "skillTested": "string - Skill being tested",
+                      "points": "number - Points for correct answer"
+                    }
+                  ]
+                }
+              ],
+              "totalCount": "number - Total quests matching filters"
+            },
+            "example": {
+              "quests": [
+                {
+                  "id": "quest_ws001",
+                  "title": "Debug the Payment Gateway",
+                  "description": "The payment processing system is throwing errors. Identify and fix the issue.",
+                  "zone": "workspace",
+                  "frequency": "daily",
+                  "difficulty": 3,
+                  "expReward": 150,
+                  "currencyReward": 500,
+                  "moodImpact": 5,
+                  "stressImpact": 15,
+                  "deadline": 1703088000000,
+                  "status": "available",
+                  "requirements": [
+                    {
+                      "type": "skill-level",
+                      "value": "debugging:30"
+                    }
+                  ],
+                  "skills": ["debugging", "problemSolving"],
+                  "questions": [
+                    {
+                      "id": "q1",
+                      "text": "What's the most common cause of null pointer exceptions?",
+                      "options": [
+                        {
+                          "id": "a",
+                          "text": "Accessing methods on uninitialized objects"
+                        },
+                        {
+                          "id": "b",
+                          "text": "Using wrong variable names"
+                        },
+                        {
+                          "id": "c",
+                          "text": "Syntax errors"
+                        },
+                        {
+                          "id": "d",
+                          "text": "Import issues"
+                        }
+                      ],
+                      "skillTested": "debugging",
+                      "points": 10
+                    }
+                  ]
+                }
+              ],
+              "totalCount": 1
+            }
+          }
+        }
+      },
+
+      "startQuest": {
+        "method": "POST",
+        "path": "/quests/:questId/start",
+        "description": "Start a specific quest",
+        "requiresAuth": true,
+        "request": {
+          "params": {
+            "questId": "string - Quest ID"
+          },
+          "body": {},
+          "example": "/quests/quest_ws001/start"
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "Quest started successfully",
+              "quest": "{Complete Quest object with status: 'in-progress'}",
+              "startedAt": "number - Unix timestamp"
+            }
+          },
+          "error": {
+            "status": 400,
+            "body": {
+              "error": "QUEST_ALREADY_STARTED | REQUIREMENTS_NOT_MET | PLAYER_BURNT_OUT",
+              "message": "string - Error details"
+            }
+          }
+        }
+      },
+
+      "submitQuestAnswers": {
+        "method": "POST",
+        "path": "/quests/:questId/submit",
+        "description": "Submit answers for a quest and get results",
+        "requiresAuth": true,
+        "request": {
+          "params": {
+            "questId": "string - Quest ID"
+          },
+          "body": {
+            "answers": [
+              {
+                "questionId": "string - Question ID",
+                "selectedOption": "string - Selected option ID",
+                "timeTaken": "number - Seconds taken to answer"
+              }
+            ]
+          },
+          "example": {
+            "answers": [
+              {
+                "questionId": "q1",
+                "selectedOption": "a",
+                "timeTaken": 15
+              },
+              {
+                "questionId": "q2",
+                "selectedOption": "b",
+                "timeTaken": 20
+              }
+            ]
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "questId": "string",
+              "completed": "boolean - Whether quest is completed",
+              "score": "number - Total score (0-100)",
+              "correctAnswers": "number - Number of correct answers",
+              "totalQuestions": "number",
+              "results": [
+                {
+                  "questionId": "string",
+                  "correct": "boolean",
+                  "correctAnswer": "string - Correct option ID",
+                  "selectedAnswer": "string - User's answer",
+                  "explanation": "string - Answer explanation"
+                }
+              ],
+              "rewards": {
+                "experience": "number - XP earned",
+                "currency": "number - Currency earned",
+                "moodChange": "number - Mood adjustment",
+                "stressChange": "number - Stress adjustment",
+                "reputationChange": "number - Reputation adjustment",
+                "skillsImproved": [
+                  {
+                    "skill": "string - Skill name",
+                    "improvement": "number - Points gained"
+                  }
+                ]
+              },
+              "playerUpdate": {
+                "level": "number - New level",
+                "experience": "number - New XP total",
+                "currency": "number - New currency total",
+                "mood": "number - New mood",
+                "stress": "number - New stress",
+                "reputation": "number - New reputation",
+                "leveledUp": "boolean - Whether player leveled up"
+              }
+            },
+            "example": {
+              "questId": "quest_ws001",
+              "completed": true,
+              "score": 80,
+              "correctAnswers": 4,
+              "totalQuestions": 5,
+              "results": [
+                {
+                  "questionId": "q1",
+                  "correct": true,
+                  "correctAnswer": "a",
+                  "selectedAnswer": "a",
+                  "explanation": "Correct! Null pointer exceptions occur when accessing methods on uninitialized objects."
+                }
+              ],
+              "rewards": {
+                "experience": 150,
+                "currency": 500,
+                "moodChange": 5,
+                "stressChange": 15,
+                "reputationChange": 2,
+                "skillsImproved": [
+                  {
+                    "skill": "debugging",
+                    "improvement": 3
+                  },
+                  {
+                    "skill": "problemSolving",
+                    "improvement": 2
+                  }
+                ]
+              },
+              "playerUpdate": {
+                "level": 5,
+                "experience": 2650,
+                "currency": 13000,
+                "mood": 80,
+                "stress": 50,
+                "reputation": 87,
+                "leveledUp": false
+              }
+            }
+          }
+        }
+      },
+
+      "abandonQuest": {
+        "method": "POST",
+        "path": "/quests/:questId/abandon",
+        "description": "Abandon an in-progress quest",
+        "requiresAuth": true,
+        "request": {
+          "params": {
+            "questId": "string"
+          },
+          "body": {}
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "Quest abandoned",
+              "penalties": {
+                "reputationLoss": "number",
+                "moodLoss": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "shop": {
+      "getShopItems": {
+        "method": "GET",
+        "path": "/shop/items",
+        "description": "Fetch all available shop items",
+        "requiresAuth": true,
+        "request": {
+          "queryParams": {
+            "type": "string (optional) - 'consumable' | 'permanent-buff'"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "items": [
+                {
+                  "id": "string - Item ID",
+                  "name": "string - Item name",
+                  "description": "string - Item description",
+                  "type": "string - 'consumable' | 'permanent-buff'",
+                  "price": "number - Cost in currency",
+                  "icon": "string - Icon identifier",
+                  "effect": {
+                    "stressReduction": "number (optional)",
+                    "moodIncrease": "number (optional)",
+                    "expBoost": "number (optional) - Percentage",
+                    "currencyBoost": "number (optional) - Percentage",
+                    "paidLeaves": "number (optional)",
+                    "duration": "number (optional) - Minutes for temporary buffs"
+                  },
+                  "isOwned": "boolean - Whether player owns this (for permanent buffs)"
+                }
+              ]
+            },
+            "example": {
+              "items": [
+                {
+                  "id": "coffee",
+                  "name": "Premium Coffee",
+                  "description": "Reduces stress by 10 points and increases focus",
+                  "type": "consumable",
+                  "price": 250,
+                  "icon": "coffee",
+                  "effect": {
+                    "stressReduction": 10,
+                    "moodIncrease": 5
+                  },
+                  "isOwned": false
+                },
+                {
+                  "id": "productivity_master",
+                  "name": "Productivity Master",
+                  "description": "Permanent 10% XP boost on all completed quests",
+                  "type": "permanent-buff",
+                  "price": 5000,
+                  "icon": "zap",
+                  "effect": {
+                    "expBoost": 10
+                  },
+                  "isOwned": true
+                }
+              ]
+            }
+          }
+        }
+      },
+
+      "purchaseItem": {
+        "method": "POST",
+        "path": "/shop/purchase",
+        "description": "Purchase an item from the shop",
+        "requiresAuth": true,
+        "request": {
+          "body": {
+            "itemId": "string - Item ID to purchase",
+            "quantity": "number (optional) - Quantity for consumables (default: 1)"
+          },
+          "example": {
+            "itemId": "coffee",
+            "quantity": 1
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "Purchase successful",
+              "item": "{Complete ShopItem object}",
+              "playerUpdate": {
+                "currency": "number - New currency balance",
+                "mood": "number - Updated mood (if applicable)",
+                "stress": "number - Updated stress (if applicable)",
+                "permanentBuffs": ["array - Updated buffs list"]
+              }
+            }
+          },
+          "error": {
+            "status": 400,
+            "body": {
+              "error": "INSUFFICIENT_FUNDS | ITEM_NOT_FOUND | ALREADY_OWNED",
+              "message": "string"
+            }
+          }
+        }
+      },
+
+      "useItem": {
+        "method": "POST",
+        "path": "/shop/use",
+        "description": "Use a consumable item from inventory",
+        "requiresAuth": true,
+        "request": {
+          "body": {
+            "itemId": "string - Item ID to use"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "Item used successfully",
+              "effects": {
+                "moodChange": "number",
+                "stressChange": "number"
+              },
+              "playerUpdate": "{Updated player stats}"
+            }
+          }
+        }
+      }
+    },
+
+    "notifications": {
+      "getNotifications": {
+        "method": "GET",
+        "path": "/notifications",
+        "description": "Fetch player notifications",
+        "requiresAuth": true,
+        "request": {
+          "queryParams": {
+            "unreadOnly": "boolean (optional) - Only return unread notifications",
+            "limit": "number (optional) - Max notifications to return (default: 50)"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "notifications": [
+                {
+                  "id": "string - Notification ID",
+                  "type": "string - 'quest' | 'salary' | 'bonus' | 'buff' | 'warning' | 'achievement'",
+                  "title": "string - Notification title",
+                  "message": "string - Notification message",
+                  "timestamp": "number - Unix timestamp",
+                  "read": "boolean - Read status",
+                  "data": "object (optional) - Additional data",
+                  "priority": "string - 'low' | 'medium' | 'high'"
+                }
+              ],
+              "unreadCount": "number"
+            },
+            "example": {
+              "notifications": [
+                {
+                  "id": "notif_001",
+                  "type": "quest",
+                  "title": "Quest Deadline Approaching",
+                  "message": "Debug the Payment Gateway expires in 2 hours!",
+                  "timestamp": 1703080000000,
+                  "read": false,
+                  "data": {
+                    "questId": "quest_ws001"
+                  },
+                  "priority": "high"
+                },
+                {
+                  "id": "notif_002",
+                  "type": "salary",
+                  "title": "Monthly Salary Received",
+                  "message": "You earned $5,000 this month!",
+                  "timestamp": 1703070000000,
+                  "read": true,
+                  "data": {
+                    "amount": 5000
+                  },
+                  "priority": "medium"
+                }
+              ],
+              "unreadCount": 1
+            }
+          }
+        }
+      },
+
+      "markAsRead": {
+        "method": "PATCH",
+        "path": "/notifications/:notificationId/read",
+        "description": "Mark a notification as read",
+        "requiresAuth": true,
+        "request": {
+          "params": {
+            "notificationId": "string"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "Notification marked as read"
+            }
+          }
+        }
+      },
+
+      "markAllAsRead": {
+        "method": "POST",
+        "path": "/notifications/read-all",
+        "description": "Mark all notifications as read",
+        "requiresAuth": true,
+        "request": {
+          "body": {}
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "message": "All notifications marked as read",
+              "count": "number - Number of notifications marked"
+            }
+          }
+        }
+      }
+    },
+
+    "leaderboard": {
+      "getLeaderboard": {
+        "method": "GET",
+        "path": "/leaderboard",
+        "description": "Fetch global leaderboard",
+        "requiresAuth": true,
+        "request": {
+          "queryParams": {
+            "category": "string - 'level' | 'reputation' | 'earnings' | 'quests-completed'",
+            "timeframe": "string - 'all-time' | 'monthly' | 'weekly'",
+            "limit": "number (optional) - Results to return (default: 100)"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "leaderboard": [
+                {
+                  "rank": "number",
+                  "playerId": "string",
+                  "username": "string",
+                  "avatar": "string",
+                  "score": "number - Value for the category",
+                  "level": "number"
+                }
+              ],
+              "currentPlayer": {
+                "rank": "number - Your rank",
+                "score": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "statistics": {
+      "getPlayerStats": {
+        "method": "GET",
+        "path": "/statistics/player",
+        "description": "Get detailed player statistics",
+        "requiresAuth": true,
+        "request": {
+          "queryParams": {}
+        },
+        "response": {
+          "success": {
+            "status": 200,
+            "body": {
+              "totalPlayTime": "number - Minutes",
+              "questsCompleted": "number",
+              "questsAbandoned": "number",
+              "questsFailed": "number",
+              "totalEarnings": "number",
+              "totalExperienceGained": "number",
+              "highestLevel": "number",
+              "careerRuns": "number",
+              "averageQuestScore": "number - Percentage",
+              "skillDistribution": {
+                "technical": "number - Average across all technical skills",
+                "criticalThinking": "number",
+                "softSkills": "number"
+              },
+              "favoriteZone": "string - Zone with most quests completed",
+              "achievements": [
+                {
+                  "id": "string",
+                  "name": "string",
+                  "description": "string",
+                  "unlockedAt": "string - ISO 8601 timestamp",
+                  "rarity": "string - 'common' | 'rare' | 'epic' | 'legendary'"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+
+    "admin": {
+      "generateQuests": {
+        "method": "POST",
+        "path": "/admin/quests/generate",
+        "description": "AI-powered dynamic quest generation (admin/dev only)",
+        "requiresAuth": true,
+        "requiresRole": "admin",
+        "request": {
+          "body": {
+            "zone": "string - Target zone",
+            "difficulty": "number - 1-5",
+            "count": "number - Quests to generate",
+            "skillFocus": "array - Skills to focus on",
+            "playerLevel": "number - Target player level"
+          }
+        },
+        "response": {
+          "success": {
+            "status": 201,
+            "body": {
+              "message": "Quests generated successfully",
+              "quests": ["array of generated Quest objects"],
+              "count": "number"
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "websockets": {
+    "connection": {
+      "url": "wss://api.office-game.com/ws",
+      "protocol": "WebSocket",
+      "authentication": "Query parameter: ?token={jwt_token}",
+      "description": "Real-time bidirectional communication for live updates"
+    },
+
+    "events": {
+      "client_to_server": {
+        "subscribe": {
+          "event": "subscribe",
+          "payload": {
+            "channels": ["array - 'notifications' | 'quests' | 'leaderboard' | 'player-updates'"]
+          },
+          "description": "Subscribe to real-time channels"
+        },
+        "ping": {
+          "event": "ping",
+          "payload": {},
+          "description": "Keep-alive ping"
+        }
+      },
+
+      "server_to_client": {
+        "notification": {
+          "event": "notification",
+          "payload": {
+            "notification": "{Complete notification object}"
+          }
+        },
+        "quest_expired": {
+          "event": "quest_expired",
+          "payload": {
+            "questId": "string",
+            "penaltyApplied": {
+              "reputationLoss": "number",
+              "moodLoss": "number"
+            }
+          }
+        },
+        "level_up": {
+          "event": "level_up",
+          "payload": {
+            "newLevel": "number",
+            "rewards": "object"
+          }
+        },
+        "salary_payment": {
+          "event": "salary_payment",
+          "payload": {
+            "amount": "number",
+            "bonus": "number",
+            "month": "number"
+          }
+        },
+        "pong": {
+          "event": "pong",
+          "payload": {
+            "timestamp": "number"
+          }
+        }
+      }
+    }
+  },
+
+  "errorCodes": {
+    "AUTHENTICATION": {
+      "INVALID_TOKEN": "JWT token is invalid or expired",
+      "MISSING_TOKEN": "Authorization token not provided",
+      "INVALID_OAUTH_CODE": "OAuth authorization code is invalid"
+    },
+    "PLAYER": {
+      "PLAYER_NOT_FOUND": "Player profile does not exist",
+      "PLAYER_BURNT_OUT": "Player is burnt out and cannot start new quests",
+      "INSUFFICIENT_LEVEL": "Player level too low for this action"
+    },
+    "QUEST": {
+      "QUEST_NOT_FOUND": "Quest ID does not exist",
+      "QUEST_ALREADY_STARTED": "Quest is already in progress",
+      "QUEST_NOT_STARTED": "Quest has not been started",
+      "REQUIREMENTS_NOT_MET": "Player does not meet quest requirements",
+      "QUEST_EXPIRED": "Quest deadline has passed"
+    },
+    "SHOP": {
+      "ITEM_NOT_FOUND": "Shop item does not exist",
+      "INSUFFICIENT_FUNDS": "Not enough currency to purchase",
+      "ALREADY_OWNED": "Player already owns this permanent buff",
+      "ITEM_NOT_IN_INVENTORY": "Consumable not in player inventory"
+    },
+    "GENERAL": {
+      "VALIDATION_ERROR": "Request validation failed",
+      "INTERNAL_SERVER_ERROR": "An unexpected error occurred",
+      "RATE_LIMIT_EXCEEDED": "Too many requests, please slow down"
+    }
+  },
+
+  "rateLimits": {
+    "description": "API rate limits per endpoint",
+    "limits": {
+      "default": "100 requests per minute per user",
+      "authentication": "10 requests per minute per IP",
+      "quests/submit": "30 requests per minute per user",
+      "shop/purchase": "20 requests per minute per user"
+    },
+    "headers": {
+      "X-RateLimit-Limit": "Maximum requests allowed",
+      "X-RateLimit-Remaining": "Requests remaining in current window",
+      "X-RateLimit-Reset": "Unix timestamp when limit resets"
+    }
+  },
+
+  "notes": {
+    "versioning": "API version is included in the URL path (/v1/)",
+    "timestamps": "All timestamps are Unix milliseconds unless specified as ISO 8601",
+    "pagination": "Endpoints returning lists support ?page=1&limit=50 query parameters",
+    "filtering": "Most GET endpoints support additional filtering via query parameters",
+    "cors": "CORS is enabled for whitelisted domains only",
+    "contentType": "All requests and responses use application/json"
+  }
+}
