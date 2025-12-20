@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify,Blueprint
-from flask_cors import CORS # Run: pip install flask-cors
+from flask import request, jsonify,Blueprint
 from dotenv import load_dotenv
 import os
 import requests
+
+load_dotenv()
 
 githublogin_bp=Blueprint('githublogin',__name__)
 
@@ -11,10 +12,17 @@ GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET') # Replace with your act
 
 @githublogin_bp.route('/github/callback', methods=['GET','POST'])
 def github_callback():
+
+    print("\n[DEBUG] Headers:", dict(request.headers))
+    print("[DEBUG] request.json:", request.json)
+    print("[DEBUG] GITHUB_CLIENT_ID:", GITHUB_CLIENT_ID)
+    print("[DEBUG] GITHUB_CLIENT_SECRET:", GITHUB_CLIENT_SECRET if GITHUB_CLIENT_SECRET else 'NOT SET')
+
     data = request.json
-    code = data.get('code')
+    code = data.get('code') if data else None
 
     if not code:
+        print("[DEBUG] Missing 'code' in request body.")
         return jsonify({'error': 'Missing code parameter'}), 400
 
     # Exchange the code for an access token
@@ -25,7 +33,10 @@ def github_callback():
         'code': code
     }
 
+
     token_response = requests.post(token_url, headers={'Accept': 'application/json'}, json=payload)
+    print("[DEBUG] token_response.status_code:", token_response.status_code)
+    print("[DEBUG] token_response.text:", token_response.text)
     token_data = token_response.json()
 
     access_token = token_data.get('access_token')
