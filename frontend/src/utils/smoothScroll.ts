@@ -1,33 +1,23 @@
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-// Register the ScrollToPlugin
 gsap.registerPlugin(ScrollToPlugin);
 
-export const smoothScrollTo = (target: string | number, duration: number = 1.5) => {
-  gsap.to(window, {
-    duration,
-    scrollTo: {
-      y: target,
-      autoKill: true,
-      offsetY: 0,
-    },
-    ease: 'power3.inOut',
-  });
-};
-
-export const smoothScrollToElement = (elementId: string, duration: number = 1.5) => {
+export const smoothScrollToElement = (elementId: string, duration: number = 1.2) => {
   const element = document.getElementById(elementId);
   
   if (element) {
+    // Stop any ongoing scrolls to prevent conflicts
+    gsap.killTweensOf(window); 
+
     gsap.to(window, {
       duration,
       scrollTo: {
         y: element,
-        autoKill: true,
-        offsetY: 80, // Offset for fixed navigation
+        autoKill: false, // Set to false so user touching mouse doesn't break the initial nav jump
+        offsetY: 80, 
       },
-      ease: 'power3.inOut',
+      ease: 'power4.inOut', // Power4 is slightly more dramatic/premium
     });
   }
 };

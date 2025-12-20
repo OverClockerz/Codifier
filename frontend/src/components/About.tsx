@@ -19,15 +19,15 @@ export function About() {
   };
 
   return (
-    <section id="about" ref={ref} className="relative py-32 px-6 bg-black overflow-hidden">
-      {/* Background Elements */}
+    <>
+      <div id="about" />
+      <section ref={ref} className="relative py-32 px-6 bg-black overflow-hidden">
+        {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/10 to-black" />
-      
       <motion.div 
         style={{ y }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[100px]"
       />
-
       <div className="relative max-w-7xl mx-auto">
         <motion.div
           style={{ opacity }}
@@ -108,6 +108,7 @@ export function About() {
           </ScrollReveal>
         </motion.div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

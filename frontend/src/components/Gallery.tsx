@@ -30,8 +30,10 @@ export function Gallery() {
   const x = useTransform(scrollYProgress, [0, 1], [0, -1000]);
 
   return (
-    <section id="gallery" ref={containerRef} className="relative py-32 bg-black overflow-hidden">
-      <div className="mb-20 px-6">
+    <>
+      <div id="gallery" />
+      <section ref={containerRef} className="relative py-32 bg-black overflow-hidden">
+        <div className="mb-20 px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -98,6 +100,5 @@ export function Gallery() {
       {/* Gradient Fade on Edges */}
       <div className="absolute top-0 left-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute top-0 right-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
-    </section>
-  );
+      </section>\n    </>  );
 }
