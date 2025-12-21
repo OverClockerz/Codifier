@@ -18,8 +18,10 @@ def github_callback():
     print("[DEBUG] GITHUB_CLIENT_ID:", GITHUB_CLIENT_ID)
     print("[DEBUG] GITHUB_CLIENT_SECRET:", "SET" if GITHUB_CLIENT_SECRET else 'NOT SET')
 
+
     data = request.json
     code = data.get('code') if data else None
+    print(f"[DEBUG] Received code from frontend: {code}")
 
     if not code:
         print("[DEBUG] Missing 'code' in request body.")
@@ -32,15 +34,16 @@ def github_callback():
         'client_secret': GITHUB_CLIENT_SECRET,
         'code': code
     }
+    print(f"[DEBUG] Payload sent to GitHub: {payload}")
 
-
-    token_response = requests.post(token_url, headers={'Accept': 'application/json'}, json=payload)
+    token_response = requests.post(token_url, headers={'Accept': 'application/json'}, data=payload)
     print("[DEBUG] token_response.status_code:", token_response.status_code)
     print("[DEBUG] token_response.text:", token_response.text)
     token_data = token_response.json()
 
     access_token = token_data.get('access_token')
     if not access_token:
+        print(f"[DEBUG] Failed to fetch access token. token_data: {token_data}")
         return jsonify({'error': 'Failed to fetch access token', 'details': token_data}), 400
 
     # Fetch the user's GitHub profile

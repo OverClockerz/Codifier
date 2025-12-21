@@ -15,7 +15,7 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
   // Function to initiate the GitHub OAuth flow
   const handleGitHubLogin = () => {
     setIsLoading(true);
-    const clientId = 'Ov23liAFyOaQNpl65Wtf'; // Replace with your GitHub OAuth App Client ID
+    const clientId = 'Ov23liUDTzLVxvXU0Y40'; // Replace with your GitHub OAuth App Client ID
     const redirectUri = 'http://localhost:3000/github/callback'; 
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user`;
 
