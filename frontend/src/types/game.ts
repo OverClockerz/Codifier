@@ -12,18 +12,18 @@ export interface Quest {
   title: string;
   description: string;
   zone: ZoneType;
-  frequency: 'daily' | 'weekly' | 'monthly';
-  difficulty: number; // 1-5
+  frequency: QuestFrequency;
+  difficulty: number; 
   expReward: number;
   currencyReward: number;
   moodImpact: number;
   stressImpact: number;
   deadline?: number;
-  status: 'available' | 'in-progress' | 'completed' | 'failed';
+  status: QuestStatus;
   startedAt?: number;
   completedAt?: number;
   requirements?: QuestRequirement[];
-  skills?: string[]; // Skills that can be gained/improved
+  skills?: string[]; 
 }
 
 export interface QuestRequirement {
