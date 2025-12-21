@@ -35,4 +35,4 @@ def github_callback():
     ref.set(user_json)
 
     # Redirect to the frontend with user info
-    return redirect(f'http://localhost:3000/profile?username={user_json["login"]}')
+    return redirect(f'http://localhost:3000/game?username={user_json["login"]}')
