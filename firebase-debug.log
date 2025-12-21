@@ -1,0 +1,43 @@
+[debug] [2025-12-21T12:36:31.872Z] ----------------------------------------------------------------------
+[debug] [2025-12-21T12:36:31.893Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Akash\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hossting
+[debug] [2025-12-21T12:36:31.894Z] CLI Version:   15.0.0
+[debug] [2025-12-21T12:36:31.894Z] Platform:      win32
+[debug] [2025-12-21T12:36:31.895Z] Node Version:  v22.11.0
+[debug] [2025-12-21T12:36:31.896Z] Time:          Sun Dec 21 2025 18:06:31 GMT+0530 (India Standard Time)
+[debug] [2025-12-21T12:36:31.896Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-21T12:36:31.900Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[error] 
+[error] Error: hossting is not a supported feature; must be one of dataconnect, firestore, genkit, functions, apphosting, hosting, storage, emulators, remoteconfig, extensions, database, hosting:github, dataconnect:sdk, ailogic, aitools.
+[debug] [2025-12-21T12:36:37.873Z] Error: EBUSY: resource busy or locked, unlink 'D:\HACKATHON1\OFFICE\firebase-debug.log'
+    at Object.unlinkSync (node:fs:1871:11)
+    at process.<anonymous> (C:\Users\Akash\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\cli.js:44:16)
+    at process.emit (node:events:530:35)
+    at process.exit (node:internal/process/per_thread:183:15)
+    at Timeout._onTimeout (C:\Users\Akash\AppData\Roaming\npm\node_modules\firebase-tools\lib\errorOut.js:20:17)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-12-21T12:36:47.077Z] ----------------------------------------------------------------------
+[debug] [2025-12-21T12:36:47.082Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Akash\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2025-12-21T12:36:47.083Z] CLI Version:   15.0.0
+[debug] [2025-12-21T12:36:47.083Z] Platform:      win32
+[debug] [2025-12-21T12:36:47.084Z] Node Version:  v22.11.0
+[debug] [2025-12-21T12:36:47.084Z] Time:          Sun Dec 21 2025 18:06:47 GMT+0530 (India Standard Time)
+[debug] [2025-12-21T12:36:47.085Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-21T12:36:47.092Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\HACKATHON1\OFFICE
+
+[debug] [2025-12-21T12:36:50.888Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-12-21T12:36:50.888Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}

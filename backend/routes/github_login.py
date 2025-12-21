@@ -1,12 +1,17 @@
 from flask import Blueprint, request, jsonify, redirect
 import requests
+import os
 from firebase_admin import db
+from dotenv import load_dotenv
+
+load_dotenv()
 
 github_login_bp = Blueprint('github_login_bp', __name__)
 
-# Replace with your GitHub App credentials
-CLIENT_ID = 'Ov23liAw4jOzycLR8qW5'
-CLIENT_SECRET = 'cc3707f11b02391b31261aead4f16dc7c0da7374'
+# Get GitHub App credentials from environment variables
+CLIENT_ID = os.getenv('GITHUB_CLIENT_ID')
+CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET')
+
 
 @github_login_bp.route('/auth/github/callback')
 def github_callback():
@@ -50,4 +55,4 @@ def github_callback():
         # We still redirect so the user can play, even if DB save fails once
     
     # 4. Redirect to Frontend
-    return redirect(f'http://localhost:3000/game?username={username}')
+    return redirect(f'https://office-97680408-63535.web.app/game?username={username}')
