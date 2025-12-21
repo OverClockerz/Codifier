@@ -4,3 +4,5 @@ frontend/.vercel
 __pycache__
 backend/env/
 backend/.env
+backend/serviceAccountKey.json
+
