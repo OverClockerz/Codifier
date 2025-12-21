@@ -1,15 +1,16 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { Github, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface GitHubAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onAuth: (username: string) => void; // This is not used now, but kept for consistency
 }
 
 export function GitHubAuthModal({ isOpen, onClose }: GitHubAuthModalProps) {
   const handleLogin = () => {
-    const clientId = 'Ov23liAw4jOzycLR8qW5'; // Replace with your GitHub Client ID
-    const redirectUri = 'http://localhost:3000/auth/github/callback';
+    const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID || 'Ov23liAw4jOzycLR8qW5';
+    // The backend is running on port 5000 and the callback route is /github/callback
+    const redirectUri = 'http://localhost:5000/github/callback';
     const scope = 'read:user';
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
   };
@@ -17,59 +18,36 @@ export function GitHubAuthModal({ isOpen, onClose }: GitHubAuthModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-          />
-
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-50"
+        <motion.div 
+          className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div 
+            className="bg-gray-800 border border-purple-500 rounded-lg p-8 shadow-lg text-white max-w-md mx-auto"
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 50, opacity: 0 }}
           >
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-[0_0_50px_rgba(59,130,246,0.3)]">
-              {/* Close Button */}
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              {/* Header */}
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                  <Github className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="text-3xl mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  Sign in with GitHub
-                </h2>
-                <p className="text-gray-400">
-                  Authenticate with your GitHub account to continue.
-                </p>
-              </div>
-
-              {/* Login Button */}
-              <motion.button
+            <h2 className="text-2xl font-bold mb-4 text-purple-400">Authorize with GitHub</h2>
+            <p className="mb-6 text-gray-300">To begin your career, we need to verify your identity through GitHub. This allows us to create your developer profile.</p>
+            <div className="flex justify-center">
+              <button 
                 onClick={handleLogin}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.5)] flex items-center justify-center gap-2"
+                className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 shadow-md"
               >
-                <Github className="w-5 h-5" />
-                Continue with GitHub
-              </motion.button>
+                Login with GitHub
+              </button>
+              <button 
+                onClick={onClose}
+                className="ml-4 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300"
+              >
+                Cancel
+              </button>
             </div>
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   );

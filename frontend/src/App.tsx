@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
@@ -19,20 +19,7 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const username = params.get('username');
-    if (username && !isAuthenticated) {
-      window.history.replaceState({}, document.title, location.pathname);
-      handleAuth(username);
-    }
-  }, [location, isAuthenticated]);
-
-  const handleStartCareer = () => {
-    setShowAuthModal(true);
-  };
-
-  const handleAuth = (username: string) => {
+  const handleAuth = useCallback((username: string) => {
     login(username);
     setShowAuthModal(false);
     setIsGameLoading(true);
@@ -41,6 +28,19 @@ function AppContent() {
       setIsGameLoading(false);
       navigate('/game');
     }, 2500);
+  }, [login, navigate]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const username = params.get('username');
+    if (username && !isAuthenticated) {
+      window.history.replaceState({}, document.title, location.pathname);
+      handleAuth(username);
+    }
+  }, [location, isAuthenticated, handleAuth]);
+
+  const handleStartCareer = () => {
+    setShowAuthModal(true);
   };
 
   if (isLoading) {
