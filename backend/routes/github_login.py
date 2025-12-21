@@ -5,8 +5,8 @@ from firebase_admin import db
 github_login_bp = Blueprint('github_login_bp', __name__)
 
 # Replace with your GitHub App credentials
-CLIENT_ID = 'YOUR_CLIENT_ID'
-CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+CLIENT_ID = 'Ov23liAw4jOzycLR8qW5'
+CLIENT_SECRET = '36fc0ec1f7d73665f12398cc541ce572fc143ee5'
 
 @github_login_bp.route('/auth/github/callback')
 def github_callback():

@@ -8,7 +8,7 @@ interface GitHubAuthModalProps {
 
 export function GitHubAuthModal({ isOpen, onClose }: GitHubAuthModalProps) {
   const handleLogin = () => {
-    const clientId = 'YOUR_GITHUB_CLIENT_ID'; // Replace with your GitHub Client ID
+    const clientId = 'Ov23liAw4jOzycLR8qW5'; // Replace with your GitHub Client ID
     const redirectUri = 'http://localhost:3000/auth/github/callback';
     const scope = 'read:user';
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
