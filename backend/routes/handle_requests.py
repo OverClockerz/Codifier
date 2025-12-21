@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash,check_password_hash
-from extensions import mongo
+from firebase_admin import db
 
 handler_bp = Blueprint('handler', __name__) 
 
@@ -14,9 +14,11 @@ def handle_registration():
     email= data.get("email", "")
     password= data.get("password", "")
 
-    if mongo.db.user.find_one({"email": email}):
+    users_ref = db.reference('users')
+    if users_ref.order_by_child('email').equal_to(email).get():
         return {"message": ["Email already registered"]}, 400
-    mongo.db.user.insert_one({
+    
+    users_ref.push({
         "name": name, 
         "email": email,
         "password": generate_password_hash(password)
@@ -32,10 +34,14 @@ def handle_login():
     email= data.get("email", "")
     password= data.get("password", "")
 
-    user= mongo.db.user.find_one({"email": email})
+    users_ref = db.reference('users')
+    user = users_ref.order_by_child('email').equal_to(email).get()
 
-    if user and check_password_hash(user["password"], password):
-        return {"message": [True]}, 200
+    if user:
+        user_id = list(user.keys())[0]
+        user_data = user[user_id]
+        if check_password_hash(user_data["password"], password):
+            return {"message": [True]}, 200
 
     return {"message": ["Invalid credentials"]}, 401
 
