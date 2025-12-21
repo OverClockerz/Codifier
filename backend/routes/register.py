@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template,flash, request,redirect, url_for,session,jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from extensions import mongo
+from firebase_admin import db
 import secrets,base64
 
 register_bp = Blueprint('register', __name__)
@@ -17,17 +17,19 @@ def registration():
     name= request.form.get("name", "")
     admin_id=request.form.get("admin_id","")
 
-    if mongo.db.admins.find_one({"email": email}):
+    users_ref = db.reference('users')
+    if users_ref.order_by_child('email').equal_to(email).get():
         flash("Email already registered!", "error")
         return  redirect(url_for("register.register"))
     
-    if not mongo.db.admins.find_one({"admin_id": admin_id}):
+    admins_ref = db.reference('admins')
+    if not admins_ref.order_by_child('admin_id').equal_to(admin_id).get():
         flash("Invalid Admin ID!", "error")
         return redirect(url_for("register.register"))
     
     new_admin_id=base64.b32encode(secrets.token_bytes(32)).decode('utf-8').rstrip('=')
     
-    mongo.db.admins.insert_one({
+    users_ref.push({
         "name": name,
         "email": email, 
         "password": password,

@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, render_template, request, redirect, url_for, session
 from werkzeug.security import check_password_hash
-from extensions import mongo
+from firebase_admin import db
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -14,13 +14,17 @@ def auth():
     email = request.form.get("email", "")
     password = request.form.get("password", "")
 
-    user=mongo.db.admins.find_one({"email": email})
+    admins_ref = db.reference('admins')
+    user = admins_ref.order_by_child('email').equal_to(email).get()
 
-    if  user and check_password_hash(user["password"], password):
-        session["user"] = user["name"]
-        session["email"] = user["email"]
-        session.parmanent = False
-        return redirect(url_for("dashboard.dashboard"))
+    if user:
+        user_id = list(user.keys())[0]
+        user_data = user[user_id]
+        if check_password_hash(user_data["password"], password):
+            session["user"] = user_data["name"]
+            session["email"] = user_data["email"]
+            session.permanent = False
+            return redirect(url_for("dashboard.dashboard"))
     
     flash("Invalid credentials" if not user else "Password Incorrect", "error")
     return redirect(url_for("login.login"))
