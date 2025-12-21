@@ -57,19 +57,13 @@ function AppContent() {
           {/* Public Landing Page */}
           <Route 
             path="/"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/game" replace />
-              ) : (
-                <LandingPage onStartCareer={handleStartCareer} />
-              )
-            } 
+            element={<LandingPage onStartCareer={handleStartCareer} />}
           />
 
           {/* Protected Routes */}
           <Route
             path="/game"
-            element={
+            element{
               isAuthenticated ? (
                 <GameProvider>
                   <GamePage onNavigateToProfile={() => navigate('/profile')} />
@@ -82,7 +76,7 @@ function AppContent() {
 
           <Route
             path="/profile"
-            element={
+            element{
               isAuthenticated ? (
                 <GameProvider>
                   <ProfilePage onNavigateBack={() => navigate('/game')} />
@@ -113,7 +107,6 @@ export default function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        {/* Router is removed here because it is now in main.tsx */}
         <AppContent />
       </AuthProvider>
     </ErrorBoundary>
