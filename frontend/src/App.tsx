@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
 import { LandingPage } from './components/LandingPage';
@@ -12,23 +13,20 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 
 function AppContent() {
   const { isAuthenticated, login, isLoading } = useAuth();
-  const [currentPage, setCurrentPage] = useState('game'); // 'game' or 'profile'
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isGameLoading, setIsGameLoading] = useState(false);
+  
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Handle GitHub OAuth callback
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(location.search);
     const username = params.get('username');
     if (username && !isAuthenticated) {
-      // Clear the username from URL for a cleaner address bar
-      window.history.replaceState({}, document.title, "/");
+      window.history.replaceState({}, document.title, location.pathname);
       handleAuth(username);
     }
-  }, [isAuthenticated]);
-
-  const navigateToProfile = () => setCurrentPage('profile');
-  const navigateToGame = () => setCurrentPage('game');
+  }, [location, isAuthenticated]);
 
   const handleStartCareer = () => {
     setShowAuthModal(true);
@@ -41,6 +39,7 @@ function AppContent() {
     
     setTimeout(() => {
       setIsGameLoading(false);
+      navigate('/game');
     }, 2500);
   };
 
@@ -54,18 +53,44 @@ function AppContent() {
 
   return (
     <>
-      <PageTransition transitionKey={isAuthenticated ? currentPage : 'landing'}>
-        {isAuthenticated ? (
-          <GameProvider>
-            {currentPage === 'profile' ? (
-              <ProfilePage onNavigateBack={navigateToGame} />
-            ) : (
-              <GamePage onNavigateToProfile={navigateToProfile} />
-            )}
-          </GameProvider>
-        ) : (
-          <LandingPage onStartCareer={handleStartCareer} />
-        )}
+      <PageTransition transitionKey={location.pathname}>
+        <Routes location={location}>
+          <Route 
+            path="/"
+            element{
+              isAuthenticated ? (
+                <Navigate to="/game" replace />
+              ) : (
+                <LandingPage onStartCareer={handleStartCareer} />
+              )
+            } 
+          />
+          <Route
+            path="/game"
+            element{
+              isAuthenticated ? (
+                <GameProvider>
+                  <GamePage onNavigateToProfile={() => navigate('/profile')} />
+                </GameProvider>
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/profile"
+            element{
+              isAuthenticated ? (
+                <GameProvider>
+                  <ProfilePage onNavigateBack={() => navigate('/game')} />
+                </GameProvider>
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </PageTransition>
       
       <GitHubAuthModal
