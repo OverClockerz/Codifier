@@ -10,56 +10,44 @@ interface GitHubAuthModalProps {
 
 export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const hasFetched = useRef(false); // Prevents duplicate API calls with the same code
 
-  // Function to initiate the GitHub OAuth flow
+  // 1. INITIATE LOGIN: Redirect to GitHub
+  // GitHub will then redirect to your Flask Backend
   const handleGitHubLogin = () => {
     setIsLoading(true);
-    // Vite uses import.meta.env, not process.env. For simplicity, we'll hardcode it.
     const clientId = 'Ov23liAw4jOzycLR8qW5';
-    const redirectUri = 'http://localhost:3000/game'; // Redirect back to the root of the frontend
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user`;
+    
+    // This MUST match the callback route handled by your Flask Blueprint
+    const redirectUri = 'http://127.0.0.1:5000/auth/github/callback'; 
+    
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=read:user`;
 
     window.location.href = githubAuthUrl;
   };
 
+  // 2. URL DETECTION: Catch the return from Flask
+  // Flask redirects to: http://localhost:3000/game?username=...
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
+    const username = urlParams.get('username');
 
-    if (code && !hasFetched.current) {
-      hasFetched.current = true; // Mark as fetched immediately
-      setIsLoading(true);
-
-      fetch('http://localhost:5000/github/callback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.user) {
-            console.log('GitHub Login Success:', data);
-            // This triggers the handleAuth logic in your App.tsx
-            onAuth(data.user.login);
-            
-            // Clean the URL so the code doesn't stay in the address bar
-            window.history.replaceState({}, document.title, "/");
-          }
-        })
-        .catch((err) => {
-          console.error('GitHub Login Error:', err);
-          hasFetched.current = false; // Allow retry on error
-        })
-        .finally(() => setIsLoading(false));
+    if (username) {
+      // Trigger the auth logic in the parent component
+      onAuth(username);
+      
+      // Clean the URL immediately to remove the query parameter
+      window.history.replaceState({}, document.title, window.location.pathname);
+      
+      // Close the modal if it's still open
+      onClose();
     }
-  }, [onAuth]);
+  }, [onAuth, onClose]);
 
   return (
     <AnimatePresence>
+      {/* UI remains exactly as you had it */}
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -67,8 +55,6 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
             onClick={onClose}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
           />
-
-          {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -76,7 +62,6 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-50"
           >
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-[0_0_50px_rgba(59,130,246,0.3)]">
-              {/* Close Button */}
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -84,8 +69,6 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
               >
                 <X className="w-5 h-5" />
               </button>
-
-              {/* Header */}
               <div className="text-center mb-8">
                 <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                   <Github className="w-8 h-8 text-white" />
@@ -97,8 +80,6 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
                   Authenticate to start your career and save your progress.
                 </p>
               </div>
-
-              {/* GitHub Login Button */}
               <motion.button
                 onClick={handleGitHubLogin}
                 disabled={isLoading}
@@ -122,8 +103,6 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
                   </> 
                 )}
               </motion.button>
-
-              {/* Note */}
               <p className="text-xs text-gray-500 text-center mt-6">
                 This will redirect you to GitHub for authentication.
               </p>

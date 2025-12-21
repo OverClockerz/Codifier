@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
@@ -12,8 +12,6 @@ import { LoadingScreen, GAME_TIPS } from './components/transitions/LoadingScreen
 import { PageTransition } from './components/transitions/PageTransition';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-type AppPage = 'landing' | 'game' | 'profile';
-
 function AppContent() {
   const { isAuthenticated, login, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -21,81 +19,80 @@ function AppContent() {
 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isGameLoading, setIsGameLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState<AppPage>('landing');
 
+  // handleAuth logic to trigger loading and update state
   const handleAuth = useCallback(
     (username: string) => {
       login(username);
       setShowAuthModal(false);
       setIsGameLoading(true);
 
+      // Give the loading screen time to show before switching views
       setTimeout(() => {
         setIsGameLoading(false);
-        setCurrentPage('game');
         navigate('/game');
       }, 2500);
     },
     [login, navigate]
   );
 
-  // Handle auth redirect from URL
+  // CRITICAL: Handle the redirect from Flask (e.g., /game?username=JohnDoe)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const username = params.get('username');
 
     if (username && !isAuthenticated) {
+      // 1. Immediately clean the URL so the username isn't visible in the bar
       window.history.replaceState({}, document.title, location.pathname);
+      // 2. Trigger the login process
       handleAuth(username);
     }
   }, [location, isAuthenticated, handleAuth]);
 
-  const handleStartCareer = () => {
-    setShowAuthModal(true);
-  };
-
-  const navigateToProfile = () => {
-    setCurrentPage('profile');
-    navigate('/profile');
-  };
-
-  const navigateToGame = () => {
-    setCurrentPage('game');
-    navigate('/game');
-  };
-
+  // Handle various loading states
   if (isLoading) {
-    return (
-      <LoadingScreen
-        message="Initializing Office..."
-        tips={GAME_TIPS.slice(0, 3)}
-      />
-    );
+    return <LoadingScreen message="Initializing Office..." tips={GAME_TIPS.slice(0, 3)} />;
   }
 
   if (isGameLoading) {
-    return (
-      <LoadingScreen
-        message="Setting up your workspace..."
-        tips={GAME_TIPS}
-      />
-    );
+    return <LoadingScreen message="Setting up your workspace..." tips={GAME_TIPS} />;
   }
 
   return (
     <>
-      <PageTransition transitionKey={currentPage}>
-        {isAuthenticated ? (
-          <GameProvider>
-            {currentPage === 'profile' ? (
-              <ProfilePage onNavigateBack={navigateToGame} />
+      <Routes>
+        {/* LANDING PAGE: Only accessible if not authenticated */}
+        <Route 
+          path="/" 
+          element={
+            isAuthenticated ? (
+              <Navigate to="/game" replace />
             ) : (
-              <GamePage onNavigateToProfile={navigateToProfile} />
-            )}
-          </GameProvider>
-        ) : (
-          <LandingPage onStartCareer={handleStartCareer} />
-        )}
-      </PageTransition>
+              <LandingPage onStartCareer={() => setShowAuthModal(true)} />
+            )
+          } 
+        />
+
+        {/* PROTECTED ROUTES: Only accessible if authenticated */}
+        <Route 
+          element={
+            isAuthenticated ? (
+              <GameProvider>
+                <PageTransition />
+                <Outlet /> {/* This renders GamePage or ProfilePage */}
+              </GameProvider>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        >
+          <Route path="/game" element={<GamePage onNavigateToProfile={() => navigate('/profile')} />} />
+          <Route path="/profile" element={<ProfilePage onNavigateBack={() => navigate('/game')} />} />
+        </Route>
+
+        {/* Fallback for unknown URLs */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
       <GitHubAuthModal
         isOpen={showAuthModal}
