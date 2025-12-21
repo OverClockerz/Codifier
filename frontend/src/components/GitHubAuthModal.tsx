@@ -18,7 +18,7 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
     const clientId = 'Ov23liAw4jOzycLR8qW5';
     
     // This MUST match the callback route handled by your Flask Blueprint
-    const redirectUri = 'http://127.0.0.1:5000/auth/github/callback'; 
+    const redirectUri = 'https://codifier-0fbf.onrender.com/auth/github/callback'; 
     
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=read:user`;
 
