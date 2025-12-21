@@ -38,7 +38,7 @@ def update_user_quests():
         return jsonify({"error": "No data provided"}), 400
 
     username = data.get("username")
-    quests = data.get("quests")
+    quests = data.get("activeQuests")
 
     if not username:
         return jsonify({"error": "Username required"}), 401
