@@ -11,18 +11,31 @@ from dotenv import load_dotenv
 import os
 from db import initialize_firebase
 
+# Load environment variables from .env (for local) 
+# Render will provide these directly in production
 load_dotenv()
 
+# 1. Initialize Firebase before the app starts
 try:
     initialize_firebase()
-except (ValueError, FileNotFoundError) as e:
-    print(f"WARNING: FIREBASE INITIALIZATION FAILED: {e}")
+except Exception as e:
+    print(f"❌ CRITICAL ERROR: Firebase failed to initialize: {e}")
 
 app = Flask(__name__)
-CORS(app)
 
-app.secret_key = os.getenv("SECRET_KEY")
+# 2. UPDATED CORS: Allow your specific Firebase frontend URL
+# This allows the 'X-User-ID' header we use in api.ts to pass through
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://office-97680408-63535.web.app"],
+        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization", "X-User-ID"]
+    }
+})
 
+app.secret_key = os.getenv("SECRET_KEY", "default_secret_key_for_dev")
+
+# Register Blueprints
 app.register_blueprint(index_bp)
 app.register_blueprint(login_bp)
 app.register_blueprint(github_login_bp)
@@ -31,6 +44,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(handler_bp)
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Use '0.0.0.0' to ensure the service is reachable on Render
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
