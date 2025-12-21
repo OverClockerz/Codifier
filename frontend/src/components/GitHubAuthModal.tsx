@@ -15,7 +15,8 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
   // Function to initiate the GitHub OAuth flow
   const handleGitHubLogin = () => {
     setIsLoading(true);
-    const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID || 'Ov23liAw4jOzycLR8qW5';
+    // Vite uses import.meta.env, not process.env. For simplicity, we'll hardcode it.
+    const clientId = 'Ov23liAw4jOzycLR8qW5';
     const redirectUri = 'http://localhost:3000/'; // Redirect back to the root of the frontend
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user`;
 
@@ -118,7 +119,7 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
                   <>
                     <Github className="w-5 h-5" />
                     Continue with GitHub
-                  </>
+                  </> 
                 )}
               </motion.button>
 
