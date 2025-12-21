@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 import { useState, useEffect, useCallback } from 'react';
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-=======
-import { useState, useEffect } from 'react';
->>>>>>> b6a62dc (ff)
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
 import { LandingPage } from './components/LandingPage';
@@ -19,42 +16,33 @@ type AppPage = 'landing' | 'game' | 'profile';
 
 function AppContent() {
   const { isAuthenticated, login, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isGameLoading, setIsGameLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<AppPage>('landing');
 
-<<<<<<< HEAD
-  const handleAuth = useCallback((username: string) => {
-=======
-  // Update page based on auth status
-  useEffect(() => {
-    if (isAuthenticated && currentPage === 'landing') {
-      setCurrentPage('game');
-    } else if (!isAuthenticated) {
-      setCurrentPage('landing');
-    }
-  }, [isAuthenticated]);
+  const handleAuth = useCallback(
+    (username: string) => {
+      login(username);
+      setShowAuthModal(false);
+      setIsGameLoading(true);
 
-  const handleStartCareer = () => {
-    setShowAuthModal(true);
-  };
+      setTimeout(() => {
+        setIsGameLoading(false);
+        setCurrentPage('game');
+        navigate('/game');
+      }, 2500);
+    },
+    [login, navigate]
+  );
 
-  const handleAuth = (username: string) => {
->>>>>>> b6a62dc (ff)
-    login(username);
-    setShowAuthModal(false);
-    setIsGameLoading(true);
-    
-    // Simulate game initialization
-    setTimeout(() => {
-      setIsGameLoading(false);
-      setCurrentPage('game');
-    }, 2500);
-  }, [login, navigate]);
-
+  // Handle auth redirect from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const username = params.get('username');
+
     if (username && !isAuthenticated) {
       window.history.replaceState({}, document.title, location.pathname);
       handleAuth(username);
@@ -67,18 +55,30 @@ function AppContent() {
 
   const navigateToProfile = () => {
     setCurrentPage('profile');
+    navigate('/profile');
   };
 
   const navigateToGame = () => {
     setCurrentPage('game');
+    navigate('/game');
   };
 
   if (isLoading) {
-    return <LoadingScreen message="Initializing Office..." tips={GAME_TIPS.slice(0, 3)} />;
+    return (
+      <LoadingScreen
+        message="Initializing Office..."
+        tips={GAME_TIPS.slice(0, 3)}
+      />
+    );
   }
 
   if (isGameLoading) {
-    return <LoadingScreen message="Setting up your workspace..." tips={GAME_TIPS} />;
+    return (
+      <LoadingScreen
+        message="Setting up your workspace..."
+        tips={GAME_TIPS}
+      />
+    );
   }
 
   return (
@@ -96,14 +96,13 @@ function AppContent() {
           <LandingPage onStartCareer={handleStartCareer} />
         )}
       </PageTransition>
-      
+
       <GitHubAuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onAuth={handleAuth}
       />
 
-      {/* Background Music Player */}
       <MusicPlayer />
     </>
   );
