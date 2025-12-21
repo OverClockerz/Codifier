@@ -1,106 +1,57 @@
-
-import firebase_admin
-from firebase_admin import credentials, db
-from flask import request, Blueprint, redirect
+from flask import request, redirect, Blueprint
 from dotenv import load_dotenv
 import os
 import requests
+from backend.db import initialize_firebase, save_user
 
 load_dotenv()
 
+# Initialize Firebase right away
+initialize_firebase()
+
 githublogin_bp = Blueprint('githublogin', __name__)
 
-# --- Firebase Initialization ---
-def initialize_firebase():
-    if not firebase_admin._apps:
-        key_path = 'serviceAccountKey.json'
-        database_url = os.getenv('FIREBASE_DATABASE_URL')
+GITHUB_CLIENT_ID = os.getenv('GITHUB_CLIENT_ID')
+GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET')
 
-        if not database_url:
-            raise ValueError("FIREBASE_DATABASE_URL environment variable not set.")
-
-        if not os.path.exists(key_path):
-            raise FileNotFoundError(f"serviceAccountKey.json not found at {key_path}")
-
-        cred = credentials.Certificate(key_path)
-        firebase_admin.initialize_app(cred, {
-            'databaseURL': database_url
-        })
-
-def save_user(user_data: dict):
-    user_id = user_data.get('login')
-    if not user_id:
-        print("Could not save user, 'login' ID missing from user data.")
-        return
-    
-    try:
-        user_ref = db.reference(f'users/{user_id}')
-        user_ref.set(user_data)
-        print(f"Successfully saved user '{user_id}' to the database.")
-    except Exception as e:
-        print(f"An error occurred while saving user data: {e}")
-
-try:
-    initialize_firebase()
-except (ValueError, FileNotFoundError) as e:
-    print(f"WARNING: FIREBASE INITIALIZATION FAILED: {e}")
-
-# --- GitHub OAuth Logic ---
-
-GITHUB_CLIENT_ID = os.getenv('Ov23liAw4jOzycLR8qW5')
-GITHUB_CLIENT_SECRET = os.getenv('36fc0ec1f7d73665f12398cc541ce572fc143ee5')
-FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
-
-@githublogin_bp.route('/github/callback') # Defaults to GET
+@githublogin_bp.route('/github/callback', methods=['GET'])
 def github_callback():
     code = request.args.get('code')
     if not code:
-        return redirect(f'{FRONTEND_URL}/?error=no_code')
+        # Redirect to frontend with an error
+        return redirect("http://localhost:3000/?error=No+code+provided")
 
-    # Exchange code for access token
+    # Exchange the code for an access token
     token_url = 'https://github.com/login/oauth/access_token'
     token_payload = {
         'client_id': GITHUB_CLIENT_ID,
         'client_secret': GITHUB_CLIENT_SECRET,
-        'code': code,
+        'code': code
     }
     token_headers = {'Accept': 'application/json'}
     
-    try:
-        token_res = requests.post(token_url, json=token_payload, headers=token_headers)
-        token_res.raise_for_status()
-        token_data = token_res.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error getting access token: {e}")
-        return redirect(f'{FRONTEND_URL}/?error=token_exchange_failed')
+    token_res = requests.post(token_url, json=token_payload, headers=token_headers)
+    if token_res.status_code != 200:
+        return redirect("http://localhost:3000/?error=Token+exchange+failed")
 
+    token_data = token_res.json()
     access_token = token_data.get('access_token')
     if not access_token:
-        print(f"Access token not in response: {token_data}")
-        return redirect(f'{FRONTEND_URL}/?error=no_access_token')
+        return redirect("http://localhost:3000/?error=Access+token+not+found")
 
-    # Get user info from GitHub
+    # Use the access token to get user info from GitHub
     user_url = 'https://api.github.com/user'
     user_headers = {'Authorization': f'token {access_token}'}
-    
-    try:
-        user_res = requests.get(user_url, headers=user_headers)
-        user_res.raise_for_status()
-        user_data = user_res.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error getting user from GitHub: {e}")
-        return redirect(f'{FRONTEND_URL}/?error=user_fetch_failed')
-    
-    username = user_data.get('login')
-    if not username:
-        print(f"Username not in user data: {user_data}")
-        return redirect(f'{FRONTEND_URL}/?error=no_username')
+    user_res = requests.get(user_url, headers=user_headers)
 
-    # Save user data to Firebase
-    if firebase_admin._apps:
-        save_user(user_data)
-    else:
-        print("Firebase not initialized. Skipping user save.")
+    if user_res.status_code != 200:
+        return redirect("http://localhost:3000/?error=Failed+to+get+user+data")
+
+    user_data = user_res.json()
     
-    # Redirect to frontend
-    return redirect(f'{FRONTEND_URL}/?username={username}')
+    # Save user data to Firebase using the new db module
+    save_user(user_data)
+
+    # Redirect to the frontend with the username
+    username = user_data.get('login', 'Unknown')
+    return redirect(f"http://localhost:3000/?username={username}")
