@@ -47,8 +47,8 @@ except (ValueError, FileNotFoundError) as e:
 
 # --- GitHub OAuth Logic ---
 
-GITHUB_CLIENT_ID = os.getenv('GITHUB_CLIENT_ID')
-GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET')
+GITHUB_CLIENT_ID = os.getenv('Ov23liAw4jOzycLR8qW5')
+GITHUB_CLIENT_SECRET = os.getenv('36fc0ec1f7d73665f12398cc541ce572fc143ee5')
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
 
 @githublogin_bp.route('/github/callback') # Defaults to GET
