@@ -76,7 +76,6 @@ export interface Githubinfo {
 
 // Player State
 export interface PlayerState {
-  id: string;
   username: string; //necessary 
   githubinfo: Githubinfo; //necessary 
   level: number;
@@ -97,7 +96,7 @@ export interface PlayerState {
   currentRun: CareerRun;
   reputation: number; // Reputation score
   skills: Record<string, number>; // Skill name -> level (0-100)
-  permanentItems: permanantItem[]; // IDs of purchased permanent buffs
+  permanentBuffs: string[];// IDs of purchased permanent buffs
   
   // These fields are populated from the backend mock DB
   activeQuests?: Quest[];//necessary 

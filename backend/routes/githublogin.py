@@ -1,6 +1,9 @@
 from flask import request, jsonify,Blueprint
 from dotenv import load_dotenv
 from extensions import mongo
+from utils.player_initial_state import InitialPlayerState
+from datetime import datetime
+import copy
 import os
 import requests
 
@@ -13,7 +16,6 @@ GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET') # Replace with your act
 
 @githublogin_bp.route('/github/callback', methods=['GET','POST'])
 def github_callback():
-    player_state=request.get_json()
     print("\n[DEBUG] Headers:", dict(request.headers))
     print("[DEBUG] request.json:", request.json)
     print("[DEBUG] GITHUB_CLIENT_ID:", GITHUB_CLIENT_ID)
@@ -54,32 +56,37 @@ def github_callback():
     })
     user_data = user_response.json()
 
-    # --- PRINT TO TERMINAL ---
     username = user_data.get('login', 'Unknown')
     github_email = user_data.get('email') or f"{username}@no-email.github.com"
     github_id = user_data.get('id')
     avatar_url = user_data.get('avatar_url')
-    player_state.username=username
-    player_state.githubinfo={
-        'github_id':github_id,
-        'avatar_url':avatar_url,
-        'github_email':github_email
-    }
-    result = mongo.db.players.update_one(
-        {"username": username},
-        {"$set": data},
-        upsert=True
-    )
     
-    print("\n" + "="*40)
-    print(f"🚀 LOGIN SUCCESSFUL: {username}")
-    print(f"🚀 USER EMAIL: {github_email}")
-    print(f"🚀 GITHUB ID: {github_id}")
-    print(f"🚀 AVATAR URL: {avatar_url}")
-    print("="*40 + "\n")
+    existing_player = mongo.db.players.find_one({"username": username})
+
+    if existing_player:
+        # ✅ User already exists → DO NOT overwrite
+        return jsonify({
+        'message': 'GitHub login successful',
+        'user': user_data
+        })
+
+    # 🆕 New user → Create player entry
+    github_email = user_data.get('email') or f"{username}@no-email.github.com"
+    github_id = user_data.get('id')
+    avatar_url = user_data.get('avatar_url')
+    player = copy.deepcopy(InitialPlayerState)
+
+    player["username"] = username
+    player["githubinfo"] = {
+        "github_id": str(github_id),
+        "avatar_url": avatar_url,
+        "github_email": github_email
+    }
+    player["lastLoginDate"] = datetime.utcnow().isoformat()
+
+    mongo.db.players.insert_one(player)
 
     return jsonify({
         'message': 'GitHub login successful',
-        'user': user_data,
-        "created": bool(result.upserted_id)
+        'user': user_data
     })
