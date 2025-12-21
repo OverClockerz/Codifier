@@ -1,28 +1,17 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Github, X, User } from 'lucide-react';
+import { Github, X } from 'lucide-react';
 
 interface GitHubAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAuth: (username: string) => void;
 }
 
-export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProps) {
-  const [username, setUsername] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username.trim()) return;
-
-    setIsLoading(true);
-    // Simulate authentication delay
-    setTimeout(() => {
-      onAuth(username.trim());
-      setIsLoading(false);
-      setUsername('');
-    }, 1500);
+export function GitHubAuthModal({ isOpen, onClose }: GitHubAuthModalProps) {
+  const handleLogin = () => {
+    const clientId = 'YOUR_GITHUB_CLIENT_ID'; // Replace with your GitHub Client ID
+    const redirectUri = 'http://localhost:3000/auth/github/callback';
+    const scope = 'read:user';
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
   };
 
   return (
@@ -64,61 +53,20 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
                   Sign in with GitHub
                 </h2>
                 <p className="text-gray-400">
-                  Enter your GitHub username to start your career
+                  Authenticate with your GitHub account to continue.
                 </p>
               </div>
 
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="username" className="block text-sm text-gray-300 mb-2">
-                    GitHub Username
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      id="username"
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="your-username"
-                      className="w-full pl-12 pr-4 py-3 bg-black/50 border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500 text-white placeholder-gray-500 transition-colors"
-                      required
-                      autoFocus
-                      disabled={isLoading}
-                    />
-                  </div>
-                </div>
-
-                <motion.button
-                  type="submit"
-                  disabled={isLoading || !username.trim()}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {isLoading ? (
-                    <>
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                      />
-                      Authenticating...
-                    </>
-                  ) : (
-                    <>
-                      <Github className="w-5 h-5" />
-                      Continue with GitHub
-                    </>
-                  )}
-                </motion.button>
-              </form>
-
-              {/* Note */}
-              <p className="text-xs text-gray-500 text-center mt-6">
-                This is a demo authentication. In production, this would use real GitHub OAuth.
-              </p>
+              {/* Login Button */}
+              <motion.button
+                onClick={handleLogin}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.5)] flex items-center justify-center gap-2"
+              >
+                <Github className="w-5 h-5" />
+                Continue with GitHub
+              </motion.button>
             </div>
           </motion.div>
         </>
