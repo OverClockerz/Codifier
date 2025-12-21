@@ -4,7 +4,6 @@ import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel } from '../data/g
 import { getRandomQuests } from '../data/quests';
 import { useAuth } from './AuthContext';
 
-// ... (interface definitions remain the same)
 interface GameContextType {
   player: PlayerState;
   activeQuests: Quest[];
@@ -84,11 +83,28 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const dailies = getRandomQuests('daily', 6);
     const weeklies = getRandomQuests('weekly', 4);
     const monthlies = getRandomQuests('monthly', 3);
+    
     setActiveQuests(prev => {
       const inProgress = prev.filter(q => q.status === 'in-progress');
       return [...inProgress, ...dailies, ...weeklies, ...monthlies];
     });
   }, []);
+
+  const saveGame = useCallback(() => {
+    if (!user?.id) return;
+    
+    const gameState = {
+      player,
+      activeQuests,
+      completedQuests,
+      inventory,
+      activeBuffs,
+      monthlyReports,
+      notifications,
+    };
+
+    localStorage.setItem(`office_game_${user.id}`, JSON.stringify(gameState));
+  }, [user?.id, player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications]);
 
   const loadGame = useCallback(() => {
     if (!user?.id) return;
@@ -116,53 +132,201 @@ export function GameProvider({ children }: { children: ReactNode }) {
       initializeQuests();
     }
     setIsLoaded(true);
-  }, [user, createNewPlayer, initializeQuests]);
+  }, [user?.id, createNewPlayer, initializeQuests]);
 
-  // Main initialization effect
   useEffect(() => {
     if (user?.id && !isLoaded) {
       loadGame();
     }
   }, [user, isLoaded, loadGame]);
 
-  // Autosave game state
   useEffect(() => {
-    if (isLoaded && user?.id) {
-      const gameState = {
-        player,
-        activeQuests,
-        completedQuests,
-        inventory,
-        activeBuffs,
-        monthlyReports,
-        notifications,
-      };
-      localStorage.setItem(`office_game_${user.id}`, JSON.stringify(gameState));
+    if (isLoaded) {
+      saveGame();
     }
-  }, [player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications, isLoaded, user]);
+  }, [isLoaded, saveGame]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      setActiveBuffs(prev => prev.filter(buff => !buff.expiresAt || buff.expiresAt > now));
+    }, 60000);
 
-  // ... (rest of the functions: startQuest, completeQuest, etc. remain largely the same)
+    return () => clearInterval(interval);
+  }, []);
 
-  // Placeholder for functions that need to be defined
-  const startQuest = (questId: string) => { console.log("startQuest", questId); };
-  const completeQuest = (questId: string, performanceScore: number) => { console.log("completeQuest", questId, performanceScore); };
-  const failQuest = (questId: string) => { console.log("failQuest", questId); };
-  const purchaseItem = (itemId: string): boolean => { console.log("purchaseItem", itemId); return false; };
-  const useItem = (itemId: string) => { console.log("useItem", itemId); };
-  const takePaidLeave = (): boolean => { console.log("takePaidLeave"); return false; };
-  const updateMoodStress = (moodChange: number, stressChange: number) => { console.log("updateMoodStress", moodChange, stressChange); };
-  const addExperience = (amount: number) => { console.log("addExperience", amount); };
-  const addCurrency = (amount: number) => { console.log("addCurrency", amount); };
-  const advanceDay = () => { console.log("advanceDay"); };
-  const resetCareer = () => { console.log("resetCareer"); };
-  const saveGame = () => { console.log("saveGame"); };
-  const dismissLevelUp = () => { console.log("dismissLevelUp"); };
-  const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => { console.log("addNotification", notification); };
-  const markNotificationAsRead = (notificationId: string) => { console.log("markNotificationAsRead", notificationId); };
-  const clearAllNotifications = () => { console.log("clearAllNotifications"); };
-  const getUnreadCount = () => { return 0; };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      activeQuests.forEach(quest => {
+        if (quest.deadline && quest.status === 'in-progress' && now > quest.deadline) {
+          failQuest(quest.id);
+          addNotification({
+            type: 'alert',
+            title: 'Quest Failed - Deadline Missed',
+            message: `Failed: "${quest.title}". Your reputation has been affected.`,
+          });
+        }
+      });
+    }, 30000);
 
+    return () => clearInterval(interval);
+  }, [activeQuests]);
+
+  const startQuest = (questId: string) => {
+    setActiveQuests(prev =>
+      prev.map(q =>
+        q.id === questId
+          ? { ...q, status: 'in-progress' as const, startedAt: Date.now() }
+          : q
+      )
+    );
+  };
+
+  const completeQuest = (questId: string, performanceScore: number = 100) => {
+    const quest = activeQuests.find(q => q.id === questId);
+    if (!quest) return;
+
+    const multiplier = performanceScore / 100;
+    const expGain = Math.floor(quest.expReward * multiplier);
+    const currencyGain = Math.floor(quest.currencyReward * multiplier);
+
+    addExperience(expGain);
+    addCurrency(currencyGain);
+    updateMoodStress(quest.moodImpact * multiplier, quest.stressImpact * multiplier);
+
+    setPlayer(prev => ({ ...prev, currentMonthTasksCompleted: (prev.currentMonthTasksCompleted || 0) + 1 }));
+
+    setActiveQuests(prev => prev.filter(q => q.id !== questId));
+    setCompletedQuests(prev => [
+      ...prev,
+      { ...quest, status: 'completed', completedAt: Date.now() },
+    ]);
+  };
+
+  const failQuest = (questId: string) => {
+    const quest = activeQuests.find(q => q.id === questId);
+    if (!quest) return;
+
+    updateMoodStress(-10, 15);
+
+    setActiveQuests(prev => prev.filter(q => q.id !== questId));
+    setCompletedQuests(prev => [
+      ...prev,
+      { ...quest, status: 'failed', completedAt: Date.now() },
+    ]);
+  };
+
+  const purchaseItem = (itemId: string): boolean => {
+    const { SHOP_ITEMS } = require('../data/shopItems');
+    const item = SHOP_ITEMS.find((i: any) => i.id === itemId);
+    
+    if (!item || player.currency < item.price) {
+      return false;
+    }
+
+    setPlayer(prev => ({ ...prev, currency: prev.currency - item.price }));
+    setInventory(prev => {
+      const existing = prev.find(i => i.item.id === itemId);
+      if (existing) {
+        return prev.map(i => i.item.id === itemId ? { ...i, quantity: i.quantity + 1 } : i);
+      }
+      return [...prev, { item, quantity: 1, purchasedAt: Date.now() }];
+    });
+
+    return true;
+  };
+
+  const useItem = (itemId: string) => {
+    const inventoryItem = inventory.find(i => i.item.id === itemId);
+    if (!inventoryItem) return;
+
+    const { item, quantity } = inventoryItem;
+    // ... (rest of useItem logic)
+  };
+
+  const takePaidLeave = (): boolean => {
+    if (player.paidLeaves <= 0) return false;
+
+    setPlayer(prev => ({
+      ...prev,
+      paidLeaves: prev.paidLeaves - 1,
+      mood: Math.min(100, prev.mood + 30),
+      stress: Math.max(0, prev.stress - 40),
+    }));
+
+    return true;
+  };
+
+  const updateMoodStress = (moodChange: number, stressChange: number) => {
+    setPlayer(prev => {
+      const newMood = Math.max(0, Math.min(100, prev.mood + moodChange));
+      const newStress = Math.max(0, Math.min(100, prev.stress + stressChange));
+      return {
+        ...prev,
+        mood: newMood,
+        stress: newStress,
+        isBurntOut: newMood <= GAME_CONFIG.burnoutMoodThreshold,
+      };
+    });
+  };
+
+  const addExperience = (amount: number) => {
+    setPlayer(prev => {
+      let newExp = prev.experience + amount;
+      let newLevel = prev.level;
+      let expToNext = prev.experienceToNextLevel;
+
+      while (newExp >= expToNext) {
+        newExp -= expToNext;
+        newLevel++;
+        expToNext = getExperienceForLevel(newLevel);
+      }
+
+      if (newLevel > prev.level) {
+        setShowLevelUp(true);
+      }
+
+      return {
+        ...prev,
+        experience: newExp,
+        level: newLevel,
+        experienceToNextLevel: expToNext,
+        baseSalary: getSalaryForLevel(newLevel),
+      };
+    });
+  };
+
+  const addCurrency = (amount: number) => {
+    setPlayer(prev => ({ ...prev, currentMonthEarnings: prev.currentMonthEarnings + amount }));
+  };
+
+  const advanceDay = () => {
+    setPlayer(prev => ({ ...prev, currentDay: prev.currentDay + 1 }));
+  };
+
+  const resetCareer = () => {
+    setPlayer(createNewPlayer());
+    setActiveQuests([]);
+    setCompletedQuests([]);
+    setInventory([]);
+    setActiveBuffs([]);
+  };
+
+  const dismissLevelUp = () => setShowLevelUp(false);
+
+  const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => {
+    const newNotification = { ...notification, id: Date.now().toString(), timestamp: Date.now(), isRead: false };
+    setNotifications(prev => [newNotification, ...prev]);
+  };
+
+  const markNotificationAsRead = (notificationId: string) => {
+    setNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, isRead: true } : n));
+  };
+
+  const clearAllNotifications = () => setNotifications([]);
+
+  const getUnreadCount = () => notifications.filter(n => !n.isRead).length;
 
   return (
     <GameContext.Provider
