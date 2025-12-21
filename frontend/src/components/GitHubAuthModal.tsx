@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Github, X } from 'lucide-react';
 
 interface GitHubAuthModalProps {
