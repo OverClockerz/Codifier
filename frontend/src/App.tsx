@@ -57,17 +57,17 @@ function AppContent() {
         <Routes location={location}>
           <Route 
             path="/"
-            element{
+            element={(
               isAuthenticated ? (
                 <Navigate to="/game" replace />
               ) : (
                 <LandingPage onStartCareer={handleStartCareer} />
               )
-            } 
+            )} 
           />
           <Route
             path="/game"
-            element{
+            element={(
               isAuthenticated ? (
                 <GameProvider>
                   <GamePage onNavigateToProfile={() => navigate('/profile')} />
@@ -75,11 +75,11 @@ function AppContent() {
               ) : (
                 <Navigate to="/" replace />
               )
-            }
+            )}
           />
           <Route
             path="/profile"
-            element{
+            element={(
               isAuthenticated ? (
                 <GameProvider>
                   <ProfilePage onNavigateBack={() => navigate('/game')} />
@@ -87,7 +87,7 @@ function AppContent() {
               ) : (
                 <Navigate to="/" replace />
               )
-            }
+            )}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
