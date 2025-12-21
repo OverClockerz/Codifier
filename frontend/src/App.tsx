@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
 import { LandingPage } from './components/LandingPage';
-import { GamePage } from './components/GamePage';
+import { GameDashboard } from './components/GameDashboard';
 import { ProfilePage } from './components/ProfilePage';
 import { GitHubAuthModal } from './components/GitHubAuthModal';
 import { MusicPlayer } from './components/MusicPlayer';
@@ -66,7 +66,7 @@ function AppContent() {
             element{
               isAuthenticated ? (
                 <GameProvider>
-                  <GamePage onNavigateToProfile={() => navigate('/profile')} />
+                  <GameDashboard />
                 </GameProvider>
               ) : (
                 <Navigate to="/" replace />
