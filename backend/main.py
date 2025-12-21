@@ -9,10 +9,14 @@ from routes.auth import auth_bp
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
-from firebase_config import initialize_firebase
+from db import initialize_firebase
 
 load_dotenv()
-initialize_firebase()
+
+try:
+    initialize_firebase()
+except (ValueError, FileNotFoundError) as e:
+    print(f"WARNING: FIREBASE INITIALIZATION FAILED: {e}")
 
 app = Flask(__name__)
 CORS(app)
