@@ -17,7 +17,7 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
     setIsLoading(true);
     // Vite uses import.meta.env, not process.env. For simplicity, we'll hardcode it.
     const clientId = 'Ov23liAw4jOzycLR8qW5';
-    const redirectUri = 'http://localhost:3000/'; // Redirect back to the root of the frontend
+    const redirectUri = 'http://localhost:3000/game'; // Redirect back to the root of the frontend
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user`;
 
     window.location.href = githubAuthUrl;
