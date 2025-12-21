@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Github, X } from 'lucide-react';
+import { Github, X } from 'lucide-react'; 
+import { GITHUB_CLIENT_ID } from '../../config.json';
+
+
+//dotenv.config();
 
 interface GitHubAuthModalProps {
   isOpen: boolean;
@@ -15,7 +19,7 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
   // Function to initiate the GitHub OAuth flow
   const handleGitHubLogin = () => {
     setIsLoading(true);
-    const clientId = 'Ov23liUDTzLVxvXU0Y40'; // Replace with your GitHub OAuth App Client ID
+    const clientId = GITHUB_CLIENT_ID; // Replace with your GitHub OAuth App Client ID
     const redirectUri = 'http://localhost:3000/github/callback'; 
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user`;
 

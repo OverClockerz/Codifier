@@ -3,4 +3,5 @@ frontend/build
 frontend/.vercel
 __pycache__
 backend/env/
-backend/.env
+.env
+frontend/config.json

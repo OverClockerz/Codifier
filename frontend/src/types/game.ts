@@ -11,7 +11,7 @@ export interface Quest {
   id: string;
   title: string;
   description: string;
-  zone: ZoneType;
+  zone: ZoneType; //necessary 
   frequency: QuestFrequency;
   difficulty: number; 
   expReward: number;
@@ -68,10 +68,17 @@ export interface InventoryItem {
   purchasedAt: number;
 }
 
+export interface Githubinfo { 
+  github_id: string;
+  avatar_url: string;
+  github_email: string;
+}
+
 // Player State
 export interface PlayerState {
   id: string;
-  username: string;
+  username: string; //necessary 
+  githubinfo: Githubinfo; //necessary 
   level: number;
   experience: number;
   experienceToNextLevel: number;
@@ -90,10 +97,10 @@ export interface PlayerState {
   currentRun: CareerRun;
   reputation: number; // Reputation score
   skills: Record<string, number>; // Skill name -> level (0-100)
-  permanentBuffs: string[]; // IDs of purchased permanent buffs
+  permanentItems: permanantItem[]; // IDs of purchased permanent buffs
   
   // These fields are populated from the backend mock DB
-  activeQuests?: Quest[];
+  activeQuests?: Quest[];//necessary 
   completedQuests?: Quest[];
   inventory?: InventoryItem[];
 }
@@ -106,6 +113,16 @@ export interface CareerRun {
   monthsWorked: number;
   reasonForEnd?: 'fired' | 'quit' | 'active';
   endDate?: string;
+}
+
+export interface permanantItem{
+  id: string;
+  name: string;
+  description: string;
+  type: 'permanent-buff';
+  effect: ItemEffect;
+  price: number;
+  icon: string;
 }
 
 // NPCs

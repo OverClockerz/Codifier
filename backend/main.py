@@ -1,24 +1,23 @@
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
-import os
-
-# Import ONLY the routes that work with Mock DB
+from extensions import mongo
 from routes.githublogin import githublogin_bp
 from routes.api_player import api_player_bp
 from routes.api_quests import api_quests_bp
-from routes.api_shop import api_shop_bp
-# Comment out Mongo-dependent routes to prevent crashes
 from routes.index import index_bp
 from routes.login import login_bp   
 from routes.register import register_bp 
 from routes.dashboard import dashboard_bp   
 from routes.auth import auth_bp
+import os
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key")
+app.config["MONGO_URI"] = "mongodb://localhost:27017/mydatabase"
+mongo.init_app(app)
 
 # --- CORS CONFIGURATION ---
 # Vital for React + Flask Session Cookies
@@ -28,7 +27,6 @@ CORS(app)
 app.register_blueprint(githublogin_bp)    
 app.register_blueprint(api_player_bp)
 app.register_blueprint(api_quests_bp)
-app.register_blueprint(api_shop_bp)
 app.register_blueprint(index_bp)
 app.register_blueprint(register_bp)
 app.register_blueprint(dashboard_bp)
@@ -36,5 +34,5 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(login_bp)
 
 if __name__ == '__main__':
-    print("🚀 Server running with IN-MEMORY MOCK DB (Data lost on restart)")
+    print("🚀 Server running")
     app.run(port=5000, debug=True)

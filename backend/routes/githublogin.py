@@ -1,5 +1,6 @@
-from flask import request, jsonify,Blueprint, session
+from flask import request, jsonify,Blueprint
 from dotenv import load_dotenv
+from extensions import mongo
 import os
 import requests
 
@@ -12,7 +13,7 @@ GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET') # Replace with your act
 
 @githublogin_bp.route('/github/callback', methods=['GET','POST'])
 def github_callback():
-
+    player_state=request.get_json()
     print("\n[DEBUG] Headers:", dict(request.headers))
     print("[DEBUG] request.json:", request.json)
     print("[DEBUG] GITHUB_CLIENT_ID:", GITHUB_CLIENT_ID)
@@ -58,12 +59,17 @@ def github_callback():
     github_email = user_data.get('email') or f"{username}@no-email.github.com"
     github_id = user_data.get('id')
     avatar_url = user_data.get('avatar_url')
-
-    session['user'] = username
-    session['email'] = github_email
-    session['avatar'] = avatar_url
-    session['github_id'] = github_id
-    session.permanent = True
+    player_state.username=username
+    player_state.githubinfo={
+        'github_id':github_id,
+        'avatar_url':avatar_url,
+        'github_email':github_email
+    }
+    result = mongo.db.players.update_one(
+        {"username": username},
+        {"$set": data},
+        upsert=True
+    )
     
     print("\n" + "="*40)
     print(f"🚀 LOGIN SUCCESSFUL: {username}")
@@ -74,5 +80,6 @@ def github_callback():
 
     return jsonify({
         'message': 'GitHub login successful',
-        'user': user_data
+        'user': user_data,
+        "created": bool(result.upserted_id)
     })

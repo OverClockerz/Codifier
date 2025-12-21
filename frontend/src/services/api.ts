@@ -18,9 +18,9 @@ const apiClient = axios.create({
 // QUEST ENDPOINTS
 // ============================================================
 
-export const fetchQuestsByZone = async (zone: string): Promise<Quest[]> => {
+export const fetchQuestsByZone = async (username:string,zone: string): Promise<Quest[]> => {
   try {
-    const response = await apiClient.get<Quest[]>(`/quests?zone=${zone}`);
+    const response = await apiClient.get<Quest[]>(`/quests/get?username=${username}&zone=${zone}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching quests:", error);
