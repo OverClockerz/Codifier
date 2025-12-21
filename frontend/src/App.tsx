@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+=======
+import { useState, useEffect } from 'react';
+>>>>>>> b6a62dc (ff)
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
 import { LandingPage } from './components/LandingPage';
@@ -11,22 +15,40 @@ import { LoadingScreen, GAME_TIPS } from './components/transitions/LoadingScreen
 import { PageTransition } from './components/transitions/PageTransition';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
+type AppPage = 'landing' | 'game' | 'profile';
+
 function AppContent() {
   const { isAuthenticated, login, isLoading } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isGameLoading, setIsGameLoading] = useState(false);
-  
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [currentPage, setCurrentPage] = useState<AppPage>('landing');
 
+<<<<<<< HEAD
   const handleAuth = useCallback((username: string) => {
+=======
+  // Update page based on auth status
+  useEffect(() => {
+    if (isAuthenticated && currentPage === 'landing') {
+      setCurrentPage('game');
+    } else if (!isAuthenticated) {
+      setCurrentPage('landing');
+    }
+  }, [isAuthenticated]);
+
+  const handleStartCareer = () => {
+    setShowAuthModal(true);
+  };
+
+  const handleAuth = (username: string) => {
+>>>>>>> b6a62dc (ff)
     login(username);
     setShowAuthModal(false);
     setIsGameLoading(true);
     
+    // Simulate game initialization
     setTimeout(() => {
       setIsGameLoading(false);
-      navigate('/game');
+      setCurrentPage('game');
     }, 2500);
   }, [login, navigate]);
 
@@ -43,6 +65,14 @@ function AppContent() {
     setShowAuthModal(true);
   };
 
+  const navigateToProfile = () => {
+    setCurrentPage('profile');
+  };
+
+  const navigateToGame = () => {
+    setCurrentPage('game');
+  };
+
   if (isLoading) {
     return <LoadingScreen message="Initializing Office..." tips={GAME_TIPS.slice(0, 3)} />;
   }
@@ -53,44 +83,18 @@ function AppContent() {
 
   return (
     <>
-      <PageTransition transitionKey={location.pathname}>
-        <Routes location={location}>
-          <Route 
-            path="/"
-            element={(
-              isAuthenticated ? (
-                <Navigate to="/game" replace />
-              ) : (
-                <LandingPage onStartCareer={handleStartCareer} />
-              )
-            )} 
-          />
-          <Route
-            path="/game"
-            element={(
-              isAuthenticated ? (
-                <GameProvider>
-                  <GamePage onNavigateToProfile={() => navigate('/profile')} />
-                </GameProvider>
-              ) : (
-                <Navigate to="/" replace />
-              )
+      <PageTransition transitionKey={currentPage}>
+        {isAuthenticated ? (
+          <GameProvider>
+            {currentPage === 'profile' ? (
+              <ProfilePage onNavigateBack={navigateToGame} />
+            ) : (
+              <GamePage onNavigateToProfile={navigateToProfile} />
             )}
-          />
-          <Route
-            path="/profile"
-            element={(
-              isAuthenticated ? (
-                <GameProvider>
-                  <ProfilePage onNavigateBack={() => navigate('/game')} />
-                </GameProvider>
-              ) : (
-                <Navigate to="/" replace />
-              )
-            )}
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+          </GameProvider>
+        ) : (
+          <LandingPage onStartCareer={handleStartCareer} />
+        )}
       </PageTransition>
       
       <GitHubAuthModal
@@ -99,6 +103,7 @@ function AppContent() {
         onAuth={handleAuth}
       />
 
+      {/* Background Music Player */}
       <MusicPlayer />
     </>
   );

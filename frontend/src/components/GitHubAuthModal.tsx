@@ -8,9 +8,14 @@ interface GitHubAuthModalProps {
 
 export function GitHubAuthModal({ isOpen, onClose }: GitHubAuthModalProps) {
   const handleLogin = () => {
+<<<<<<< HEAD
     const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID || 'Ov23liAw4jOzycLR8qW5';
     // The backend is running on port 5000 and the callback route is /github/callback
     const redirectUri = 'http://localhost:5000/github/callback';
+=======
+    const clientId = 'Ov23liAw4jOzycLR8qW5'; // Replace with your GitHub Client ID
+    const redirectUri = 'http://localhost:5000/auth/github/callback';
+>>>>>>> b6a62dc (ff)
     const scope = 'read:user';
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
   };
