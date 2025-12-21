@@ -7,19 +7,25 @@ def initialize_firebase():
     Initializes the Firebase Admin SDK, checking to prevent re-initialization.
     """
     if not firebase_admin._apps:
+        # Check if we are running in a environment with default credentials
+        # (like Google Cloud Shell or some CI/CD)
+        database_url = os.getenv('FIREBASE_DATABASE_URL', 'https://codifiergit-00515167-c4af4-default-rtdb.asia-southeast1.firebasedatabase.app/')
         key_path = os.getenv('FIREBASE_SERVICE_ACCOUNT_KEY', 'serviceAccountKey.json')
-        database_url = os.getenv('FIREBASE_DATABASE_URL')
 
-        if not database_url:
-            raise ValueError("FIREBASE_DATABASE_URL environment variable not set.")
-
-        if not os.path.exists(key_path):
-            raise FileNotFoundError(f"{key_path} not found.")
-
-        cred = credentials.Certificate(key_path)
-        firebase_admin.initialize_app(cred, {
-            'databaseURL': database_url
-        })
+        if os.path.exists(key_path):
+            cred = credentials.Certificate(key_path)
+            firebase_admin.initialize_app(cred, {
+                'databaseURL': database_url
+            })
+        else:
+            # Fallback for environments where serviceAccountKey.json might not be present
+            # but other auth methods (like default ADC) might be available, 
+            # though usually for local dev you want the key.
+            # If we MUST have a key, we keep the previous logic.
+            print(f"WARNING: {key_path} not found. Firebase might not initialize correctly.")
+            firebase_admin.initialize_app(options={
+                'databaseURL': database_url
+            })
 
 def save_user(user_data: dict):
     """
