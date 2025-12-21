@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
@@ -18,6 +18,14 @@ function AppContent() {
   
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const username = params.get('username');
+    if (username && !isAuthenticated) {
+      handleAuth(username);
+    }
+  }, [location, isAuthenticated]);
 
   const handleStartCareer = () => {
     setShowAuthModal(true);
@@ -48,7 +56,7 @@ function AppContent() {
         <Routes location={location}>
           {/* Public Landing Page */}
           <Route 
-            path="/" 
+            path="/"
             element={
               isAuthenticated ? (
                 <Navigate to="/game" replace />

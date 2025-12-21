@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request, redirect, url_for, session
+from flask import Blueprint, flash, render_template, request, redirect, url_for, session, jsonify
 from werkzeug.security import check_password_hash
 from firebase_admin import db
 
@@ -24,8 +24,8 @@ def auth():
             session["user"] = user_data["name"]
             session["email"] = user_data["email"]
             session.permanent = False
-            return redirect(url_for("dashboard.dashboard"))
+            return jsonify({"success": True, "message": "Login successful"}), 200
     
     flash("Invalid credentials" if not user else "Password Incorrect", "error")
-    return redirect(url_for("login.login"))
+    return jsonify({"success": False, "message": "Invalid credentials"}), 401
        
