@@ -100,7 +100,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     <img
                   src={user?.avatar}
                   alt={user?.username}
-                  className="w-8 h-8 rounded-full"
+                  className="w-6 h-6 rounded-full"
                 />
                   </div>
                   <div>

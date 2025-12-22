@@ -6,43 +6,91 @@ export type QuestStatus = 'available' | 'in-progress' | 'completed' | 'failed';
 export type SkillCategory = 'technical' | 'critical-thinking' | 'soft-skills';
 export type NotificationType = 'quest' | 'salary' | 'bonus' | 'buff' | 'warning' | 'achievement';
 
-// Quest System
+// ============================================================
+// QUEST SYSTEM
+// ============================================================
+// Note: Quests are fetched from the backend, not hardcoded
+// See /services/api.ts for quest fetching functions
+
 export interface Quest {
   id: string;
   title: string;
   description: string;
-  zone: ZoneType; //necessary 
-  frequency: QuestFrequency;
-  difficulty: number; 
+  zone: ZoneType;
+  frequency: 'daily' | 'weekly' | 'monthly';
+  difficulty: number; // 1-5
   expReward: number;
   currencyReward: number;
   moodImpact: number;
   stressImpact: number;
   deadline?: number;
-  status: QuestStatus;
+  status: 'available' | 'in-progress' | 'completed' | 'failed';
   startedAt?: number;
   completedAt?: number;
-  requirements?: QuestRequirement[];
-  skills?: string[]; 
+  performanceScore?: number; 
+  skills?: string[];
+  questions?: QuestionData[];
 }
 
-export interface QuestRequirement {
-  type: 'skill-level' | 'quest-completion' | 'item';
-  value: string | number;
-}
-
-// Interconnected Quest Chain
-export interface QuestChain {
+export interface QuestionData {
   id: string;
-  title: string;
-  description: string;
-  quests: Quest[];
-  totalExpReward: number;
-  totalCurrencyReward: number;
-  chainBonus: number; // Extra reward for completing all
+  question: string;
+  options: string[];
+  correctAnswer: number; // Index of correct option
+  explanation?: string;
+  points: number;
 }
 
-// Items & Shop
+// ============================================================
+// PLAYER STATE
+// ============================================================
+// Note: Player data is fetched from and saved to the backend
+// See /services/api.ts: fetchPlayerData(), updatePlayerData()
+
+export interface PlayerState {
+  // id: string;
+  username: string;
+  gameStartDate: string;
+  level: number;
+  experience: number;
+  experienceToNextLevel: number;
+  currency: number;
+  mood: number; // 0-100
+  stress: number; // 0-100
+  isBurntOut: boolean;
+  baseSalary: number;
+  currentMonthEarnings: number;
+  currentMonthTasksCompleted?: number; // Track completed quests this month
+  paidLeaves: number;
+  currentDay: number; // In-game day counter
+  currentMonth: number;
+  lastLoginDate: string;
+  careerHistory: CareerRun[];
+  currentRun: CareerRun;
+  reputation: number; // Reputation score (-20 to +∞, fired at -20)
+  skills: Record<string, number>; // Skill name -> level (0-100)
+  permanentBuffs: Buff[]; // Permanent buffs acquired
+  activeQuests: string[]; // IDs of active quests
+  completedQuests: string[]; // IDs of completed quests
+  inventory: InventoryItem[]; // Array of inventory items
+}
+
+export interface CareerRun {
+  runNumber: number;
+  startLevel: number;
+  maxLevelAchieved: number;
+  totalExperience: number;
+  monthsWorked: number;
+  reasonForEnd?: 'fired' | 'quit' | 'active';
+  endDate?: string;
+}
+
+// ============================================================
+// SHOP ITEMS & INVENTORY
+// ============================================================
+// Note: Shop items are hardcoded in /data/shopItems.ts
+// Item effects are calculated in frontend but stored in backend
+
 export interface ShopItem {
   id: string;
   name: string;
@@ -68,79 +116,29 @@ export interface InventoryItem {
   purchasedAt: number;
 }
 
-export interface Githubinfo { 
-  github_id: string;
-  avatar_url: string;
-  github_email: string;
-}
+// ============================================================
+// BUFFS & EFFECTS
+// ============================================================
 
-// Player State
-export interface PlayerState {
-  username: string; //necessary 
-  githubinfo: Githubinfo; //necessary 
-  level: number;
-  experience: number;
-  experienceToNextLevel: number;
-  currency: number;
-  mood: number; // 0-100
-  stress: number; // 0-100
-  isBurntOut: boolean;
-  baseSalary: number;
-  currentMonthEarnings: number;
-  currentMonthTasksCompleted?: number; // Track completed quests this month
-  paidLeaves: number;
-  currentDay: number; // In-game day counter
-  currentMonth: number;
-  lastLoginDate: string;
-  careerHistory: CareerRun[];
-  currentRun: CareerRun;
-  reputation: number; // Reputation score
-  skills: Record<string, number>; // Skill name -> level (0-100)
-  permanentBuffs: string[];// IDs of purchased permanent buffs
-  
-  // These fields are populated from the backend mock DB
-  activeQuests?: Quest[];//necessary 
-  completedQuests?: Quest[];
-  inventory?: InventoryItem[];
-}
-
-export interface CareerRun {
-  runNumber: number;
-  startLevel: number;
-  maxLevelAchieved: number;
-  totalExperience: number;
-  monthsWorked: number;
-  reasonForEnd?: 'fired' | 'quit' | 'active';
-  endDate?: string;
-}
-
-export interface permanantItem{
-  id: string;
+export interface Buff {
+  itemId: string;
   name: string;
-  description: string;
-  type: 'permanent-buff';
   effect: ItemEffect;
-  price: number;
-  icon: string;
+  expiresAt?: number;
 }
 
-// NPCs
-export interface NPC {
-  id: string;
+export interface ActiveBuff {
+  itemId: string;
   name: string;
-  role: string;
-  avatar: string;
-  zone: ZoneType;
-  dialogues: Dialogue[];
+  effect: ItemEffect;
+  appliedAt: number;
+  expiresAt?: number;
 }
 
-export interface Dialogue {
-  id: string;
-  text: string;
-  context: 'greeting' | 'quest-assign' | 'quest-complete' | 'warning' | 'fired';
-}
+// ============================================================
+// MONTHLY PERFORMANCE
+// ============================================================
 
-// Monthly Performance
 export interface MonthlyReport {
   month: number;
   taskCompletionRate: number; // 0-100
@@ -152,22 +150,38 @@ export interface MonthlyReport {
   warnings: string[];
 }
 
-// Game Configuration
+// ============================================================
+// GAME CONFIGURATION
+// ============================================================
+
 export interface GameConfig {
   startingLevel: number;
   startingCurrency: number;
   startingMood: number;
   startingStress: number;
   startingPaidLeaves: number;
+  startingReputation: number;
   baseSalary: number;
+  salaryPerLevel: number;
   hoursPerDay: number;
   daysPerMonth: number;
   burnoutMoodThreshold: number;
   maxStressThreshold: number;
   experienceCurve: number; // Multiplier for level progression
+  gameOverReputation: number;
+  performanceThresholds: {
+    excellent: number;
+    good: number;
+    average: number;
+    poor: number;
+  };
+  restartLevelPercentage: number;
 }
 
-// Task Challenge Types
+// ============================================================
+// TASK CHALLENGE TYPES (Legacy - not currently used)
+// ============================================================
+
 export interface CodeChallenge {
   id: string;
   title: string;
@@ -203,16 +217,10 @@ export interface TypingChallenge {
   minAccuracy: number;
 }
 
-// Active Buffs
-export interface ActiveBuff {
-  itemId: string;
-  name: string;
-  effect: ItemEffect;
-  appliedAt: number;
-  expiresAt?: number;
-}
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
 
-// Notifications
 export interface Notification {
   id: string;
   type: NotificationType;

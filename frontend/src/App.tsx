@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom'; // <--- IMPORT THIS
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
 import { LandingPage } from './components/LandingPage';
@@ -25,7 +26,7 @@ function AppContent() {
     } else if (!isAuthenticated) {
       setCurrentPage('landing');
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, currentPage]); // Added currentPage to dependency array for safety
 
   const handleStartCareer = () => {
     setShowAuthModal(true);
@@ -75,13 +76,16 @@ function AppContent() {
         )}
       </PageTransition>
       
+      {/* The Modal is placed here. Even if showAuthModal is false, 
+         if the URL has ?code=..., the Modal's internal logic 
+         (from previous step) will force it open to handle the auth.
+      */}
       <GitHubAuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onAuth={handleAuth}
       />
 
-      {/* Background Music Player */}
       <MusicPlayer />
     </>
   );
@@ -90,9 +94,12 @@ function AppContent() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      {/* BrowserRouter MUST wrap AppContent so useNavigate works inside the Modal */}
+      <BrowserRouter>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </BrowserRouter>
     </ErrorBoundary>
   );
 }

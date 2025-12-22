@@ -143,10 +143,10 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               {/* Avatar & Info */}
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                  <img
+                 <img
                   src={user?.avatar}
                   alt={user?.username}
-                  className="w-8 h-8 rounded-full"
+                  className="w-6 h-6 rounded-full"
                 />
                 </div>
                 <div>

@@ -4,30 +4,19 @@
 // In-game shop for purchasing consumables and permanent buffs
 // 
 // FEATURES:
-// - Browse and purchase items
+// - Browse and purchase items (hardcoded in /data/shopItems.ts)
 // - View owned permanent buffs
 // - Real-time currency display
 // 
-// FUTURE BACKEND INTEGRATION POINTS:
-// - Replace SHOP_ITEMS with API call: GET /api/shop/items
-// - Add purchase transaction API: POST /api/shop/purchase
-// - Add inventory sync with backend
-// - Add payment processing for real currency (if applicable)
+// BACKEND INTEGRATION - FULLY CONNECTED:
+// ✅ Shop items are hardcoded in frontend (no API needed)
+// ✅ When player purchases an item:
+//    1. Frontend deducts currency locally
+//    2. Frontend adds item to inventory/permanentBuffs
+//    3. GameContext automatically calls updatePlayerData() to sync with backend
+// ✅ Backend stores purchased items in player's inventory or permanentItems array
 // 
-// API Structure Example:
-// const fetchShopItems = async () => {
-//   const response = await fetch('/api/shop/items');
-//   const data = await response.json();
-//   setShopItems(data.items);
-// };
-// 
-// const purchaseItem = async (itemId: string) => {
-//   const response = await fetch('/api/shop/purchase', {
-//     method: 'POST',
-//     body: JSON.stringify({ itemId, playerId: player.id }),
-//   });
-//   return response.json();
-// };
+// NO SHOP API ENDPOINTS NEEDED - purchases handled via /api/player/update
 // ============================================================
 
 import { motion } from 'motion/react';

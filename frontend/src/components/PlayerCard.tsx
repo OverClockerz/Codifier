@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ChevronRight } from 'lucide-react';
+import { User, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
 import { Tooltip } from './Tooltip';
@@ -24,7 +24,7 @@ export function PlayerCard({ onClick }: PlayerCardProps) {
           <img
                   src={user?.avatar}
                   alt={user?.username}
-                  className="w-8 h-8 rounded-full"
+                  className="w-6 h-6 rounded-full"
                 />
         </div>
         <div className="text-left">

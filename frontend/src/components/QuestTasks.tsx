@@ -149,7 +149,7 @@ export function QuestTasks({ quest, onComplete }: QuestTasksProps) {
 function getWorkspaceTasks(difficulty: number) {
   const easyTasks = [
     {
-      question: "What is the correct way to declare a variable in JavaScript?",
+      question: "What is the correct way to declare a variable in JavaddScript?",
       options: [
         "variable x = 5;",
         "let x = 5;",
