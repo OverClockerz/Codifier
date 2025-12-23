@@ -27,13 +27,14 @@ import { Workspace } from '../zones/Workspace';
 import { GameLounge } from '../zones/GameLounge';
 import { MeetingRoom } from '../zones/MeetingRoom';
 import { Cafeteria } from '../zones/Cafeteria';
-// import { Tooltip } from './Tooltip';
+import { Tooltip } from './Tooltip';
 import { calculateDeadline } from '../utils/calculations';
 
-const deadlineThreshold=2;
+const deadlineThreshold =2;
 
 export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void }) {
   const { player, activeQuests, activeBuffs } = useGame();
+  const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
 
   // DEBUG: Log quest counts
@@ -311,7 +312,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
 
               {/* Urgent */}
               <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
-                <p className="text-sm text-gray-400 mb-1">Urgent (≤ {deadlineThreshold} days)</p>
+                <p className="text-sm text-gray-400 mb-1">Urgent (≤2 days)</p>
                 <p className="text-3xl text-red-400">{urgentQuests.length}</p>
               </div>
             </div>
@@ -402,7 +403,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                       {/* Days Remaining */}
                       {daysLeft !== null && (
                         <div className="text-right ml-4">
-                          <p className={`text-2xl ${daysLeft <= deadlineThreshold ? 'text-red-400' : 'text-white'}`}>
+                          <p className={`text-2xl ${daysLeft <= 2 ? 'text-red-400' : 'text-white'}`}>
                             {daysLeft}
                           </p>
                           <p className="text-xs text-gray-500">day{daysLeft !== 1 ? 's' : ''}</p>

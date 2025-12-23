@@ -137,7 +137,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // Check for expired quest deadlines
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = Date.now();
+      const now = Math.floor(Date.now()/1000);
+      // console.log('⏰ Checking for quest deadlines at', now);
       activeQuests.forEach(quest => {
         if (quest.deadline && quest.status === 'in-progress' && now > quest.deadline) {
           // Auto-fail quest that missed deadline
@@ -151,7 +152,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           });
         }
       });
-    }, 30000); // Check every 30 seconds
+    }, 30000); // Check every 10 seconds
 
     return () => clearInterval(interval);
   }, [activeQuests]);
