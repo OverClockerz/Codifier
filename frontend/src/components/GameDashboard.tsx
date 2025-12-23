@@ -324,7 +324,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                 <div className="space-y-2">
                   {urgentQuests.map(quest => {
                     const daysLeft = quest.deadline 
-                      ? Math.ceil((quest.deadline - Date.now()) / (1000 * 60 * 60 * 24))
+                      ? Math.ceil((quest.deadline - Math.floor(Date.now())/1000)/(60*60*24))
                       : 0;
                     return (
                       <div key={quest.id} className="text-sm">

@@ -4297,11 +4297,6 @@
   --sidebar-ring: oklch(.439 0 0);
 }
 
-html {
-  font-size: var(--font-size);
-  scroll-behavior: smooth;
-}
-
 ::-webkit-scrollbar {
   width: 10px;
 }

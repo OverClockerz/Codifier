@@ -41,11 +41,6 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <h4 className="text-xl">{quest.title}</h4>
-            {quest.isInterconnected && (
-              <span className="px-2 py-0.5 bg-purple-500/20 border border-purple-500/30 rounded text-xs text-purple-300">
-                Chain Quest
-              </span>
-            )}
           </div>
           <p className="text-gray-400 text-sm">{quest.description}</p>
         </div>
@@ -103,11 +98,6 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
             {quest.moodImpact > 0 ? '+' : ''}{quest.moodImpact}
           </span>
         </div>
-      </div>
-
-      {/* Assigned By */}
-      <div className="text-xs text-gray-600 mb-4">
-        Assigned by: <span className="text-gray-400">{quest.assignedBy}</span>
       </div>
 
       {/* Action Button */}
