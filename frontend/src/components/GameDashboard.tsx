@@ -349,7 +349,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             <div className="space-y-3">
               {activeQuests.map((quest, index) => {
                 const daysLeft = quest.deadline 
-                  ? Math.ceil((quest.deadline - Date.now()) / (1000 * 60 * 60 * 24))
+                  ? Math.ceil((quest.deadline - Math.floor(Date.now())/1000)/(60*60*24))
                   : null;
 
                 return (
