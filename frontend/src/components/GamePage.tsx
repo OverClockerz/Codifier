@@ -65,7 +65,8 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
 
             {/* Quick Stats - Desktop */}
             <div className="hidden lg:flex items-center gap-6">
-              
+              {/* Digital Clock */}
+              <DigitalClock />
               
               <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-900/20 border border-blue-800/30 rounded-lg">
                 <span className="text-xs text-gray-400">Level</span>
@@ -83,8 +84,6 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                 <span className="text-xs text-gray-400">$</span>
                 <span className="text-sm text-yellow-400">{player.currency}</span>
               </div>
-              {/* Digital Clock */}
-              <DigitalClock />
             </div>
 
             {/* Actions */}

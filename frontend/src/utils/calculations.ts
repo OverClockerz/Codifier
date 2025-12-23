@@ -493,13 +493,13 @@ export function resetCareer(playerData: PlayerState): PlayerState {
   data.level = restartLevel;
   data.experience = 0;
   data.experienceToNextLevel = getExperienceForLevel(restartLevel);
-  // data.currency = GAME_CONFIG.startingCurrency;
-  // data.mood = GAME_CONFIG.startingMood;
-  // data.stress = GAME_CONFIG.startingStress;
+  data.currency = GAME_CONFIG.startingCurrency;
+  data.mood = GAME_CONFIG.startingMood;
+  data.stress = GAME_CONFIG.startingStress;
   data.isBurntOut = false;
   data.baseSalary = getSalaryForLevel(restartLevel);
   data.currentMonthEarnings = 0;
-  // data.paidLeaves = GAME_CONFIG.startingPaidLeaves;
+  data.paidLeaves = GAME_CONFIG.startingPaidLeaves;
   data.currentDay = 1;
   data.currentMonth = 1;
   data.reputation = 0;

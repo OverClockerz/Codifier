@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, Notification, ShopItem, Buff} from '../types/game';
-import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel } from '../data/gameConfig';
-import { getRandomQuests } from '../data/quests';
+import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, Notification } from '../types/game';
+import { getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS, GAME_CONSTANTS } from '../data/gameConfig';
 import { useAuth } from './AuthContext';
 import { fetchPlayerData, updatePlayerData } from '../services/api';
 import { shopItems } from '../data/shopItems';
@@ -12,18 +11,19 @@ import { shopItems } from '../data/shopItems';
  * 
  * 🔗 BACKEND INTEGRATION - FULLY INTEGRATED
  * 
- * This file manages all game state and is NOW CONNECTED to the backend.
+ * This file manages all game state and fetches ALL data from the backend.
  * 
- * HOW IT WORKS:
- * 1. On mount → fetchPlayerData() loads initial game state from backend
+ * DATA FLOW:
+ * 1. On mount → fetchPlayerData(username) loads complete game state from backend
  * 2. On changes → updatePlayerData() syncs state to backend
- * 3. Shop purchases → calculated in frontend, sent to backend via updatePlayerData()
- * 4. Quests → fetched from backend in activeQuests/completedQuests arrays
+ * 3. Shop items → hardcoded in frontend with calculations done locally
+ * 4. Quests → fetched from backend (backend generates and manages all quests)
+ * 5. Player state → backend creates initial state on first login
  * 
  * 📚 RELATED FILES:
  * - /services/api.ts - API service layer
- * - /services/databaseSchema.ts - Database schema definition
- * - /BACKEND_INTEGRATION.md - Complete integration guide
+ * - /data/gameConfig.ts - Calculation functions only
+ * - /data/shopItems.ts - Hardcoded shop items
  */
 
 interface GameContextType {
@@ -35,13 +35,12 @@ interface GameContextType {
   monthlyReports: MonthlyReport[];
   notifications: Notification[];
   showLevelUp: boolean;
-  
-  // Actions
   setPlayer: (player: PlayerState) => void;
+  // Actions
   startQuest: (questId: string) => void;
   completeQuest: (questId: string, performanceScore: number) => void;
   failQuest: (questId: string) => void;
-  purchaseItem: (item: ShopItem) => boolean;
+  purchaseItem: (itemId: string) => boolean;
   useItem: (itemId: string) => void;
   takePaidLeave: () => boolean;
   updateMoodStress: (moodChange: number, stressChange: number) => void;
@@ -62,26 +61,27 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  
-  const createNewPlayer = (): PlayerState => ({
-    // id: user?.id || '',
-    username: user?.username || '',
+
+  const [player, setPlayer] = useState<PlayerState>({
+    id: '',
+    username: '',
     githubinfo: {
-      github_id: user?.id || '',
-      avatar_url: user?.avatar || '',
-      github_email: user?.email || '',
+      github_id: '',
+      avatar_url: '',
+      github_email: '',
     },
     gameStartDate: new Date().toISOString(),
     level: 1,
     experience: 0,
-    experienceToNextLevel: getExperienceForLevel(1),
-    currency: 2000000,
-    mood: 100,
-    stress: 0,
+    experienceToNextLevel: 100,
+    currency: 100,
+    mood: 70,
+    stress: 20,
     isBurntOut: false,
-    baseSalary: getSalaryForLevel(1),
+    baseSalary: 1000,
     currentMonthEarnings: 0,
-    paidLeaves: 5,
+    currentMonthTasksCompleted: 0,
+    paidLeaves: 0,
     currentDay: 1,
     currentMonth: 1,
     lastLoginDate: new Date().toISOString(),
@@ -93,16 +93,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
       totalExperience: 0,
       monthsWorked: 0,
     },
-    reputation: 0, // Start at +0%
-    skills: {}, // Empty skills object
-    activeBuffs: [], // No active buffs initially
-    permanentBuffs: [], // No permanent buffs initially
-    activeQuests: [], // IDs of active quests
-    completedQuests: [], // IDs of completed quests
-    inventory: []
+    reputation: 0,
+    skills: {},
+    activeBuffs: [],
+    permanentBuffs: [],
+    activeQuests: [],
+    completedQuests: [],
+    inventory: [],
   });
-
-  const [player, setPlayer] = useState<PlayerState>(createNewPlayer);
   const [activeQuests, setActiveQuests] = useState<Quest[]>([]);
   const [completedQuests, setCompletedQuests] = useState<Quest[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -111,54 +109,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showLevelUp, setShowLevelUp] = useState(false);
 
-  // Initialize quests on mount or day change
+  // Load game on mount
   useEffect(() => {
-    // Only initialize if no quests exist and user is logged in
-    if (activeQuests.length === 0 && user?.id) {
-      initializeQuests();
-      
-      // Add welcome notifications on first load
-      if (notifications.length === 0) {
-        setNotifications([
-          {
-            id: Date.now().toString(),
-            type: 'quest',
-            title: 'New Quest Assigned',
-            message: 'New quest from the Manager: Project Alpha database update. Check your Workspace for details.',
-            timestamp: Date.now(),
-            isRead: false,
-          },
-          {
-            id: (Date.now() + 1).toString(),
-            type: 'bonus',
-            title: 'Performance Bonus',
-            message: 'Great work! You received a 10% reputation bonus for completing tasks ahead of schedule.',
-            timestamp: Date.now() + 1,
-            isRead: false,
-          },
-          {
-            id: (Date.now() + 2).toString(),
-            type: 'salary',
-            title: 'Monthly Salary Disbursed',
-            message: 'Your salary of $8,000 has been credited to your account.',
-            timestamp: Date.now() + 2,
-            isRead: false,
-          },
-        ]);
-      }
-    }
-  }, [activeQuests.length, user?.id]);
-
-  // Load game on mount FIRST
-  useEffect(() => {
-    if (user?.id) {
+    if (user?.id && user?.username) {
       loadGame();
     }
-  }, [user?.id]);
+  }, [user?.id, user?.username]);
 
-  // Save game on changes
+  // Save game on changes (but not on first load)
   useEffect(() => {
-    if (user?.id && activeQuests.length > 0) {
+    if (user?.id && player.id && activeQuests.length > 0) {
       saveGame();
     }
   }, [player, activeQuests, completedQuests, inventory]);
@@ -184,9 +144,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
           
           // Add notification
           addNotification({
-            type: 'quest',
+            type: 'alert',
             title: 'Quest Failed - Deadline Missed',
-            message: `Failed: "${quest.title}". Your reputation has been affected. Complete tasks on time to maintain good standing.`,
+            message: `Failed: \"${quest.title}\". Your reputation has been affected. Complete tasks on time to maintain good standing.`,
           });
         }
       });
@@ -195,19 +155,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, [activeQuests]);
 
-  const initializeQuests = () => {
-    // Generate a good mix of quests for all zones
-    const dailies = getRandomQuests('daily', 6);  
-    const weeklies = getRandomQuests('weekly', 4);  
-    const monthlies = getRandomQuests('monthly', 3);  
+  // const initializeQuests = () => {
+  //   // Generate a good mix of quests for all zones
+  //   const dailies = getRandomQuests('daily', 6);  // Increased from 3 to 6
+  //   const weeklies = getRandomQuests('weekly', 4);  // Increased from 2 to 4
+  //   const monthlies = getRandomQuests('monthly', 3);  // Increased from 1 to 3
     
-    setActiveQuests(prev => {
-      // Keep existing in-progress quests
-      const inProgress = prev.filter(q => q.status === 'in-progress');
-      const allQuests = [...inProgress, ...dailies, ...weeklies, ...monthlies];
-      return allQuests;
-    });
-  };
+  //   setActiveQuests(prev => {
+  //     // Keep existing in-progress quests
+  //     const inProgress = prev.filter(q => q.status === 'in-progress');
+  //     const allQuests = [...inProgress, ...dailies, ...weeklies, ...monthlies];
+  //     return allQuests;
+  //   });
+  // };
 
   const startQuest = (questId: string) => {
     setActiveQuests(prev =>
@@ -375,7 +335,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     ]);
   };
 
-  const purchaseItem = (item: ShopItem): boolean => {
+  const purchaseItem = (itemId: string): boolean => {
+    const { SHOP_ITEMS } = require('../data/shopItems');
+    const item = SHOP_ITEMS.find((i: any) => i.id === itemId);
+    
     if (!item || player.currency < item.price) {
       return false;
     }
@@ -384,10 +347,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     // Add to inventory
     setInventory(prev => {
-      const existing = prev.find(i => i.item.id === item.id);
+      const existing = prev.find(i => i.item.id === itemId);
       if (existing) {
         return prev.map(i =>
-          i.item.id === item.id
+          i.item.id === itemId
             ? { ...i, quantity: i.quantity + 1 }
             : i
         );
@@ -438,7 +401,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       ]);
     }
 
-    // Remove from inventory if consumable
     if (item.type === 'consumable') {
       setInventory(prev =>
         prev
@@ -512,7 +474,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setPlayer(prev => {
       const newMood = Math.max(0, Math.min(100, prev.mood + moodChange));
       const newStress = Math.max(0, Math.min(100, prev.stress + stressChange));
-      const isBurntOut = newMood <= GAME_CONFIG.burnoutMoodThreshold;
+      const isBurntOut = newMood <= GAME_CONSTANTS.BURNOUT_MOOD_THRESHOLD;
 
       return {
         ...prev,
@@ -567,10 +529,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const advanceDay = () => {
     setPlayer(prev => {
       const newDay = prev.currentDay + 1;
-      const newMonth = Math.floor((newDay - 1) / GAME_CONFIG.daysPerMonth) + 1;
+      const newMonth = Math.floor((newDay - 1) / GAME_CONSTANTS.DAYS_PER_MONTH) + 1;
       
       // Month transition
-      if (newDay % GAME_CONFIG.daysPerMonth === 1 && newDay > 1) {
+      if (newDay % GAME_CONSTANTS.DAYS_PER_MONTH === 1 && newDay > 1) {
         // Process monthly report
         processMonthlyReport(prev);
       }
@@ -597,7 +559,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const codeQualityScore = 75 + Math.random() * 25;
     const softSkillScore = 70 + Math.random() * 30;
 
-    const { REPUTATION_WEIGHTS, getSalaryAdjustment } = require('../data/gameConfig');
+    const { getSalaryAdjustment } = require('../data/gameConfig');
     const reputationScore =
       taskCompletionRate * REPUTATION_WEIGHTS.taskCompletion +
       codeQualityScore * REPUTATION_WEIGHTS.codeQuality +
@@ -628,32 +590,61 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const resetCareer = () => {
+  const resetCareer = async () => {
     const { getRestartLevel } = require('../data/gameConfig');
     const totalExp = player.currentRun.totalExperience;
     const newStartLevel = getRestartLevel(totalExp);
 
-    setPlayer(prev => ({
-      ...createNewPlayer(),
+    // Create fresh player state
+    const freshPlayer: PlayerState = {
+      id: player.id,
+      username: player.username,
+      githubinfo: player.githubinfo,
+      gameStartDate: player.gameStartDate,
       level: newStartLevel,
+      experience: 0,
+      experienceToNextLevel: getExperienceForLevel(newStartLevel),
+      currency: 100,
+      mood: 70,
+      stress: 20,
+      isBurntOut: false,
       baseSalary: getSalaryForLevel(newStartLevel),
+      currentMonthEarnings: 0,
+      currentMonthTasksCompleted: 0,
+      paidLeaves: 0,
+      currentDay: 1,
+      currentMonth: 1,
+      lastLoginDate: new Date().toISOString(),
       careerHistory: [
-        ...prev.careerHistory,
-        { ...prev.currentRun, reasonForEnd: 'fired', endDate: new Date().toISOString() },
+        ...player.careerHistory,
+        { ...player.currentRun, reasonForEnd: 'fired', endDate: new Date().toISOString() },
       ],
       currentRun: {
-        runNumber: prev.currentRun.runNumber + 1,
+        runNumber: player.currentRun.runNumber + 1,
         startLevel: newStartLevel,
         maxLevelAchieved: newStartLevel,
         totalExperience: 0,
         monthsWorked: 0,
       },
-    }));
+      reputation: 0,
+      skills: {},
+      activeBuffs: [],
+      permanentBuffs: [],
+      activeQuests: [],
+      completedQuests: [],
+      inventory: [],
+    };
 
+    setPlayer(freshPlayer);
     setActiveQuests([]);
     setCompletedQuests([]);
     setInventory([]);
     setActiveBuffs([]);
+
+    // Reload game from backend
+    if (user?.username) {
+      await loadGame();
+    }
   };
 
   const saveGame = async () => {
@@ -722,70 +713,59 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
       // Transform backend data to frontend PlayerState format
       const transformedPlayer: PlayerState = {
-        // id: backendData.githubinfo?.github_id || user.id,
-        username: backendData.username || user.username || '',
-        githubinfo: {
-          github_id: backendData.githubinfo?.github_id || user.id || '',
-          avatar_url: backendData.githubinfo?.avatar_url || user.avatar || '',
-          github_email: backendData.githubinfo?.github_email || user.email || '',
-        },
-        gameStartDate: backendData.gameStartDate || new Date().toISOString(),
-        level: backendData.level || 1,
-        experience: backendData.experience || 0,
-        experienceToNextLevel: backendData.experienceToNextLevel || getExperienceForLevel(backendData.level || 1),
-        currency: backendData.currency || 100,
-        mood: backendData.mood || 70,
-        stress: backendData.stress || 20,
-        isBurntOut: backendData.isBurntOut || false,
-        baseSalary: backendData.baseSalary || 0,
-        currentMonthEarnings: backendData.currentMonthEarnings || 0,
-        currentMonthTasksCompleted: backendData.currentMonthTasksCompleted || 0,
-        paidLeaves: backendData.paidLeaves || 0,
-        currentDay: backendData.currentDay || 1,
-        currentMonth: backendData.currentMonth || 1,
-        lastLoginDate: backendData.lastLoginDate || new Date().toISOString(),
-        careerHistory: backendData.careerHistory || [],
-        currentRun: backendData.currentRun || {
-          runNumber: 1,
-          startLevel: 1,
-          maxLevelAchieved: 1,
-          totalExperience: 0,
-          monthsWorked: 0,
-          reasonForEnd: 'active',
-        },
-        reputation: backendData.reputation || 0,
-        skills: backendData.skills || {},
-        activeBuffs: backendData.activeBuffs || [], // Will be set separately
-        permanentBuffs: backendData.permanentBuffs || [],
-        activeQuests: [], // Will be set separately
-        completedQuests: [], // Will be set separately
-        inventory: [], // Will be set separately
+        id: backendData.githubinfo?.github_id,
+        username: backendData.username,
+        githubinfo: backendData.githubinfo ,
+        gameStartDate: backendData.gameStartDate ,
+        level: backendData.level,
+        experience: backendData.experience ,
+        experienceToNextLevel: backendData.experienceToNextLevel,
+        currency: backendData.currency ,
+        mood: backendData.mood ,
+        stress: backendData.stress,
+        isBurntOut: backendData.isBurntOut ,
+        baseSalary: backendData.baseSalary ,
+        currentMonthEarnings: backendData.currentMonthEarnings,
+        currentMonthTasksCompleted: backendData.currentMonthTasksCompleted ,
+        paidLeaves: backendData.paidLeaves,
+        currentDay: backendData.currentDay ,
+        currentMonth: backendData.currentMonth,
+        lastLoginDate: backendData.lastLoginDate,
+        careerHistory: backendData.careerHistory,
+        currentRun: backendData.currentRun  ,
+        reputation: backendData.reputation ,
+        skills: backendData.skills ,
+        activeBuffs: backendData.activeBuffs ,
+        permanentBuffs: backendData.permanentItems,
+        activeQuests: [], 
+        completedQuests: [], 
+        inventory: [],
       };
 
       setPlayer(transformedPlayer);
 
       // Set quests from backend
-      const backendActiveQuests: Quest[] = backendData.activeQuests || [];
-      const backendCompletedQuests: Quest[] = backendData.completedQuests || [];
+      const backendActiveQuests: Quest[] = backendData.activeQuests;
+      const backendCompletedQuests: Quest[] = backendData.completedQuests;
       
       setActiveQuests(backendActiveQuests);
       setCompletedQuests(backendCompletedQuests);
 
       // Transform inventory from backend
-      const backendInventory = backendData.inventory || [];
+      const backendInventory = backendData.inventory;
       const transformedInventory: InventoryItem[] = backendInventory.map((item: any) => {
         // Find the matching shop item from our hardcoded list
         const shopItem = shopItems.find(si => si.id === item.itemId || si.id === item.item?.id);
         return {
           item: shopItem || item.item,
-          quantity: item.quantity || 1,
+          quantity: item.quantity,
           purchasedAt: item.purchasedAt || Date.now(),
         };
       });
       setInventory(transformedInventory);
 
       // Rebuild active buffs from permanent items
-      const permanentBuffsList: ActiveBuff[] = (backendData.permanentItems || []).map((itemId: string) => {
+      const permanentBuffsList: ActiveBuff[] = (backendData.permanentItems).map((itemId: string) => {
         const shopItem = shopItems.find(si => si.id === itemId);
         if (!shopItem) return null;
         return {
@@ -800,12 +780,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
       
       console.log('✅ Game state loaded successfully from backend');
     } catch (error) {
-      console.error('❌ Failed to load game from backend:', error);
-      console.log('🆕 Initializing with default data...');
+      console.error('❌ [BACKEND ERROR] Failed to load game from backend:', error);
+      console.error('📋 [DEBUG] Error details:', {
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        username: user?.username,
+        userId: user?.id
+      });
+      console.log('⚠️ [FALLBACK] Backend is unavailable. Please ensure your backend server is running at http://localhost:5000');
       
-      // Fallback: create new player and initialize quests
-      setPlayer(createNewPlayer());
-      setTimeout(() => initializeQuests(), 100);
+      // Don't initialize with default data - just leave empty state
+      // Backend should create player on first login
     }
   };
 

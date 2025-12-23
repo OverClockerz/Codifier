@@ -3680,6 +3680,10 @@
     transition-timing-function: var(--ease-out);
   }
 
+  .running {
+    animation-play-state: running;
+  }
+
   @media (hover: hover) {
     .group-hover\:w-full:is(:where(.group):hover *) {
       width: 100%;
@@ -4293,10 +4297,10 @@
   --sidebar-ring: oklch(.439 0 0);
 }
 
-/* html {
+html {
   font-size: var(--font-size);
   scroll-behavior: smooth;
-} */
+}
 
 ::-webkit-scrollbar {
   width: 10px;

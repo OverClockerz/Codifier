@@ -37,7 +37,7 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
       className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:border-gray-700 transition-all"
     >
       {/* Quest Header */}
-      {/* <div className="flex items-start justify-between mb-4">
+      <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <h4 className="text-xl">{quest.title}</h4>
@@ -52,7 +52,7 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
         <div className={`px-3 py-1 border rounded-lg text-xs ${getDifficultyColor(quest.difficulty)}`}>
           {getDifficultyLabel(quest.difficulty)}
         </div>
-      </div> */}
+      </div>
 
       {/* Quest Details */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -106,9 +106,9 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
       </div>
 
       {/* Assigned By */}
-      {/* <div className="text-xs text-gray-600 mb-4">
+      <div className="text-xs text-gray-600 mb-4">
         Assigned by: <span className="text-gray-400">{quest.assignedBy}</span>
-      </div> */}
+      </div>
 
       {/* Action Button */}
       {quest.status === 'available' && (

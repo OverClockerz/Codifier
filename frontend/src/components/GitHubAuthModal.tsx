@@ -74,7 +74,7 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
   
   const hasFetched = useRef(false);
   // kept in case you need to programmatically navigate later
-  const navigate = useNavigate(); 
+  // const navigate = useNavigate(); 
 
   // 1. Handle the initial click to go to GitHub
   const handleGitHubLogin = () => {

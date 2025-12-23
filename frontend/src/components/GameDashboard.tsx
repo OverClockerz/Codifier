@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { ZoneType } from '../types/game';
-import { getDifficultyLabel } from '../data/quests';
+// import { getDifficultyLabel } from '../data/quests';
 import { PlayerCard } from './PlayerCard';
 import { Workspace } from '../zones/Workspace';
 import { GameLounge } from '../zones/GameLounge';
@@ -377,11 +377,11 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                           </span>
                           
                           {/* Difficulty Badge */}
-                          {quest.difficulty && (
+                          {/* {quest.difficulty && (
                             <span className={`px-3 py-1 rounded-full text-xs ${getDifficultyColor(quest.difficulty)}`}>
                               {getDifficultyLabel(quest.difficulty)}
                             </span>
-                          )}
+                          )} */}
                           
                           {/* Rewards */}
                           {quest.expReward > 0 && (

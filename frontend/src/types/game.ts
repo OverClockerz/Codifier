@@ -4,7 +4,7 @@ export type ZoneType = 'workspace' | 'game-lounge' | 'meeting-room' | 'cafeteria
 export type QuestFrequency = 'daily' | 'weekly' | 'monthly';
 export type QuestStatus = 'available' | 'in-progress' | 'completed' | 'failed';
 export type SkillCategory = 'technical' | 'critical-thinking' | 'soft-skills';
-export type NotificationType = 'quest' | 'salary' | 'bonus' | 'buff' | 'warning' | 'achievement';
+export type NotificationType = 'quest' | 'salary' | 'bonus' | 'buff' | 'warning' | 'achievement' | 'alert';
 
 // ============================================================
 // QUEST SYSTEM
@@ -18,7 +18,6 @@ export interface Quest {
   description: string;
   zone: ZoneType;
   frequency: 'daily' | 'weekly' | 'monthly';
-  skillCategory: SkillCategory;
   difficulty: number; // 1-5
   expReward: number;
   currencyReward: number;
@@ -28,8 +27,10 @@ export interface Quest {
   status: 'available' | 'in-progress' | 'completed' | 'failed';
   startedAt?: number;
   completedAt?: number;
-  performanceScore?: number; 
-  skills?: string[];
+  performanceScore?: number; // Score achieved (0-100)
+  skills?: string[]; // Skills that can be gained/improved
+  
+  // Interactive quest content (for multiple-choice questions)
   questions?: QuestionData[];
 }
 
@@ -49,7 +50,7 @@ export interface QuestionData {
 // See /services/api.ts: fetchPlayerData(), updatePlayerData()
 
 export interface PlayerState {
-  // id: string;
+  id: string;
   username: string;
   githubinfo: GitHubInfo;
   gameStartDate: string;
@@ -164,12 +165,12 @@ export interface MonthlyReport {
 // ============================================================
 
 export interface GameConfig {
-  // startingLevel: number;
-  // startingCurrency: number;
-  // startingMood: number;
-  // startingStress: number;
-  // startingPaidLeaves: number;
-  // startingReputation: number;
+  startingLevel: number;
+  startingCurrency: number;
+  startingMood: number;
+  startingStress: number;
+  startingPaidLeaves: number;
+  startingReputation: number;
   baseSalary: number;
   salaryPerLevel: number;
   hoursPerDay: number;
@@ -238,4 +239,21 @@ export interface Notification {
   timestamp: number;
   isRead: boolean;
   icon?: string;
+}
+
+export interface GameConfig {
+  salaryPerLevel: number;
+  hoursPerDay: number;
+  daysPerMonth: number;
+  burnoutMoodThreshold: number;
+  maxStressThreshold: number;
+  experienceCurve: number; // Multiplier for level progression
+  gameOverReputation: number;
+  performanceThresholds: {
+    excellent: number;
+    good: number;
+    average: number;
+    poor: number;
+  };
+  restartLevelPercentage: number;
 }
