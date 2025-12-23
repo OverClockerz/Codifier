@@ -31,7 +31,7 @@ export function Cafeteria() {
   // STATE & DATA FETCHING
   // ============================================================
   // TODO: Replace with API call in production
-  let { player,setPlayer, inventory } = useGame();
+  let { player,setPlayer} = useGame();
 
   // ============================================================
   // HELPER FUNCTIONS
@@ -99,7 +99,7 @@ export function Cafeteria() {
               <div className="text-3xl text-white">${player.currency.toLocaleString()}</div>
             </div>
             <div className="text-sm text-amber-200">
-              💡 Salary is paid at end of month
+              💡 Salary is paid at the end of the month
             </div>
           </div>
         </div>
