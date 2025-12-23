@@ -15,6 +15,7 @@ import { Info } from 'lucide-react';
 import { Quest } from '../types/game';
 import svgPaths from '../imports/svg-qb2wx137qt';
 import { Tooltip } from './Tooltip';
+import { calculateDeadline } from '../utils/calculations';
 
 interface QuestCardProps {
   quest: Quest;
@@ -28,7 +29,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
   // CALCULATE DAYS REMAINING
   // ============================================================
   const daysLeft = quest.deadline 
-    ? Math.ceil((quest.deadline - Date.now()) / (1000 * 60 * 60 * 24))
+    ? calculateDeadline(quest.deadline)
     : null;
 
   // ============================================================

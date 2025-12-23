@@ -567,3 +567,13 @@ export function updateQuestSkills(
 
   return data;
 }
+
+
+
+// ===========================
+//DEADLINE CALCULATIONS
+//===========================
+
+export function calculateDeadline(deadline: number): number {
+  return Math.ceil((deadline - Math.floor(Date.now())/1000)/(60*60*24)) // milliseconds
+}

@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { Bell, Menu, X, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
-import { ZoneType, Quest } from '../types/game';
+import { ZoneType, Quest, GitHubInfo } from '../types/game';
 import { GameDashboard } from './GameDashboard';
 import { QuestList } from './QuestList';
 import { SimpleQuestModal } from './activities/SimpleQuestModal';
@@ -141,7 +141,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                 />
                 <div className="flex-1 text-left">
                   <p className="text-sm text-white">{user?.username}</p>
-                  <p className="text-xs text-gray-400">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p>
+                  {/* <p className="text-xs text-gray-400">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p> */}
                 </div>
                 <ChevronRight className="w-5 h-5 text-gray-500" />
               </button>
