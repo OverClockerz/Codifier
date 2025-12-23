@@ -669,7 +669,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         paidLeaves: player.paidLeaves,
         currentDay: player.currentDay,
         currentMonth: player.currentMonth,
-        lastLoginDate: new Date().toISOString(),
+        lastLoginDate: player.lastLoginDate,
         careerHistory: player.careerHistory,
         currentRun: player.currentRun,
         reputation: player.reputation,
