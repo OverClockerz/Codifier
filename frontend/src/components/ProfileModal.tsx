@@ -303,10 +303,10 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                       <span className="text-gray-500">Earnings:</span>
                       <span className="text-green-400">+${player.currentMonthEarnings}</span>
                     </div>
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                       <span className="text-gray-500">Rating:</span>
                       <span className="text-yellow-400">{player.currentRating}/5.0</span>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

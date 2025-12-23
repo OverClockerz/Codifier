@@ -30,7 +30,7 @@ export function PlayerCard({ onClick }: PlayerCardProps) {
         <div className="text-left">
           <h2 className="text-xl text-white">{user?.username || 'Player'}</h2>
           <p className="text-sm text-gray-400">
-            #EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}
+            {player ? `#EMP-2024-${String(player.currentRun?.runNumber || 1).padStart(3, '0')}` : ''}
           </p>
           <p className="text-sm text-gray-500">OmniTech Solutions</p>
         </div>

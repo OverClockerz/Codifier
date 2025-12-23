@@ -5,7 +5,7 @@
  * This includes calculations for buffs/effects, salary, skills, reputation, exp, mood, stress, etc.
  */
 
-import { PlayerState, Quest, ShopItem, Buff } from '../types/game';
+import { PlayerState, Quest, ShopItem, Buff, ActiveBuff } from '../types/game';
 import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS } from '../data/gameConfig';
 
 // ===========================
@@ -315,10 +315,10 @@ export function calculateQuestRewards(
 export function applyConsumableItem(
   playerData: PlayerState,
   item: ShopItem
-): { playerData: PlayerState; activeBuff: Buff | null } {
+): PlayerState {
   const data = { ...playerData };
   const effect = item.effect || {};
-  let activeBuff: Buff | null = null;
+  let activeBuff: ActiveBuff | null = null;
 
   // Instant effects
   if (effect.stressReduction) {
@@ -335,16 +335,21 @@ export function applyConsumableItem(
 
   // Timed buff effects
   if (effect.duration) {
+    const appliedAt = Date.now();
     const expiresAt = Date.now() + effect.duration * 60 * 1000;
     activeBuff = {
       itemId: item.id,
       name: item.name,
       effect: effect,
+      appliedAt: appliedAt,
       expiresAt: expiresAt,
     };
   }
+  if (activeBuff) {
+    playerData.activeBuffs.push(activeBuff);
+  } 
 
-  return { playerData: data, activeBuff };
+  return data;
 }
 
 export function applyPermanentBuff(playerData: PlayerState, item: ShopItem): PlayerState {
@@ -406,21 +411,24 @@ export function purchaseItem(
     return { success: true, playerData: data, message: 'Permanent buff acquired' };
   } else if (item.type === 'consumable') {
     // Add to inventory
-    if (!data.inventory) {
-      data.inventory = [];
-    }
+    // if (!data.inventory) {
+    //   data.inventory = [];
+    // }
 
-    // Check if item already in inventory
-    const existing = data.inventory.find((inv) => inv.item.id === item.id);
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      data.inventory.push({
-        item: item,
-        quantity: 1,
-        purchasedAt: Date.now(),
-      });
-    }
+    // // Check if item already in inventory
+    // const existing = data.inventory.find((inv) => inv.item.id === item.id);
+    // if (existing) {
+    //   existing.quantity += 1;
+    // } else {
+    //   data.inventory.push({
+    //     item: item,
+    //     quantity: 1,
+    //     purchasedAt: Date.now(),
+    //   });
+    // }
+
+    data = applyConsumableItem(data, item);
+
 
     return { success: true, playerData: data, message: 'Item added to inventory' };
   }
@@ -485,13 +493,13 @@ export function resetCareer(playerData: PlayerState): PlayerState {
   data.level = restartLevel;
   data.experience = 0;
   data.experienceToNextLevel = getExperienceForLevel(restartLevel);
-  data.currency = GAME_CONFIG.startingCurrency;
-  data.mood = GAME_CONFIG.startingMood;
-  data.stress = GAME_CONFIG.startingStress;
+  // data.currency = GAME_CONFIG.startingCurrency;
+  // data.mood = GAME_CONFIG.startingMood;
+  // data.stress = GAME_CONFIG.startingStress;
   data.isBurntOut = false;
   data.baseSalary = getSalaryForLevel(restartLevel);
   data.currentMonthEarnings = 0;
-  data.paidLeaves = GAME_CONFIG.startingPaidLeaves;
+  // data.paidLeaves = GAME_CONFIG.startingPaidLeaves;
   data.currentDay = 1;
   data.currentMonth = 1;
   data.reputation = 0;

@@ -1,5 +1,4 @@
-import { Quest, QuestChain } from "../types/game";
-
+import { Quest } from "../types/game";
 // Daily Quests
 export const DAILY_QUESTS: Omit<
   Quest,

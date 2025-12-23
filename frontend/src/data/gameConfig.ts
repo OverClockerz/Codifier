@@ -13,12 +13,12 @@ import { GameConfig } from '../types/game';
 
 export const GAME_CONFIG: GameConfig = {
   // Starting player stats
-  startingLevel: 1,
-  startingCurrency: 10000000,
-  startingMood: 100,
-  startingStress: 0,
-  startingPaidLeaves: 5,
-  startingReputation: 0, // Start at +0%
+  // startingLevel: 1,
+  // startingCurrency: 1000000,
+  // startingMood: 100,
+  // startingStress: 0,
+  // startingPaidLeaves: 5,
+  // startingReputation: 0, // Start at +0%
 
   // Progression settings
   baseSalary: 1000,
@@ -104,16 +104,16 @@ export function getInitialPlayerData(userId: string, username: string) {
   return {
     id: userId,
     username: username,
-    level: GAME_CONFIG.startingLevel,
+    // level: GAME_CONFIG.startingLevel,
     experience: 0,
-    experienceToNextLevel: getExperienceForLevel(GAME_CONFIG.startingLevel),
-    currency: GAME_CONFIG.startingCurrency,
-    mood: GAME_CONFIG.startingMood,
-    stress: GAME_CONFIG.startingStress,
+    // experienceToNextLevel: getExperienceForLevel(GAME_CONFIG.startingLevel),
+    // currency: GAME_CONFIG.startingCurrency,
+    // mood: GAME_CONFIG.startingMood,
+    // stress: GAME_CONFIG.startingStress,
     isBurntOut: false,
     baseSalary: GAME_CONFIG.baseSalary,
     currentMonthEarnings: 0,
-    paidLeaves: GAME_CONFIG.startingPaidLeaves,
+    // paidLeaves: GAME_CONFIG.startingPaidLeaves,
     currentDay: 1,
     currentMonth: 1,
     lastLoginDate: new Date().toISOString(),
@@ -125,11 +125,12 @@ export function getInitialPlayerData(userId: string, username: string) {
       totalExperience: 0,
       monthsWorked: 0,
     },
-    reputation: GAME_CONFIG.startingReputation,
+    // reputation: GAME_CONFIG.startingReputation,
     skills: {}, // Will be populated as player completes quests
-    permanentBuffs: [], // Will be populated when player buys permanent items
+    // permanentBuffs: [], // Will be populated when player buys permanent items
     activeQuests: [], // IDs of active quests
     completedQuests: [], // IDs of completed quests
     inventory: [], // Array of inventory items
   };
 }
+

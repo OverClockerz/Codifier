@@ -24,13 +24,14 @@ import { useGame } from '../contexts/GameContext';
 import { SHOP_ITEMS } from '../data/shopItems';
 import { ShopItem } from '../types/game';
 import { Coffee, ShoppingCart, Check, Sparkles } from 'lucide-react';
+import { purchaseItem } from '../utils/calculations';
 
 export function Cafeteria() {
   // ============================================================
   // STATE & DATA FETCHING
   // ============================================================
   // TODO: Replace with API call in production
-  const { player, purchaseItem, inventory } = useGame();
+  let { player,setPlayer, inventory } = useGame();
 
   // ============================================================
   // HELPER FUNCTIONS
@@ -38,7 +39,7 @@ export function Cafeteria() {
   
   // Check if player owns an item
   const isPurchased = (itemId: string) => {
-    return inventory.some(item => item.item.id === itemId);
+    return player.permanentBuffs.some(item => item.itemId === itemId);
   };
 
   // Check if player can afford an item
@@ -54,13 +55,18 @@ export function Cafeteria() {
   // ============================================================
   // EVENT HANDLERS
   // ============================================================
-  const handlePurchase = (itemId: string) => {
+  const handlePurchase = (item: ShopItem) => {
     // TODO: In production, make API call
     // await fetch('/api/shop/purchase', {
     //   method: 'POST',
     //   body: JSON.stringify({ itemId, playerId: player.id }),
     // });
-    purchaseItem(itemId);
+    const state = purchaseItem(player, item); // your calculation function
+    if (state.success) {
+      console.log(state.playerData);
+      setPlayer(state.playerData); // update context state
+      alert(state.message);
+    }
   };
 
   return (
@@ -93,7 +99,7 @@ export function Cafeteria() {
               <div className="text-3xl text-white">${player.currency.toLocaleString()}</div>
             </div>
             <div className="text-sm text-amber-200">
-              💡 Salary paid at end of month
+              💡 Salary is paid at end of month
             </div>
           </div>
         </div>
@@ -121,11 +127,8 @@ export function Cafeteria() {
                 transition={{ delay: 0.1 + index * 0.05 }}
                 className={`
                   bg-gray-900/50 border rounded-xl p-5 transition-all group relative
-                  ${purchased && isPermanent
-                    ? 'border-green-600 bg-green-900/10' 
-                    : affordable 
-                    ? 'border-gray-700 hover:border-amber-500' 
-                    : 'border-gray-800 opacity-60'
+                  ${(purchased && isPermanent?'border-gray-800 opacity-60': (affordable?'border-gray-700 hover:border-amber-500' 
+                    : 'border-gray-800 opacity-60'))
                   }
                 `}
               >
@@ -154,7 +157,7 @@ export function Cafeteria() {
                 <div className="flex items-center justify-between">
                   <div className="text-xl text-amber-400">${item.price}</div>
                   <button
-                    onClick={() => handlePurchase(item.id)}
+                    onClick={() => handlePurchase(item)}
                     disabled={!affordable || (purchased && isPermanent)}
                     className={`
                       px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-2
@@ -177,7 +180,7 @@ export function Cafeteria() {
       {/* ============================================================ */}
       {/* OWNED PERMANENT ITEMS */}
       {/* ============================================================ */}
-      {inventory.filter(item => item.item.type === 'permanent-buff').length > 0 && (
+      {player.permanentBuffs && player.permanentBuffs.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -189,16 +192,19 @@ export function Cafeteria() {
             Your Permanent Items
           </h3>
           <div className="flex flex-wrap gap-3">
-            {inventory
-              .filter(item => item.item.type === 'permanent-buff')
-              .map((invItem, index) => (
-                <div
-                  key={`${invItem.item.id}-${index}`}
-                  className="bg-green-900/30 border border-green-600 px-4 py-2 rounded-lg text-green-300 text-sm"
-                >
-                  {invItem.item.icon} {invItem.item.name}
-                </div>
-              ))
+            {player.permanentBuffs
+              .map((buff, index) => {
+                // Find the shop item for icon and name
+                const shopItem = SHOP_ITEMS.find(i => i.id === buff.itemId);
+                return (
+                  <div
+                    key={`${buff.itemId}-${index}`}
+                    className="bg-green-900/30 border border-green-600 px-4 py-2 rounded-lg text-green-300 text-sm"
+                  >
+                    {shopItem ? shopItem.icon : ''} {shopItem ? shopItem.name : buff.name}
+                  </div>
+                );
+              })
             }
           </div>
         </motion.div>

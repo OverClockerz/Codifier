@@ -18,6 +18,7 @@ export interface Quest {
   description: string;
   zone: ZoneType;
   frequency: 'daily' | 'weekly' | 'monthly';
+  skillCategory: SkillCategory;
   difficulty: number; // 1-5
   expReward: number;
   currencyReward: number;
@@ -50,6 +51,7 @@ export interface QuestionData {
 export interface PlayerState {
   // id: string;
   username: string;
+  githubinfo: GitHubInfo;
   gameStartDate: string;
   level: number;
   experience: number;
@@ -69,10 +71,17 @@ export interface PlayerState {
   currentRun: CareerRun;
   reputation: number; // Reputation score (-20 to +∞, fired at -20)
   skills: Record<string, number>; // Skill name -> level (0-100)
+  activeBuffs: ActiveBuff[]; // Temporary buffs applied
   permanentBuffs: Buff[]; // Permanent buffs acquired
-  activeQuests: string[]; // IDs of active quests
-  completedQuests: string[]; // IDs of completed quests
+  activeQuests: Quest[]; // IDs of active quests
+  completedQuests: Quest[]; // IDs of completed quests
   inventory: InventoryItem[]; // Array of inventory items
+}
+
+export interface GitHubInfo {
+  github_id: string;
+  avatar_url: string;
+  github_email: string;
 }
 
 export interface CareerRun {
@@ -155,12 +164,12 @@ export interface MonthlyReport {
 // ============================================================
 
 export interface GameConfig {
-  startingLevel: number;
-  startingCurrency: number;
-  startingMood: number;
-  startingStress: number;
-  startingPaidLeaves: number;
-  startingReputation: number;
+  // startingLevel: number;
+  // startingCurrency: number;
+  // startingMood: number;
+  // startingStress: number;
+  // startingPaidLeaves: number;
+  // startingReputation: number;
   baseSalary: number;
   salaryPerLevel: number;
   hoursPerDay: number;

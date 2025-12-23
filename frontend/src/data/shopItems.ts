@@ -1,5 +1,4 @@
 import { ShopItem } from '../types/game';
-
 /**
  * SHOP ITEMS CONFIGURATION
  * =========================

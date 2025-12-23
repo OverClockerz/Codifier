@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, CareerRun, Notification, ShopItem } from '../types/game';
+import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, Notification, ShopItem, Buff} from '../types/game';
 import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel } from '../data/gameConfig';
 import { getRandomQuests } from '../data/quests';
 import { useAuth } from './AuthContext';
@@ -37,10 +37,11 @@ interface GameContextType {
   showLevelUp: boolean;
   
   // Actions
+  setPlayer: (player: PlayerState) => void;
   startQuest: (questId: string) => void;
   completeQuest: (questId: string, performanceScore: number) => void;
   failQuest: (questId: string) => void;
-  purchaseItem: (itemId: string) => boolean;
+  purchaseItem: (item: ShopItem) => boolean;
   useItem: (itemId: string) => void;
   takePaidLeave: () => boolean;
   updateMoodStress: (moodChange: number, stressChange: number) => void;
@@ -63,18 +64,24 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   
   const createNewPlayer = (): PlayerState => ({
-    id: user?.id || '',
+    // id: user?.id || '',
     username: user?.username || '',
-    level: GAME_CONFIG.startingLevel,
+    githubinfo: {
+      github_id: user?.id || '',
+      avatar_url: user?.avatar || '',
+      github_email: user?.email || '',
+    },
+    gameStartDate: new Date().toISOString(),
+    level: 1,
     experience: 0,
     experienceToNextLevel: getExperienceForLevel(1),
-    currency: GAME_CONFIG.startingCurrency,
-    mood: GAME_CONFIG.startingMood,
-    stress: GAME_CONFIG.startingStress,
+    currency: 2000000,
+    mood: 100,
+    stress: 0,
     isBurntOut: false,
     baseSalary: getSalaryForLevel(1),
     currentMonthEarnings: 0,
-    paidLeaves: GAME_CONFIG.startingPaidLeaves,
+    paidLeaves: 5,
     currentDay: 1,
     currentMonth: 1,
     lastLoginDate: new Date().toISOString(),
@@ -88,7 +95,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     },
     reputation: 0, // Start at +0%
     skills: {}, // Empty skills object
+    activeBuffs: [], // No active buffs initially
     permanentBuffs: [], // No permanent buffs initially
+    activeQuests: [], // IDs of active quests
+    completedQuests: [], // IDs of completed quests
+    inventory: []
   });
 
   const [player, setPlayer] = useState<PlayerState>(createNewPlayer);
@@ -173,7 +184,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           
           // Add notification
           addNotification({
-            type: 'alert',
+            type: 'quest',
             title: 'Quest Failed - Deadline Missed',
             message: `Failed: "${quest.title}". Your reputation has been affected. Complete tasks on time to maintain good standing.`,
           });
@@ -364,10 +375,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     ]);
   };
 
-  const purchaseItem = (itemId: string): boolean => {
-    const { SHOP_ITEMS } = require('../data/shopItems');
-    const item = SHOP_ITEMS.find((i: any) => i.id === itemId);
-    
+  const purchaseItem = (item: ShopItem): boolean => {
     if (!item || player.currency < item.price) {
       return false;
     }
@@ -376,10 +384,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     // Add to inventory
     setInventory(prev => {
-      const existing = prev.find(i => i.item.id === itemId);
+      const existing = prev.find(i => i.item.id === item.id);
       if (existing) {
         return prev.map(i =>
-          i.item.id === itemId
+          i.item.id === item.id
             ? { ...i, quantity: i.quantity + 1 }
             : i
         );
@@ -445,10 +453,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
       // Permanent buff - add to player's permanent buffs and active buffs
       setPlayer(prev => {
         // Don't add if already owned
-        if ((prev.permanentBuffs || []).includes(itemId)) return prev;
+        if ((prev.permanentBuffs || []).some(buff => buff.itemId === itemId)) return prev;
         return {
           ...prev,
-          permanentBuffs: [...(prev.permanentBuffs || []), itemId],
+          permanentBuffs: [
+            ...(prev.permanentBuffs || []),
+            {
+              itemId: item.id,
+              name: item.name,
+              effect: item.effect,
+              // expiresAt: undefined // Permanent buffs may not have expiry
+            }
+          ],
         };
       });
 
@@ -706,8 +722,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
       // Transform backend data to frontend PlayerState format
       const transformedPlayer: PlayerState = {
-        id: backendData.githubinfo?.github_id || user.id,
+        // id: backendData.githubinfo?.github_id || user.id,
         username: backendData.username || user.username || '',
+        githubinfo: {
+          github_id: backendData.githubinfo?.github_id || user.id || '',
+          avatar_url: backendData.githubinfo?.avatar_url || user.avatar || '',
+          github_email: backendData.githubinfo?.github_email || user.email || '',
+        },
+        gameStartDate: backendData.gameStartDate || new Date().toISOString(),
         level: backendData.level || 1,
         experience: backendData.experience || 0,
         experienceToNextLevel: backendData.experienceToNextLevel || getExperienceForLevel(backendData.level || 1),
@@ -733,7 +755,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         },
         reputation: backendData.reputation || 0,
         skills: backendData.skills || {},
-        permanentBuffs: backendData.permanentItems || [],
+        activeBuffs: backendData.activeBuffs || [], // Will be set separately
+        permanentBuffs: backendData.permanentBuffs || [],
         activeQuests: [], // Will be set separately
         completedQuests: [], // Will be set separately
         inventory: [], // Will be set separately
@@ -831,6 +854,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         monthlyReports,
         notifications,
         showLevelUp,
+        setPlayer,
         startQuest,
         completeQuest,
         failQuest,

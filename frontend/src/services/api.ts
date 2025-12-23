@@ -18,7 +18,7 @@
  * - POST /api/player/update    → Update player data in database
  * - GET  /api/quests/get       → Fetch available quests for player
  * - POST /api/quests/update    → Update quest status (start/complete/fail)
- * - POST /api/auth/github      → GitHub OAuth authentication
+ * - POST /api/github/callback     → GitHub OAuth authentication happening in GitHubAuthModal.tsx
  */
 
 import { Quest, ShopItem, PlayerState } from "../types/game";
