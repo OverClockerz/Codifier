@@ -208,9 +208,9 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             <p className="text-xs text-green-400">+{player.currentMonthEarnings}</p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-500">Code Quality</p>
-            <p className="text-xl text-white">75</p>
-            <p className="text-xs text-gray-500">%</p>
+            <p className="text-xs text-gray-500">Paid Leaves</p>
+            <p className="text-xl text-white">{player.paidLeaves}</p>
+            <p className="text-xs text-gray-500">days</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500">Soft Skills</p>

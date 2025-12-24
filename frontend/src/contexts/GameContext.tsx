@@ -35,9 +35,8 @@ interface GameContextType {
   monthlyReports: MonthlyReport[];
   notifications: Notification[];
   showLevelUp: boolean;
-  setPlayer: (player: PlayerState) => void;
-  
   // Actions
+  setPlayer: (player: PlayerState) => void;
   startQuest: (questId: string) => void;
   completeQuest: (questId: string, performanceScore: number) => void;
   failQuest: (questId: string) => void;
@@ -138,7 +137,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Math.floor(Date.now()/1000);
-      // console.log('⏰ Checking for quest deadlines at', now);
       activeQuests.forEach(quest => {
         if (quest.deadline && quest.status === 'in-progress' && now > quest.deadline) {
           // Auto-fail quest that missed deadline
@@ -152,7 +150,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           });
         }
       });
-    }, 30000); // Check every 10 seconds
+    }, 30000); // Check every 30 seconds
 
     return () => clearInterval(interval);
   }, [activeQuests]);
@@ -403,8 +401,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       ]);
     }
 
-    // Remove from inventory if consumable
-     if (item.type === 'consumable') {
+    if (item.type === 'consumable') {
       setInventory(prev =>
         prev
           .map(i =>
@@ -714,41 +711,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const backendData = await fetchPlayerData(user.username);
       console.log('✅ Backend data received:', backendData);
 
-      // // Transform backend data to frontend PlayerState format
-      // const transformedPlayer: PlayerState = {
-      //   id: backendData.githubinfo?.github_id || user.id,
-      //   username: backendData.username || user.username || '',
-      //   level: backendData.level || 1,
-      //   experience: backendData.experience || 0,
-      //   experienceToNextLevel: backendData.experienceToNextLevel || getExperienceForLevel(backendData.level || 1),
-      //   currency: backendData.currency || 100,
-      //   mood: backendData.mood || 70,
-      //   stress: backendData.stress || 20,
-      //   isBurntOut: backendData.isBurntOut || false,
-      //   baseSalary: backendData.baseSalary || 0,
-      //   currentMonthEarnings: backendData.currentMonthEarnings || 0,
-      //   currentMonthTasksCompleted: backendData.currentMonthTasksCompleted || 0,
-      //   paidLeaves: backendData.paidLeaves || 0,
-      //   currentDay: backendData.currentDay || 1,
-      //   currentMonth: backendData.currentMonth || 1,
-      //   lastLoginDate: backendData.lastLoginDate || new Date().toISOString(),
-      //   careerHistory: backendData.careerHistory || [],
-      //   currentRun: backendData.currentRun || {
-      //     runNumber: 1,
-      //     startLevel: 1,
-      //     maxLevelAchieved: 1,
-      //     totalExperience: 0,
-      //     monthsWorked: 0,
-      //     reasonForEnd: 'active',
-      //   },
-      //   reputation: backendData.reputation || 0,
-      //   skills: backendData.skills || {},
-      //   permanentBuffs: backendData.permanentItems || [],
-      //   activeQuests: [], // Will be set separately
-      //   completedQuests: [], // Will be set separately
-      //   inventory: [], // Will be set separately
-      // };
-
+      // Transform backend data to frontend PlayerState format
       const transformedPlayer: PlayerState = {
         id: backendData.githubinfo?.github_id,
         username: backendData.username,
@@ -756,11 +719,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
         gameStartDate: backendData.gameStartDate ,
         level: backendData.level,
         experience: backendData.experience ,
-        experienceToNextLevel: backendData.experienceToNextLevel || getExperienceForLevel(backendData.level || 1),
+        experienceToNextLevel: backendData.experienceToNextLevel,
         currency: backendData.currency ,
         mood: backendData.mood ,
         stress: backendData.stress,
-        isBurntOut: backendData.isBurntOut || false,
+        isBurntOut: backendData.isBurntOut ,
         baseSalary: backendData.baseSalary ,
         currentMonthEarnings: backendData.currentMonthEarnings,
         currentMonthTasksCompleted: backendData.currentMonthTasksCompleted ,
@@ -769,14 +732,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         currentMonth: backendData.currentMonth,
         lastLoginDate: backendData.lastLoginDate,
         careerHistory: backendData.careerHistory,
-        currentRun: backendData.currentRun || {
-          runNumber: 1,
-          startLevel: 1,
-          maxLevelAchieved: 1,
-          totalExperience: 0,
-          monthsWorked: 0,
-          reasonForEnd: 'active',
-        },
+        currentRun: backendData.currentRun  ,
         reputation: backendData.reputation ,
         skills: backendData.skills ,
         activeBuffs: backendData.activeBuffs ,
@@ -789,27 +745,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setPlayer(transformedPlayer);
 
       // Set quests from backend
-      const backendActiveQuests: Quest[] = backendData.activeQuests || [];
-      const backendCompletedQuests: Quest[] = backendData.completedQuests || [];
+      const backendActiveQuests: Quest[] = backendData.activeQuests;
+      const backendCompletedQuests: Quest[] = backendData.completedQuests;
       
       setActiveQuests(backendActiveQuests);
       setCompletedQuests(backendCompletedQuests);
 
       // Transform inventory from backend
-      const backendInventory = backendData.inventory || [];
+      const backendInventory = backendData.inventory;
       const transformedInventory: InventoryItem[] = backendInventory.map((item: any) => {
         // Find the matching shop item from our hardcoded list
         const shopItem = shopItems.find(si => si.id === item.itemId || si.id === item.item?.id);
         return {
           item: shopItem || item.item,
-          quantity: item.quantity || 1,
+          quantity: item.quantity,
           purchasedAt: item.purchasedAt || Date.now(),
         };
       });
       setInventory(transformedInventory);
 
       // Rebuild active buffs from permanent items
-      const permanentBuffsList: ActiveBuff[] = (backendData.permanentItems || []).map((itemId: string) => {
+      const permanentBuffsList: ActiveBuff[] = (backendData.permanentItems).map((itemId: string) => {
         const shopItem = shopItems.find(si => si.id === itemId);
         if (!shopItem) return null;
         return {

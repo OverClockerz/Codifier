@@ -43,7 +43,7 @@ InitialPlayerState = {
         "problem_solving": 5,
         "communication": 4
     },
-
+    "activeBuffs": [],
     "permanentItems": [],
     "activeQuests": [],
     "completedQuests": [],
