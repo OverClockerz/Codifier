@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { ScrambleText } from './effects/ScrambleText';
-import { smoothScrollToElement } from '../utils/smoothScroll';
+import { ScrambleText } from '../effects/ScrambleText';
+import { smoothScrollToElement } from '../../utils/smoothScroll';
 
 interface HeroProps {
   onStartCareer: () => void;

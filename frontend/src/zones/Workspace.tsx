@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Code, Terminal, Lightbulb, TrendingUp, Zap } from 'lucide-react';
 import { useGame } from '../contexts/GameContext';
-import { QuestCard } from '../components/QuestCard';
+import { QuestCard } from '../components/quests/QuestCard';
 import { QuestPage } from '../pages/QuestPage';
 
 export function Workspace() {

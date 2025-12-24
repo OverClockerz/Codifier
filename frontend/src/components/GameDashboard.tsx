@@ -22,12 +22,12 @@ import {
 import { useState } from 'react';
 import { ZoneType } from '../types/game';
 // import { getDifficultyLabel } from '../data/quests';
-import { PlayerCard } from './PlayerCard';
+import { PlayerCard } from './player/PlayerCard';
 import { Workspace } from '../zones/Workspace';
 import { GameLounge } from '../zones/GameLounge';
 import { MeetingRoom } from '../zones/MeetingRoom';
 import { Cafeteria } from '../zones/Cafeteria';
-import { Tooltip } from './Tooltip';
+import { Tooltip } from './extras/Tooltip';
 import { calculateDeadline } from '../utils/calculations';
 
 const deadlineThreshold =2;

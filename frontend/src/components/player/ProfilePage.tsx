@@ -1,10 +1,10 @@
 import { motion } from 'motion/react';
-import { useAuth } from '../contexts/AuthContext';
-import { useGame } from '../contexts/GameContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useGame } from '../../contexts/GameContext';
 import { useState } from 'react';
-import { ZoneType } from '../types/game';
+import { ZoneType } from '../../types/game';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
-import { ScrambleTextOnHover } from './effects/ScrambleText';
+import { ScrambleTextOnHover } from '../effects/ScrambleText';
 import {
   User,
   ChevronRight,
@@ -99,14 +99,14 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               <h1 className="text-xl md:text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 <ScrambleTextOnHover text="OFFICE" />
               </h1>
-              <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-900/50 rounded-full border border-gray-800">
+              {/* <div className="hidden md:flex items-center gap-2 px-2 py-2 bg-gray-900/50 hover:bg-gray-800/50 rounded-full border border-gray-800 hover:border-gray-700 transition-all cursor-pointer">
                 <img
-                  src={user?.avatar}
-                  alt={user?.username}
-                  className="w-6 h-6 rounded-full"
+                  src={player.githubinfo?.avatar_url || user?.avatar || ''}
+                  alt={player.username}
+                  className="w-8 h-8 rounded-full"
                 />
                 <span className="text-sm text-gray-300">{user?.username}</span>
-              </div>
+              </div> */}
             </div>
 
             {/* Actions */}
@@ -144,18 +144,15 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                   <img
-                  src={user?.avatar}
-                  alt={user?.username}
-                  className="w-6 h-6 rounded-full"
+                  src={player.githubinfo?.avatar_url || user?.avatar || ''}
+                  alt={player.username}
+                  className="w-14 h-14 rounded-full"
                 />
                 </div>
                 <div>
                   <h2 className="text-xl text-white">{user?.username || 'Player'}</h2>
-                  <p className="text-sm text-gray-400">Employee ID</p>
-                  <p className="text-sm text-gray-500">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p>
                   <p className="text-sm text-gray-400 mt-1">• OmniTech Solutions</p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gray-600 hidden md:block" />
               </div>
 
               {/* Quick Stats Grid */}

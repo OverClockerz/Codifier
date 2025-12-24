@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { smoothScrollToElement } from '../utils/smoothScroll';
+import { smoothScrollToElement } from '../../utils/smoothScroll';
 
 const navItems = ['Home', 'About', 'Features', 'Gallery', 'Contact'];
 

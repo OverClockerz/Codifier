@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Check, X, Code, Brain, Users, CheckCircle } from 'lucide-react';
-import { Quest } from '../types/game';
+import { Quest } from '../../types/game';
 
 interface QuestTasksProps {
   quest: Quest;

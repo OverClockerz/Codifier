@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { GameProvider } from './contexts/GameContext';
-import { LandingPage } from './components/LandingPage';
+import { LandingPage } from './components/landingPage/LandingPage';
 import { GamePage } from './components/GamePage';
-import { ProfilePage } from './components/ProfilePage';
-import { GitHubAuthModal } from './components/GitHubAuthModal';
-import { MusicPlayer } from './components/MusicPlayer';
+import { ProfilePage } from './components/player/ProfilePage';
+import { GitHubAuthModal } from './components/auth/GitHubAuthModal';
+import { MusicPlayer } from './components/extras/MusicPlayer';
 import { LoadingScreen, GAME_TIPS } from './components/transitions/LoadingScreen';
 import { PageTransition } from './components/transitions/PageTransition';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { ErrorBoundary } from './components/extras/ErrorBoundary';
 
 type AppPage = 'landing' | 'game' | 'profile';
 

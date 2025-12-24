@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { useAuth } from '../contexts/AuthContext';
-import { useGame } from '../contexts/GameContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useGame } from '../../contexts/GameContext';
 import {
   User,
   ChevronRight,
@@ -83,36 +83,29 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
             transition={{ duration: 0.2 }}
             className="fixed top-20 left-1/2 -translate-x-1/2 w-[95%] max-w-2xl bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 border border-gray-700 rounded-2xl shadow-2xl z-[70] max-h-[85vh] overflow-y-auto"
           >
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
-            >
-              <X className="w-5 h-5" />
-            </button>
 
             {/* Content */}
             <div className="p-6">
               {/* Player Header */}
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                     <img
-                  src={user?.avatar}
-                  alt={user?.username}
-                  className="w-6 h-6 rounded-full"
+                  src={player.githubinfo?.avatar_url || user?.avatar || ''}
+                  alt={player.username}
+                  className="w-12 h-12 rounded-full"
                 />
                   </div>
                   <div>
                     <h2 className="text-lg text-white">{user?.username || 'Player'}</h2>
-                    <p className="text-sm text-gray-400">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p>
+                    {/* <p className="text-sm text-gray-400">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p> */}
                     <p className="text-xs text-gray-500">OmniTech Solutions</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-600 hidden md:block" />
+                  {/* <ChevronRight className="w-5 h-5 text-gray-600 hidden md:block" /> */}
                 </div>
 
                 {/* Top Right Stats */}
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 mr-4">
                   {/* Level */}
                   <div className="flex items-center gap-2 px-3 py-2 bg-blue-900/30 border border-blue-800/50 rounded-lg">
                     <TrendingUp className="w-4 h-4 text-blue-400" />
@@ -141,17 +134,26 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                   </div>
 
                   {/* Notifications */}
-                  <button className="relative w-10 h-10 flex items-center justify-center bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 rounded-lg transition-all">
+                  {/* <button className="relative w-10 h-10 flex items-center justify-center bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 rounded-lg transition-all">
                     <Bell className="w-4 h-4 text-gray-400" />
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-xs flex items-center justify-center rounded-full">
-                      1
+                      3
                     </span>
-                  </button>
+                  </button> */}
 
                   {/* Settings */}
-                  <button className="w-10 h-10 flex items-center justify-center bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 rounded-lg transition-all">
+                  {/* <button className="w-10 h-10 flex items-center justify-center bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 rounded-lg transition-all">
                     <Settings className="w-4 h-4 text-gray-400" />
-                  </button>
+                  </button> */}
+                  <div className='mr-4'>
+                     {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
+            >
+              <X className="w-5 h-5" />
+            </button>
+                  </div>
                 </div>
               </div>
 

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Code, Trophy, Zap, AlertCircle, CheckCircle, Clock } from 'lucide-react';
-import { Quest } from '../types/game';
-import { useGame } from '../contexts/GameContext';
-import { QuestTasks } from './QuestTasks';
+import { Quest } from '../../types/game';
+import { useGame } from '../../contexts/GameContext';
+import { QuestTasks } from '../QuestTasks';
 
 interface QuestInteractionModalProps {
   quest: Quest;

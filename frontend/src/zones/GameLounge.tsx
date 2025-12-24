@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Trophy, Gamepad2, Brain, Lightbulb, Zap, TrendingUp } from 'lucide-react';
 import { useGame } from '../contexts/GameContext';
-import { QuestCard } from '../components/QuestCard';
+import { QuestCard } from '../components/quests/QuestCard';
 import { QuestPage } from '../pages/QuestPage';
 
 export function GameLounge() {

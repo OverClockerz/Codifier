@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Github, X, AlertCircle, ArrowLeft } from 'lucide-react'; 
-import { GITHUB_CLIENT_ID } from '../../config.json';
-import { useNavigate } from 'react-router-dom';
+import { GITHUB_CLIENT_ID } from '../../../config.json';
+// import { useNavigate } from 'react-router-dom';
 
 interface GitHubAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAuth: (username: string) => void;
 }
-
+export let LOGIN_DATE_TIME = "";
 // --- Sub-component for the Wave Animation ---
 const LoadingWave = () => {
   const [text, setText] = useState("Authenticating");
@@ -111,6 +111,8 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
             window.history.replaceState({}, document.title, "/");
             onAuth(data.user.login);
             // onClose(); // Optional: Close automatically if you prefer
+           LOGIN_DATE_TIME = new Date().toISOString();
+           console.log('LOGIN_DATE_TIME set to:', LOGIN_DATE_TIME);
           } else {
             throw new Error('User data missing from response');
           }
@@ -225,3 +227,4 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
     </AnimatePresence>
   );
 }
+

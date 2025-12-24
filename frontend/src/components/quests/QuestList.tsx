@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
-import { useGame } from '../contexts/GameContext';
-import { Quest, ZoneType } from '../types/game';
+import { useGame } from '../../contexts/GameContext';
+import { Quest, ZoneType } from '../../types/game';
 import { Clock, Trophy, DollarSign, TrendingUp, Play, CheckCircle, XCircle } from 'lucide-react';
-import { ZoneHeader } from './ZoneHeader';
+import { ZoneHeader } from '../ZoneHeader';
 
 interface QuestListProps {
   zone: ZoneType;

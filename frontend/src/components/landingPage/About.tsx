@@ -1,8 +1,8 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useRef } from 'react';
-import { ScrollReveal } from './effects/ScrollReveal';
-import { ScrambleText } from './effects/ScrambleText';
-import { smoothScrollToElement } from '../utils/smoothScroll';
+import { ScrollReveal } from '../effects/ScrollReveal';
+import { ScrambleText } from '../effects/ScrambleText';
+import { smoothScrollToElement } from '../../utils/smoothScroll';
 
 export function About() {
   const ref = useRef<HTMLDivElement>(null);

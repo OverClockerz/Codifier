@@ -4,6 +4,7 @@ import { getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS, GAME_CONS
 import { useAuth } from './AuthContext';
 import { fetchPlayerData, updatePlayerData } from '../services/api';
 import { shopItems } from '../data/shopItems';
+import {LOGIN_DATE_TIME} from '../components/auth/GitHubAuthModal';
 
 /**
  * GAME CONTEXT - MAIN GAME STATE MANAGEMENT
@@ -78,7 +79,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     mood: 70,
     stress: 20,
     isBurntOut: false,
-    baseSalary: 1000,
+    baseSalary: 100000000,
     currentMonthEarnings: 0,
     currentMonthTasksCompleted: 0,
     paidLeaves: 0,
@@ -614,7 +615,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       paidLeaves: 0,
       currentDay: 1,
       currentMonth: 1,
-      lastLoginDate: player.lastLoginDate,
+      lastLoginDate: new Date().toISOString(),
       careerHistory: [
         ...player.careerHistory,
         { ...player.currentRun, reasonForEnd: 'fired', endDate: new Date().toISOString() },
@@ -667,7 +668,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         paidLeaves: player.paidLeaves,
         currentDay: player.currentDay,
         currentMonth: player.currentMonth,
-        lastLoginDate: player.lastLoginDate,
+        lastLoginDate: LOGIN_DATE_TIME,
         careerHistory: player.careerHistory,
         currentRun: player.currentRun,
         reputation: player.reputation,
@@ -741,7 +742,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         completedQuests: [], 
         inventory: [],
       };
-
+console.log(' transformedPlayer:', transformedPlayer);
       setPlayer(transformedPlayer);
 
       // Set quests from backend

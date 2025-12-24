@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
 import { TrendingUp, Calendar } from 'lucide-react';
-import { ScrollReveal } from './effects/ScrollReveal';
-import { ScrambleText } from './effects/ScrambleText';
-import PinnedImageReveal from './effects/PinnedImageReveal';
+import { ScrollReveal } from '../effects/ScrollReveal';
+import { ScrambleText } from '../effects/ScrambleText';
+import PinnedImageReveal from '../effects/PinnedImageReveal';
 
 // Images for the four main zones
 const zoneImages = [

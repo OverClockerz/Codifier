@@ -5,15 +5,15 @@ import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
 import { ZoneType, Quest, GitHubInfo } from '../types/game';
 import { GameDashboard } from './GameDashboard';
-import { QuestList } from './QuestList';
-import { SimpleQuestModal } from './activities/SimpleQuestModal';
+import { QuestList } from './quests/QuestList';
+import { SimpleQuestModal } from './quests/SimpleQuestModal';
 import { ZoneTransition } from './transitions/ZoneTransition';
 import { QuestStartTransition } from './transitions/QuestStartTransition';
 import { LevelUpTransition } from './transitions/LevelUpTransition';
 import { ScrambleTextOnHover } from './effects/ScrambleText';
-import { ProfileModal } from './ProfileModal';
-import { NotificationsModal } from './NotificationsModal';
-import { DigitalClock } from './DigitalClock';
+import { ProfileModal } from './player/ProfileModal';
+import { NotificationsModal } from './extras/NotificationsModal';
+import { DigitalClock } from './extras/DigitalClock';
 
 export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => void }) {
   const { user, logout } = useAuth();
@@ -52,12 +52,12 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
               </h1>
               <button 
                 onClick={() => setShowProfileModal(true)}
-                className="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-900/50 hover:bg-gray-800/50 rounded-full border border-gray-800 hover:border-gray-700 transition-all cursor-pointer"
+                className="hidden md:flex items-center gap-2 px-2 py-2 bg-gray-900/50 hover:bg-gray-800/50 rounded-full border border-gray-800 hover:border-gray-700 transition-all cursor-pointer"
               >
                 <img
-                  src={user?.avatar}
-                  alt={user?.username}
-                  className="w-6 h-6 rounded-full"
+                  src={player.githubinfo?.avatar_url || user?.avatar || ''}
+                  alt={player.username}
+                  className="w-8 h-8 rounded-full"
                 />
                 <span className="text-sm text-gray-300">{user?.username}</span>
               </button>
@@ -135,8 +135,8 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                 className="w-full flex items-center gap-3 px-4 py-3 bg-gray-900/50 hover:bg-gray-800/50 rounded-lg border border-gray-800 mb-3 transition-all"
               >
                 <img
-                  src={user?.avatar}
-                  alt={user?.username}
+                  src={player.githubinfo?.avatar_url || user?.avatar || ''}
+                  alt={player.username}
                   className="w-8 h-8 rounded-full"
                 />
                 <div className="flex-1 text-left">

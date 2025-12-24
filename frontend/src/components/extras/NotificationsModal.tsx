@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Bell, Coffee, DollarSign, Award, AlertTriangle, TrendingUp } from 'lucide-react';
-import { useGame } from '../contexts/GameContext';
-import { Notification, NotificationType } from '../types/game';
+import { useGame } from '../../contexts/GameContext';
+import { Notification, NotificationType } from '../../types/game';
 import { useEffect } from 'react';
 
 interface NotificationsModalProps {

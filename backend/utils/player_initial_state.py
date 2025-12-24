@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 InitialPlayerState = {
     "username": "",
     "githubinfo": {
@@ -20,6 +22,7 @@ InitialPlayerState = {
     "currentMonthTasksCompleted": 0,
     "paidLeaves": 0,
 
+    "gameStartDate": datetime.now(),
     "currentDay": 1,
     "currentMonth": 1,
     "lastLoginDate": "",

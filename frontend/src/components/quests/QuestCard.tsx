@@ -12,10 +12,10 @@
 
 import { motion } from 'motion/react';
 import { Info } from 'lucide-react';
-import { Quest } from '../types/game';
-import svgPaths from '../imports/svg-qb2wx137qt';
-import { Tooltip } from './Tooltip';
-import { calculateDeadline } from '../utils/calculations';
+import { Quest } from '../../types/game';
+import svgPaths from '../../imports/svg-qb2wx137qt';
+import { Tooltip } from '../extras/Tooltip';
+import { calculateDeadline } from '../../utils/calculations';
 
 interface QuestCardProps {
   quest: Quest;
