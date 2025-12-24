@@ -617,7 +617,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       paidLeaves: 0,
       currentDay: 1,
       currentMonth: 1,
-      lastLoginDate: player.lastLoginDate,
+      lastLoginDate: new Date().toISOString(),
       careerHistory: [
         ...player.careerHistory,
         { ...player.currentRun, reasonForEnd: 'fired', endDate: new Date().toISOString() },
