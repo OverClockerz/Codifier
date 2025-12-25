@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useGame } from '../contexts/GameContext';
-import { useAuth } from '../contexts/AuthContext';
+// import { useAuth } from '../contexts/AuthContext';
 import {
   TrendingUp,
   Heart,
@@ -27,14 +27,14 @@ import { Workspace } from '../zones/Workspace';
 import { GameLounge } from '../zones/GameLounge';
 import { MeetingRoom } from '../zones/MeetingRoom';
 import { Cafeteria } from '../zones/Cafeteria';
-import { Tooltip } from './extras/Tooltip';
+// import { Tooltip } from './extras/Tooltip';
 import { calculateDeadline } from '../utils/calculations';
 
 const deadlineThreshold =2;
 
 export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void }) {
   const { player, activeQuests, activeBuffs } = useGame();
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
 
   // DEBUG: Log quest counts

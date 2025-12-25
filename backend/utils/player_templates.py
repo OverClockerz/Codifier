@@ -17,7 +17,7 @@ InitialPlayerState = {
     "stress": 20,
     "isBurntOut": False,
 
-    "baseSalary": 0,
+    "baseSalary": 1000,
     "currentMonthEarnings": 0,
     "currentMonthTasksCompleted": 0,
     "paidLeaves": 0,

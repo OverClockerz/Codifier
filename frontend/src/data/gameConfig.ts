@@ -22,6 +22,7 @@ export function getExperienceForLevel(level: number): number {
  * Calculate base salary for a given level
  * Formula: 1000 + (level - 1) * 200
  */
+
 export function getSalaryForLevel(level: number): number {
   const BASE_SALARY = 1000;
   const SALARY_PER_LEVEL = 200;
