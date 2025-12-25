@@ -1,24 +1,6 @@
 // ============================================================
 // CAFETERIA ZONE COMPONENT
 // ============================================================
-// In-game shop for purchasing consumables and permanent buffs
-// 
-// FEATURES:
-// - Browse and purchase items (hardcoded in /data/shopItems.ts)
-// - View owned permanent buffs
-// - Real-time currency display
-// 
-// BACKEND INTEGRATION - FULLY CONNECTED:
-// ✅ Shop items are hardcoded in frontend (no API needed)
-// ✅ When player purchases an item:
-//    1. Frontend deducts currency locally
-//    2. Frontend adds item to inventory/permanentBuffs
-//    3. GameContext automatically calls updatePlayerData() to sync with backend
-// ✅ Backend stores purchased items in player's inventory or permanentItems array
-// 
-// NO SHOP API ENDPOINTS NEEDED - purchases handled via /api/player/update
-// ============================================================
-
 import { motion } from 'motion/react';
 import { useGame } from '../contexts/GameContext';
 import { SHOP_ITEMS } from '../data/shopItems';
@@ -26,12 +8,19 @@ import { ShopItem } from '../types/game';
 import { Coffee, ShoppingCart, Check, Sparkles } from 'lucide-react';
 import { purchaseItem } from '../utils/calculations';
 
+// --- NEW IMPORTS ---
+import { ShopButton } from '../components/effects/ShopButton';
+import { Snackbar } from '../components/ui/snackbar';
+import { useSnackbar } from '../hooks/useSnackbar';
+
 export function Cafeteria() {
   // ============================================================
-  // STATE & DATA FETCHING
+  // STATE & HOOKS
   // ============================================================
-  // TODO: Replace with API call in production
-  let { player,setPlayer} = useGame();
+  const { player, setPlayer } = useGame();
+  
+  // Initialize the Snackbar Hook
+  const { isActive, message, triggerSnackbar } = useSnackbar();
 
   // ============================================================
   // HELPER FUNCTIONS
@@ -56,21 +45,25 @@ export function Cafeteria() {
   // EVENT HANDLERS
   // ============================================================
   const handlePurchase = (item: ShopItem) => {
-    // TODO: In production, make API call
-    // await fetch('/api/shop/purchase', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ itemId, playerId: player.id }),
-    // });
-    const state = purchaseItem(player, item); // your calculation function
+    // 1. Calculate State
+    const state = purchaseItem(player, item); 
+
     if (state.success) {
       console.log(state.playerData);
-      setPlayer(state.playerData); // update context state
-      alert(state.message);
+      
+      // 2. Update Context
+      setPlayer(state.playerData); 
+
+      // 3. Show Snackbar (Replaces alert)
+      triggerSnackbar(state.message); 
+    } else {
+      // Optional: Trigger error snackbar if purchase failed logic
+      triggerSnackbar("Purchase failed.");
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       {/* ============================================================ */}
       {/* ZONE HEADER */}
       {/* ============================================================ */}
@@ -118,6 +111,9 @@ export function Cafeteria() {
             const purchased = isPurchased(item.id);
             const affordable = canAfford(item.price);
             const isPermanent = item.type === 'permanent-buff';
+            
+            // Logic for disabling button
+            const isDisabled = !affordable || (purchased && isPermanent);
 
             return (
               <motion.div
@@ -127,7 +123,7 @@ export function Cafeteria() {
                 transition={{ delay: 0.1 + index * 0.05 }}
                 className={`
                   bg-gray-900/50 border rounded-xl p-5 transition-all group relative
-                  ${(purchased && isPermanent?'border-gray-800 opacity-60': (affordable?'border-gray-700 hover:border-amber-500' 
+                  ${(purchased && isPermanent ? 'border-gray-800 opacity-60' : (affordable ? 'border-gray-700 hover:border-amber-500' 
                     : 'border-gray-800 opacity-60'))
                   }
                 `}
@@ -156,20 +152,24 @@ export function Cafeteria() {
                 {/* Price and Purchase Button */}
                 <div className="flex items-center justify-between">
                   <div className="text-xl text-amber-400">${item.price}</div>
-                  <button
-                    onClick={() => handlePurchase(item)}
-                    disabled={!affordable || (purchased && isPermanent)}
-                    className={`
-                      px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-2
-                      ${affordable && !(purchased && isPermanent)
-                        ? 'bg-amber-600 hover:bg-amber-700 text-white'
-                        : 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                      }
-                    `}
-                  >
-                    <ShoppingCart className="w-4 h-4" />
-                    {purchased && isPermanent ? 'Owned' : 'Buy'}
-                  </button>
+                  
+                  {/* --- REPLACED BUTTON WITH SHOPBUTTON COMPONENT --- */}
+                  <ShopButton
+  item={item}
+  onPurchase={handlePurchase}
+  disabled={isDisabled}
+  className={`
+    px-4 py-2 rounded-lg text-sm flex items-center gap-2
+    ${!isDisabled
+      ? 'bg-amber-600 hover:bg-amber-700 text-white' // The Orange Button
+      : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+    }
+  `}
+>
+  <ShoppingCart className="w-4 h-4" />
+  {purchased && isPermanent ? 'Owned' : 'Buy'}
+</ShopButton>
+
                 </div>
               </motion.div>
             );
@@ -194,7 +194,6 @@ export function Cafeteria() {
           <div className="flex flex-wrap gap-3">
             {player.permanentBuffs
               .map((buff, index) => {
-                // Find the shop item for icon and name
                 const shopItem = SHOP_ITEMS.find(i => i.id === buff.itemId);
                 return (
                   <div
@@ -209,6 +208,15 @@ export function Cafeteria() {
           </div>
         </motion.div>
       )}
+
+      {/* ============================================================ */}
+      {/* GLOBAL SNACKBAR NOTIFICATION */}
+      {/* ============================================================ */}
+      <Snackbar 
+        isOpen={isActive} 
+        message={message} 
+      />
+      
     </div>
   );
 }
