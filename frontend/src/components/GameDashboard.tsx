@@ -99,9 +99,14 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
   // Get difficulty badge color
   const getDifficultyColor = (difficulty: number) => {
     if (difficulty <= 2) return 'bg-green-600 text-white';
-    if (difficulty <= 3) return 'bg-yellow-600 text-white';
+    if (difficulty <= 4) return 'bg-yellow-600 text-white';
     return 'bg-red-600 text-white';
   };
+  const getDifficultyLabel = (difficulty: number) => {
+    if (difficulty <= 2) return 'Easy';
+    if (difficulty <= 4) return 'Medium';
+    return 'Hard';
+  }
 
   return (
     <div className="space-y-6">
@@ -380,11 +385,11 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                           </span>
                           
                           {/* Difficulty Badge */}
-                          {/* {quest.difficulty && (
+                          {quest.difficulty && (
                             <span className={`px-3 py-1 rounded-full text-xs ${getDifficultyColor(quest.difficulty)}`}>
                               {getDifficultyLabel(quest.difficulty)}
                             </span>
-                          )} */}
+                          )}
                           
                           {/* Rewards */}
                           {quest.expReward > 0 && (
