@@ -9,7 +9,7 @@ interface GitHubAuthModalProps {
   onClose: () => void;
   onAuth: (username: string) => void;
 }
-export let LOGIN_DATE_TIME = "";
+export let LOGIN_DATE_TIME: Date;
 // --- Sub-component for the Wave Animation ---
 const LoadingWave = () => {
   const [text, setText] = useState("Authenticating");
@@ -111,7 +111,7 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
             window.history.replaceState({}, document.title, "/");
             onAuth(data.user.login);
             // onClose(); // Optional: Close automatically if you prefer
-           LOGIN_DATE_TIME = new Date().toISOString();
+           LOGIN_DATE_TIME = new Date();
            console.log('LOGIN_DATE_TIME set to:', LOGIN_DATE_TIME);
           } else {
             throw new Error('User data missing from response');

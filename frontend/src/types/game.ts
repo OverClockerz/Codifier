@@ -67,7 +67,7 @@ export interface PlayerState {
   paidLeaves: number;
   currentDay: number; // In-game day counter
   currentMonth: number;
-  lastLoginDate: string;
+  lastLoginDate: Date;
   careerHistory: CareerRun[];
   currentRun: CareerRun;
   reputation: number; // Reputation score (-20 to +∞, fired at -20)

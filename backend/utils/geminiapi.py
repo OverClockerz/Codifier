@@ -1,8 +1,6 @@
-
 import json
-from urllib import response
 from google import genai
-
+import re
 def generate_response(data={
     "question":"put the question here",
     "difficulty":"hard",
@@ -11,7 +9,7 @@ def generate_response(data={
     "type":"MCQ",
     "options":['put the options in this list as different elements'],
     "correct option":"put the correct option here as an index of the list",
-    }):
+    }, num=1):
     
     data_json=json.dumps(data)
 
@@ -19,6 +17,16 @@ def generate_response(data={
     client = genai.Client()
 
     response = client.models.generate_content(
-    model="gemini-2.5-flash", contents=f"{data_json} Generate a question based on the above data and return it in the same JSON format without giving ```json ``` tags"
+    model="gemini-2.5-flash", contents=f"[{data_json}] Generate a list of {num} questions based on the above data and return it in the same list of JSON format without giving ```json ``` tags"
     )
+
+    match = re.search(r"\[(.*)\]", response.text, re.DOTALL)
+
+    if match:
+       json_str = match.group(1).strip()
+       json_str = f"[{json_str}]"
+       print("Extracted JSON string:", json_str)
+       return json_str
+    
+
     return response.text

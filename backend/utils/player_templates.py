@@ -1,0 +1,78 @@
+from datetime import date, datetime
+
+InitialPlayerState = {
+    "username": "",
+    "githubinfo": {
+        "github_id": "",
+        "avatar_url": "",
+        "github_email": ""
+    },
+
+    "level": 1,
+    "experience": 0,
+    "experienceToNextLevel": 100,
+    "currency": 100,
+
+    "mood": 70,
+    "stress": 20,
+    "isBurntOut": False,
+
+    "baseSalary": 0,
+    "currentMonthEarnings": 0,
+    "currentMonthTasksCompleted": 0,
+    "paidLeaves": 0,
+
+    "gameStartDate": datetime.now(),
+    "currentDay": 1,
+    "currentMonth": 1,
+    "lastLoginDate": datetime.utcnow(),
+
+    "careerHistory": [],
+
+    "currentRun": {
+        "runNumber": 1,
+        "startLevel": 1,
+        "maxLevelAchieved": 1,
+        "totalExperience": 0,
+        "monthsWorked": 0,
+        "reasonForEnd": "active"
+    },
+
+    "reputation": 0,
+
+    "skills": {
+        "python": 5,
+        "git": 3,
+        "problem_solving": 5,
+        "communication": 4
+    },
+    "activeBuffs": [],
+    "permanentItems": [],
+    "activeQuests": [],
+    "completedQuests": [],
+    "inventory": []
+}
+
+MCQ_QUEST = {
+      "id": "unique-quest-id",
+      "title": "Put the quest title here",
+      "description": "Put the quest description here",
+      "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",
+      "frequency": "daily",
+      "skillCategory": "technical",
+      "difficulty": "on a scale of 1-10",
+      "expReward": "within 10-100",
+      "currencyReward": "within 10-100",
+      "stressImpact": "within 10 to 40",
+      "moodImpact": "within -5 to -20",
+      "deadline": "deadline in unix timestamp format randomly within 3-5 days from the day of assignment in 2025",
+      "assignedBy": "manager-alex",
+      "skills": ["put the skills improved by completing this quest in a list format"],
+      "type": "MCQ",
+      "question_data":'''list of 3 questions in this form [ {
+          "question": "put the question here",
+          "options": ['put the options in this list as different elements'],
+          "correct option": "put the correct option here as an index of the list"
+      }
+      ]'''
+} 

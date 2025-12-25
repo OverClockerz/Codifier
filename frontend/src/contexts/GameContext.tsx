@@ -85,7 +85,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     paidLeaves: 0,
     currentDay: 1,
     currentMonth: 1,
-    lastLoginDate: new Date().toISOString(),
+    lastLoginDate: LOGIN_DATE_TIME,
     careerHistory: [],
     currentRun: {
       runNumber: 1,
@@ -119,7 +119,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Save game on changes (but not on first load)
   useEffect(() => {
-    if (user?.id && player.id && activeQuests.length > 0) {
+    if (user?.id && player.id && activeQuests.length >= 0) {
       saveGame();
     }
   }, [player, activeQuests, completedQuests, inventory]);
@@ -151,7 +151,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           });
         }
       });
-    }, 30000); // Check every 30 seconds
+    }, 100); // Check every 30 seconds
 
     return () => clearInterval(interval);
   }, [activeQuests]);
@@ -615,7 +615,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       paidLeaves: 0,
       currentDay: 1,
       currentMonth: 1,
-      lastLoginDate: new Date().toISOString(),
+      lastLoginDate: LOGIN_DATE_TIME,
       careerHistory: [
         ...player.careerHistory,
         { ...player.currentRun, reasonForEnd: 'fired', endDate: new Date().toISOString() },

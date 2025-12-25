@@ -1,7 +1,7 @@
 from flask import request, jsonify,Blueprint
 from dotenv import load_dotenv
 from extensions import mongo
-from utils.player_initial_state import InitialPlayerState
+from utils.player_templates import InitialPlayerState
 from datetime import datetime
 import copy
 import os
@@ -65,6 +65,7 @@ def github_callback():
 
     if existing_player:
         # ✅ User already exists → DO NOT overwrite
+        existing_player["lastLoginDate"] = datetime.utcnow()
         return jsonify({
         'message': 'GitHub login successful',
         'user': user_data
@@ -82,7 +83,7 @@ def github_callback():
         "avatar_url": avatar_url,
         "github_email": github_email
     }
-    player["lastLoginDate"] = datetime.utcnow().isoformat()
+    player["lastLoginDate"] = datetime.utcnow()
 
     mongo.db.players.insert_one(player)
 

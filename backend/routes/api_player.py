@@ -32,9 +32,6 @@ def save_player():
     if not username:
         return jsonify({"error": "Username required"}), 401
 
-    # Enforce consistency
-    data["lastLoginDate"] = datetime.utcnow().isoformat()
-
     # Never allow username change
     data.pop("_id", None)
 
