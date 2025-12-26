@@ -1,6 +1,7 @@
 {
-      "name": "Zentry",
-      "version": "0.1.0",
+      "name": "codifier-frontend", 
+      "version": "1.0.0", 
+      "type": "module",
       "private": true,
       "dependencies": {
             "@gsap/react": "*",
@@ -62,6 +63,7 @@
             "vite": "^6.4.1"
       },
       "scripts": {
+            "start": "vite",
             "dev": "vite",
             "build": "vite build"
       }
