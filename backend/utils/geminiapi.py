@@ -1,4 +1,5 @@
 import json
+import os
 from google import genai
 import re
 def generate_response(data={
@@ -14,7 +15,8 @@ def generate_response(data={
     data_json=json.dumps(data)
 
     # The client gets the API key from the environment variable `GEMINI_API_KEY`.
-    client = genai.Client()
+    KEY=os.getenv("GEMINI_API_KEY")
+    client = genai.Client(api_key=KEY)
 
     response = client.models.generate_content(
     model="gemini-2.5-flash", contents=f"[{data_json}] Generate a list of {num} questions based on the above data and return it in the same list of JSON format without giving ```json ``` tags"

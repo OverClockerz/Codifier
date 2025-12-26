@@ -139,7 +139,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                 <DollarSign className="w-4 h-4 text-yellow-400" />
                 <div>
                   <p className="text-xs text-gray-400">Currency</p>
-                  <p className="text-lg text-white">${player.currency}</p>
+                  <p className="text-lg text-white">${player.currency.toLocaleString()}</p>
                 </div>
               </div>
             </div>

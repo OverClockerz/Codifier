@@ -82,7 +82,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 bg-yellow-900/20 border border-yellow-800/30 rounded-lg">
                 <span className="text-xs text-gray-400">$</span>
-                <span className="text-sm text-yellow-400">{player.currency}</span>
+                <span className="text-sm text-yellow-400">{player.currency.toLocaleString()}</span>
               </div>
             </div>
 
