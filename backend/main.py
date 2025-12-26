@@ -21,9 +21,18 @@ app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key")
 app.config["MONGO_URI"] = "mongodb://localhost:27017/mydatabase"
 mongo.init_app(app)
 
+from datetime import timedelta
 # --- CORS CONFIGURATION ---
 # Vital for React + Flask Session Cookies
-CORS(app)
+CORS(
+    app,
+    resources={r"/*": {"origins": "http://localhost:3000"}},
+    supports_credentials=True,
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+    expose_headers=["Content-Type"]
+)
+
 
 # Register Active Blueprints
 app.register_blueprint(githublogin_bp)    

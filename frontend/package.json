@@ -54,7 +54,7 @@
       },
       "devDependencies": {
             "@tailwindcss/postcss": "^4.1.18",
-            "@types/node": "^20.10.0",
+            "@types/node": "^20.19.27",
             "@types/react-dom": "^19.2.3",
             "@vitejs/plugin-react-swc": "^3.10.2",
             "postcss": "^8.5.6",

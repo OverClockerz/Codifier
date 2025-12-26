@@ -70,7 +70,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
 
   // Professional Attributes List
   const attributesList = [
-    { id: 1, name: 'Coding Skill', score: 80, maxScore: 100, description: 'Workspace proficiency' },
+    { id: 1, name: 'Coding Skill', score: 20, maxScore: 100, description: 'Workspace proficiency' },
     { id: 2, name: 'Problem Solving', score: 65, maxScore: 100, description: 'Game Lounge effectiveness' },
     { id: 3, name: 'Soft Skills', score: 80, maxScore: 100, description: 'Meeting Room success' },
     { id: 4, name: 'Reliability', score: 90, maxScore: 100, description: 'Deadline consistency' },

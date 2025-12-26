@@ -355,69 +355,77 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             <h2 className="text-2xl mb-4">All Quests</h2>
             
             <div className="space-y-3">
-              {activeQuests.map((quest, index) => {
-                const daysLeft = quest.deadline 
-                  ? calculateDeadline(quest.deadline)
-                  : null;
+              {activeQuests
+                .slice()
+                .sort((a, b) => {
+                  // If either deadline is missing, treat as Infinity (put at end)
+                  const aDeadline = a.deadline ? new Date(a.deadline).getTime() : Infinity;
+                  const bDeadline = b.deadline ? new Date(b.deadline).getTime() : Infinity;
+                  return aDeadline - bDeadline;
+                })
+                .map((quest, index) => {
+                  const daysLeft = quest.deadline 
+                    ? calculateDeadline(quest.deadline)
+                    : null;
 
-                return (
-                  <motion.div
-                    key={quest.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + index * 0.05 }}
-                    onClick={() => setSelectedTab(quest.zone)}
-                    className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-all cursor-pointer"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <AlertCircle className="w-5 h-5 text-yellow-400" />
-                          <h3 className="text-lg text-white">{quest.title}</h3>
+                  return (
+                    <motion.div
+                      key={quest.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 + index * 0.05 }}
+                      onClick={() => setSelectedTab(quest.zone)}
+                      className="bg-gray-900/50 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-all cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertCircle className="w-5 h-5 text-yellow-400" />
+                            <h3 className="text-lg text-white">{quest.title}</h3>
+                          </div>
+                          
+                          <p className="text-sm text-gray-400 mb-3">{quest.description}</p>
+                          
+                          <div className="flex flex-wrap gap-2">
+                            {/* Zone Badge */}
+                            <span className={`px-3 py-1 rounded-full text-xs ${getZoneColor(quest.zone)}`}>
+                              {quest.zone.replace('-', ' ')}
+                            </span>
+                            
+                            {/* Difficulty Badge */}
+                            {quest.difficulty && (
+                              <span className={`px-3 py-1 rounded-full text-xs ${getDifficultyColor(quest.difficulty)}`}>
+                                {getDifficultyLabel(quest.difficulty)}
+                              </span>
+                            )}
+                            
+                            {/* Rewards */}
+                            {quest.expReward > 0 && (
+                              <span className="px-3 py-1 rounded-full text-xs bg-cyan-900/50 text-cyan-400">
+                                +{quest.expReward} EXP
+                              </span>
+                            )}
+                            {quest.currencyReward > 0 && (
+                              <span className="px-3 py-1 rounded-full text-xs bg-yellow-900/50 text-yellow-400">
+                                +${quest.currencyReward} Salary
+                              </span>
+                            )}
+                          </div>
                         </div>
                         
-                        <p className="text-sm text-gray-400 mb-3">{quest.description}</p>
-                        
-                        <div className="flex flex-wrap gap-2">
-                          {/* Zone Badge */}
-                          <span className={`px-3 py-1 rounded-full text-xs ${getZoneColor(quest.zone)}`}>
-                            {quest.zone.replace('-', ' ')}
-                          </span>
-                          
-                          {/* Difficulty Badge */}
-                          {quest.difficulty && (
-                            <span className={`px-3 py-1 rounded-full text-xs ${getDifficultyColor(quest.difficulty)}`}>
-                              {getDifficultyLabel(quest.difficulty)}
-                            </span>
-                          )}
-                          
-                          {/* Rewards */}
-                          {quest.expReward > 0 && (
-                            <span className="px-3 py-1 rounded-full text-xs bg-cyan-900/50 text-cyan-400">
-                              +{quest.expReward} EXP
-                            </span>
-                          )}
-                          {quest.currencyReward > 0 && (
-                            <span className="px-3 py-1 rounded-full text-xs bg-yellow-900/50 text-yellow-400">
-                              +${quest.currencyReward} Salary
-                            </span>
-                          )}
-                        </div>
+                        {/* Days Remaining */}
+                        {daysLeft !== null && (
+                          <div className="text-right ml-4">
+                            <p className={`text-2xl ${daysLeft <= 2 ? 'text-red-400' : 'text-white'}`}>
+                              {daysLeft}
+                            </p>
+                            <p className="text-xs text-gray-500">day{daysLeft !== 1 ? 's' : ''}</p>
+                          </div>
+                        )}
                       </div>
-                      
-                      {/* Days Remaining */}
-                      {daysLeft !== null && (
-                        <div className="text-right ml-4">
-                          <p className={`text-2xl ${daysLeft <= 2 ? 'text-red-400' : 'text-white'}`}>
-                            {daysLeft}
-                          </p>
-                          <p className="text-xs text-gray-500">day{daysLeft !== 1 ? 's' : ''}</p>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    </motion.div>
+                  );
+                })}
             </div>
           </motion.div>
 
