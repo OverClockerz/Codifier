@@ -4,6 +4,7 @@ import { X, Code, Trophy, Zap, Clock, CheckCircle, AlertCircle } from 'lucide-re
 import { Quest } from '../types/game';
 import { useGame } from '../contexts/GameContext';
 import { QuestTasks } from '../components/quests/QuestTasks';
+import { CodingPlatform } from '../components/quests/CodingPlatform';
 
 interface QuestPageProps {
   quest: Quest;
@@ -192,8 +193,9 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
           </motion.div>
         )}
 
+        {/* --- MODIFIED SECTION: Renders CodingPlatform when working --- */}
         {isWorking && !result && (
-          <QuestTasks quest={quest} onComplete={handleTaskComplete} />
+          <CodingPlatform />
         )}
 
         {result && (
