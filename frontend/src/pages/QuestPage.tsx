@@ -100,11 +100,9 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
           initial={{ y: '100%', opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.35, ease: 'easeOut' }}
-          className="flex-1 w-full"
+          className="flex-1 w-full overflow-hidden"
         >
-          <div className="h-full w-full">
             <CodingPlatform className="h-full w-full" />
-          </div>
         </motion.div>
       ) : (
         <div className="flex-1 overflow-y-auto">

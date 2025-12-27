@@ -25,6 +25,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, language
   const [islightTheme, setIsLightTheme] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [hasSavedContent, setHasSavedContent] = useState(false);
+  const prismLoadedRef = useRef(false);
 
   // Auto-save logic
   useEffect(() => {
@@ -45,6 +46,48 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, language
     }
   }, [language]);
 
+  // Dynamically load Prism (CSS + languages) when component mounts or language changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.Prism) {
+      prismLoadedRef.current = true;
+      return;
+    }
+
+    const cssUrl = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css';
+    if (!document.querySelector('link[data-prism]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = cssUrl;
+      link.setAttribute('data-prism', '');
+      document.head.appendChild(link);
+    }
+
+    const loadScript = (src: string) =>
+      new Promise<void>((res, rej) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.async = true;
+        s.onload = () => res();
+        s.onerror = () => rej();
+        document.head.appendChild(s);
+      });
+
+    const base = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+    Promise.all([
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js'),
+      loadScript(base + 'prism-clike.min.js'),
+      loadScript(base + 'prism-python.min.js'),
+      loadScript(base + 'prism-java.min.js')
+    ])
+      .then(() => {
+        prismLoadedRef.current = true;
+      })
+      .catch(() => {
+        console.warn('Prism failed to load from CDN');
+      });
+  }, [language]);
+
   const restoreCode = () => {
     const saved = localStorage.getItem(`gemini_autosave_${language}`);
     if (saved) {
@@ -55,15 +98,20 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, language
   };
 
   const highlightCode = (input: string) => {
-    if (window.Prism) {
-      const prismLang = language === 'java' ? window.Prism.languages.java : window.Prism.languages.python;
-      return window.Prism.highlight(
-        input,
-        prismLang || window.Prism.languages.clike,
-        language
-      );
+    const escapeHtml = (str: string) =>
+      str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    if (typeof window !== 'undefined' && window.Prism && prismLoadedRef.current) {
+      const langKey = language === 'java' ? 'java' : language === 'python' ? 'python' : language;
+      const prismLang = window.Prism.languages[langKey] || window.Prism.languages.clike;
+      try {
+        return window.Prism.highlight(input, prismLang, langKey);
+      } catch (e) {
+        return escapeHtml(input);
+      }
     }
-    return input;
+
+    return escapeHtml(input);
   };
 
   // Line numbering helper
@@ -72,7 +120,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, language
   return (
     <div 
       className={`relative w-full h-full flex flex-col transition-colors border-t border-slate-700
-      ${islightTheme ? 'bg-slate-50' : 'bg-[#1e1e1e]'} 
+      ${islightTheme ? 'bg-slate-50' : 'bg-editor-bg'} 
       ${isFocused ? '' : ''}`}
     >
       {/* Settings Toolbar Overlay */}

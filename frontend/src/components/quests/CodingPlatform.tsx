@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCodingPlatform } from '../../hooks/useCodingPlatform';
-import { Header } from './CodingQuest/Header';
+// import { Header } from './CodingQuest/Header';
 import { ConfirmationModal } from './CodingQuest/ConfirmationModal';
 import { AiChatOverlay } from './CodingQuest/AiChatOverlay';
 import { CodeEditor } from './CodingQuest/CodeEditor';
@@ -38,12 +38,12 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
         onConfirm={() => pendingLanguage && actions.executeLanguageChange(pendingLanguage)}
       />
 
-      <Header 
+      {/* <Header 
         difficulty={difficulty}
         setDifficulty={actions.setDifficulty}
         isGenerating={isGenerating}
         onGenerate={actions.handleGenerateProblem}
-      />
+      /> */}
 
       <main className="flex-1 flex overflow-hidden">
         {/* Left Panel */}
@@ -68,7 +68,7 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
         </div>
 
         {/* Right Panel */}
-        <div className="w-1/2 md:w-7/12 flex flex-col bg-[#1e1e1e]">
+        <div className="w-1/2 md:w-7/12 flex flex-col bg-editor-bg">
           <div className="flex items-center justify-between px-4 py-2 border-b border-slate-700 bg-[#1e293b]">
               <div className="flex items-center gap-3">
                  <div className="flex items-center gap-2 text-xs text-slate-400">
@@ -114,7 +114,7 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
               </div>
           </div>
 
-          <div className="h-[35%] min-h-[200px] shrink-0">
+          <div className="h-[35%] min-h-50 shrink-0">
             <ConsolePanel 
               result={evaluation} isLoading={isRunning} activeTab={activeTab} setActiveTab={actions.setActiveTab}
               customInput={customInput} setCustomInput={actions.setCustomInput} customOutput={customOutput}

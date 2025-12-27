@@ -78,32 +78,34 @@ export const ConsolePanel: React.FC<Props> = ({
         {/* CUSTOM TEST TAB */}
         {activeTab === 'custom' && (
           <div className="flex flex-col h-full gap-4">
-            <div className="flex-1 flex flex-col">
-               <label className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 block">Your Input</label>
-               <textarea
-                 value={customInput}
-                 onChange={(e) => setCustomInput(e.target.value)}
-                 className="flex-1 w-full bg-[#0f172a] border border-slate-700 rounded-md p-3 text-slate-200 font-mono text-sm focus:outline-none focus:border-blue-500 resize-none"
-                 placeholder="Enter your custom test input here..."
-                 spellCheck={false}
-               />
-            </div>
-            <div className="h-1/3 flex flex-col">
-               <label className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 block">Result</label>
-               <div className={`flex-1 w-full rounded-md p-3 font-mono text-sm overflow-auto border ${customOutput?.error ? 'bg-red-900/10 border-red-500/30 text-red-200' : 'bg-slate-800 border-slate-700 text-slate-300'}`}>
-                  {customOutput ? (
-                     customOutput.error ? (
-                       <span className="flex items-start gap-2">
-                         <AlertTriangle size={14} className="mt-0.5 shrink-0" />
-                         {customOutput.error}
-                       </span>
-                     ) : (
-                       <pre className="whitespace-pre-wrap">{customOutput.output}</pre>
-                     )
-                  ) : (
-                    <span className="text-slate-500 italic">Run code to see output</span>
-                  )}
-               </div>
+            <div className="grid grid-cols-2 gap-4 flex-1">
+              <div className="flex flex-col">
+           <label className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 block">Your Input</label>
+           <textarea
+             value={customInput}
+             onChange={(e) => setCustomInput(e.target.value)}
+             className="flex-1 w-full bg-[#0f172a] border border-slate-700 rounded-md p-3 text-slate-200 font-mono text-sm focus:outline-none focus:border-blue-500 resize-none"
+             placeholder="Enter your custom test input here..."
+             spellCheck={false}
+           />
+              </div>
+              <div className="flex flex-col">
+           <label className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 block">Result</label>
+           <div className={`flex-1 w-full rounded-md p-3 font-mono text-sm overflow-auto border ${customOutput?.error ? 'bg-red-900/10 border-red-500/30 text-red-200' : 'bg-slate-800 border-slate-700 text-slate-300'}`}>
+              {customOutput ? (
+                 customOutput.error ? (
+             <span className="flex items-start gap-2">
+               <AlertTriangle size={14} className="mt-0.5 shrink-0" />
+               {customOutput.error}
+             </span>
+                 ) : (
+             <pre className="whitespace-pre-wrap">{customOutput.output}</pre>
+                 )
+              ) : (
+                <span className="text-slate-500 italic">Run code to see output</span>
+              )}
+           </div>
+              </div>
             </div>
           </div>
         )}
