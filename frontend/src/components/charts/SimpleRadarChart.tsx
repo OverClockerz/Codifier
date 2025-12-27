@@ -2,6 +2,8 @@ interface RadarDataPoint {
   attribute: string;
   value: number;
   fullMark: number;
+  // optional explicit angle in degrees (0 = right, 90 = down).
+  angle?: number;
 }
 
 interface SimpleRadarChartProps {
@@ -17,8 +19,17 @@ export function SimpleRadarChart({ data, width = 400, height = 400 }: SimpleRada
   const levels = 5;
 
   // Calculate points for the data polygon
-  const dataPoints = data.map((item, index) => {
-    const angle = (Math.PI * 2 * index) / data.length - Math.PI / 2;
+  // Sort by angle to ensure proper polygon connection
+  const sortedData = [...data].sort((a, b) => {
+    const angleA = typeof a.angle === 'number' ? a.angle : 0;
+    const angleB = typeof b.angle === 'number' ? b.angle : 0;
+    return angleA - angleB;
+  });
+
+  const dataPoints = sortedData.map((item, index) => {
+    const angle = typeof item.angle === 'number'
+      ? (item.angle * Math.PI) / 180
+      : (Math.PI * 2 * index) / data.length - Math.PI / 2;
     const value = (item.value / item.fullMark) * radius;
     return {
       x: centerX + Math.cos(angle) * value,
@@ -28,12 +39,14 @@ export function SimpleRadarChart({ data, width = 400, height = 400 }: SimpleRada
 
   // Calculate points for the axis lines
   const axisPoints = data.map((item, index) => {
-    const angle = (Math.PI * 2 * index) / data.length - Math.PI / 2;
+    const angle = typeof item.angle === 'number'
+      ? (item.angle * Math.PI) / 180
+      : (Math.PI * 2 * index) / data.length - Math.PI / 2;
     return {
       x: centerX + Math.cos(angle) * radius,
       y: centerY + Math.sin(angle) * radius,
-      labelX: centerX + Math.cos(angle) * (radius + 25),
-      labelY: centerY + Math.sin(angle) * (radius + 25),
+      labelX: centerX + Math.cos(angle) * (radius + 30),
+      labelY: centerY + Math.sin(angle) * (radius + 30),
       attribute: item.attribute,
     };
   });
@@ -62,6 +75,37 @@ export function SimpleRadarChart({ data, width = 400, height = 400 }: SimpleRada
           strokeWidth="1"
         />
       ))}
+
+      {/* Range labels (20,40,...100) */}
+      {Array.from({ length: levels }, (_, i) => {
+        const levelRadius = (radius * (i + 1)) / levels;
+        const valueLabel = Math.round(((i + 1) * 100) / levels);
+        return (
+          <text
+            key={`tick-${i}`}
+            x={centerX}
+            y={centerY - levelRadius - 6}
+            textAnchor="middle"
+            dominantBaseline="central"
+            className="text-xs fill-gray-400"
+            style={{ fontSize: 10 }}
+          >
+            {valueLabel}
+          </text>
+        );
+      })}
+
+      {/* Zero label at center */}
+      <text
+        x={centerX}
+        y={centerY + 6}
+        textAnchor="middle"
+        dominantBaseline="central"
+        className="text-xs fill-gray-400"
+        style={{ fontSize: 10 }}
+      >
+        0
+      </text>
 
       {/* Axis lines */}
       {axisPoints.map((point, i) => (
@@ -105,7 +149,8 @@ export function SimpleRadarChart({ data, width = 400, height = 400 }: SimpleRada
           y={point.labelY}
           textAnchor="middle"
           dominantBaseline="middle"
-          className="text-xs fill-gray-300"
+          className="text-sm fill-white"  // Changed to larger, white
+          style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1 }}  // Bold with letter spacing
         >
           {point.attribute}
         </text>

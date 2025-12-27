@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useGame } from '../../contexts/GameContext';
 import { useState } from 'react';
 import { ZoneType } from '../../types/game';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import { SimpleRadarChart } from '../charts/SimpleRadarChart';
 import { ScrambleTextOnHover } from '../effects/ScrambleText';
 import {
   User,
@@ -35,46 +35,14 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
   // Calculate progress to next level
   const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
 
-  // Professional Attributes Data (Radar Chart)
-  const professionalAttributes = [
-    { attribute: 'Coding', value: 75, fullMark: 100 },
-    { attribute: 'Problem Solving', value: 65, fullMark: 100 },
-    { attribute: 'Soft Skills', value: 80, fullMark: 100 },
-    { attribute: 'Reliability', value: 90, fullMark: 100 },
-    { attribute: 'Stress Resist', value: 60, fullMark: 100 },
-  ];
-
-  // Detailed Skill Breakdown
-  const skillCategories = [
-    {
-      title: 'Fundamental Understanding',
-      icon: '🧠',
-      skills: [
-        { name: 'Python Debugging', level: 1, color: 'bg-blue-500' },
-        { name: 'Database Queries', level: 1, color: 'bg-purple-500' },
-        { name: 'Code Review', level: 1, color: 'bg-cyan-500' },
-        { name: 'Written Communication', level: 1, color: 'bg-orange-500' },
-      ],
-    },
-    {
-      title: 'Advanced Skills',
-      icon: '⚡',
-      skills: [
-        { name: 'JavaScript OOP', level: 1, color: 'bg-yellow-500' },
-        { name: 'Algorithm Design', level: 1, color: 'bg-green-500' },
-        { name: 'Presentation Skills', level: 1, color: 'bg-red-500' },
-        { name: 'Critical Thinking', level: 1, color: 'bg-pink-500' },
-      ],
-    },
-  ];
-
   // Professional Attributes List
+  // Order and angles set to place attributes approximately where requested
   const attributesList = [
-    { id: 1, name: 'Coding Skill', score: 20, maxScore: 100, description: 'Workspace proficiency' },
-    { id: 2, name: 'Problem Solving', score: 65, maxScore: 100, description: 'Game Lounge effectiveness' },
-    { id: 3, name: 'Soft Skills', score: 80, maxScore: 100, description: 'Meeting Room success' },
-    { id: 4, name: 'Reliability', score: 90, maxScore: 100, description: 'Deadline consistency' },
-    { id: 5, name: 'Stress Resistance', score: 60, maxScore: 100, description: 'Performance under pressure' },
+    { id: 1, name: 'Coding Skill', score: 75, maxScore: 100, description: 'Workspace proficiency', angle: 270 },
+    { id: 2, name: 'Soft Skills', score: 80, maxScore: 100, description: 'Meeting Room success', angle: 198 },
+    { id: 3, name: 'Reliability', score: 90, maxScore: 100, description: 'Deadline consistency', angle: 342 },
+    { id: 4, name: 'Problem Solving', score: 65, maxScore: 100, description: 'Game Lounge effectiveness', angle: 54 },
+    { id: 5, name: 'Stress Resistance', score: 60, maxScore: 100, description: 'Performance under pressure', angle: 126 },
   ];
 
   return (
@@ -96,7 +64,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                 <ArrowLeft className="w-5 h-5" />
               </motion.button>
               
-              <h1 className="text-xl md:text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-xl md:text-2xl bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 <ScrambleTextOnHover text="OFFICE" />
               </h1>
               {/* <div className="hidden md:flex items-center gap-2 px-2 py-2 bg-gray-900/50 hover:bg-gray-800/50 rounded-full border border-gray-800 hover:border-gray-700 transition-all cursor-pointer">
@@ -131,18 +99,18 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
       </header>
 
       {/* Main Content */}
-      <main className="pt-[80px] md:pt-[75px] pb-16 px-4 md:px-6">
+      <main className="pt-20 md:pt-18.75 pb-16 px-4 md:px-6">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Player Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-6"
+            className="bg-linear-to-br from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-6"
           >
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               {/* Avatar & Info */}
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                   <img
                   src={player.githubinfo?.avatar_url || user?.avatar || ''}
                   alt={player.username}
@@ -211,8 +179,8 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               <div 
                 className={`h-full ${
                   (player.reputation ?? 0) >= 0 
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
-                    : 'bg-gradient-to-r from-red-500 to-orange-500'
+                    ? 'bg-linear-to-r from-green-500 to-emerald-500' 
+                    : 'bg-linear-to-r from-red-500 to-orange-500'
                 }`}
                 style={{ width: `${Math.min(100, Math.abs((player.reputation ?? 0) / 20) * 100)}%` }}
               ></div>
@@ -236,22 +204,22 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
             <h3 className="text-lg text-white mb-6">Professional Attributes</h3>
             
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Radar Chart */}
-              <div className="flex items-center justify-center bg-gray-800/30 rounded-xl p-4">
-                <ResponsiveContainer width="100%" height={300}>
-                  <RadarChart data={professionalAttributes}>
-                    <PolarGrid stroke="#374151" />
-                    <PolarAngleAxis dataKey="attribute" tick={{ fill: '#9CA3AF', fontSize: 12 }} />
-                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#6B7280', fontSize: 10 }} />
-                    <Radar
-                      name="Skills"
-                      dataKey="value"
-                      stroke="#3B82F6"
-                      fill="#3B82F6"
-                      fillOpacity={0.6}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
+              {/* Radar Chart + Legend */}
+              <div className="flex flex-col items-center justify-center bg-gray-800/30 rounded-xl p-4">
+                <SimpleRadarChart
+                  data={attributesList.map(attr => ({ attribute: attr.name, value: attr.score, fullMark: attr.maxScore, angle: attr.angle }))}
+                  width={300}
+                  height={300}
+                />
+
+                <div className="mt-4 w-full flex flex-wrap gap-3 justify-center items-center">
+                  {attributesList.map(attr => (
+                    <div key={attr.id} className="flex items-center gap-2 bg-gray-800/20 px-3 py-1 rounded-full border border-gray-700">
+                      <span className="text-xs text-gray-100 font-medium">{attr.name}</span>
+                      <span className="text-xs text-gray-400">{attr.score}/{attr.maxScore}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Attributes List */}
@@ -309,7 +277,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                         initial={{ width: 0 }}
                         animate={{ width: `${level}%` }}
                         transition={{ delay: 0.3 + idx * 0.05 }}
-                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                        className="h-full bg-linear-to-r from-purple-500 to-pink-500"
                       />
                     </div>
                   </div>
