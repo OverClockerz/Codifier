@@ -111,3 +111,19 @@ export const GAME_CONFIG: GameConfig = {
   },
   restartLevelPercentage: 0.5, // Start at 50% of max achieved level
 };
+// ===========================
+// PROFESSIONAL ATTRIBUTES
+// ===========================
+/**
+ * Professional attributes used across the game
+ * - GameDashboard: calculates overall skill proficiency as average
+ * - ProfilePage: displays detailed breakdown with radar chart
+ */
+export const PROFESSIONAL_ATTRIBUTES = [
+  { id: 1, name: 'Coding Skill', score: 100, maxScore: 100, description: 'Workspace proficiency', angle: 270 },
+  { id: 2, name: 'Soft Skills', score: 80, maxScore: 100, description: 'Meeting Room success', angle: 198 },
+  { id: 3, name: 'Reliability', score: 90, maxScore: 100, description: 'Deadline consistency', angle: 342 },
+  { id: 4, name: 'Problem Solving', score: 20, maxScore: 100, description: 'Game Lounge effectiveness', angle: 54 },
+  { id: 5, name: 'Stress Resistance', score: 60, maxScore: 100, description: 'Performance under pressure', angle: 126 },
+];
+

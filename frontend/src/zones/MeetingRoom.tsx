@@ -133,7 +133,7 @@ export function MeetingRoom() {
       {/* ============================================================ */}
       {/* COLLABORATION TIPS */}
       {/* ============================================================ */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
@@ -149,7 +149,7 @@ export function MeetingRoom() {
           <li>• Leadership opportunities unlock at higher reputation levels</li>
           <li>• Soft skills are essential for career advancement</li>
         </ul>
-      </motion.div>
+      </motion.div> */}
 
       {/* ============================================================ */}
       {/* QUEST PAGE */}

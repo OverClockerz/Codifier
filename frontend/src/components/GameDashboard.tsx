@@ -22,15 +22,37 @@ import {
 import { useState } from 'react';
 import { ZoneType } from '../types/game';
 // import { getDifficultyLabel } from '../data/quests';
+import { PROFESSIONAL_ATTRIBUTES } from '../data/gameConfig';
 import { PlayerCard } from './player/PlayerCard';
 import { Workspace } from '../zones/Workspace';
 import { GameLounge } from '../zones/GameLounge';
 import { MeetingRoom } from '../zones/MeetingRoom';
 import { Cafeteria } from '../zones/Cafeteria';
 // import { Tooltip } from './extras/Tooltip';
-import { calculateDeadline } from '../utils/calculations';
+import { calculateDeadline, gameTimeSince } from '../utils/calculations';
 
-const deadlineThreshold =2;
+// // --- New Time System Integration ---
+// type DateInput = string | { $date: string };
+
+// function normalizeDate(input: DateInput): string {
+//   return typeof input === "string" ? input : input.$date;
+// }
+
+// function gameTimeSince(input: DateInput): { days: number; months: number } {
+//   const dateString = normalizeDate(input);
+//   const past = new Date(dateString).getTime();
+//   const now = Date.now();
+
+//   const diffMs = now - past;
+//   const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+//   const months = Math.floor(totalDays / 30);
+//   const days = (totalDays % 30) + 1; // reset to 1 after each 30 days
+
+//   return { days, months };
+// }
+
+const deadlineThreshold = 2;
 
 export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void }) {
   const { player, activeQuests, activeBuffs } = useGame();
@@ -49,6 +71,11 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
   // Calculate progress to next level
   const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
 
+  // Calculate overall skill proficiency from shared attributes
+  const overallSkillProficiency = Math.round(
+    PROFESSIONAL_ATTRIBUTES.reduce((sum, a) => sum + a.score, 0) / PROFESSIONAL_ATTRIBUTES.length
+  );
+
   // Get urgent quests (less than 3 days remaining)
   const urgentQuests = activeQuests.filter(q => {
     if (!q.deadline) return false;
@@ -58,11 +85,6 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
 
   // Calculate completed quests this month
   const completedThisMonth = player.currentMonthTasksCompleted || 0;
-
-  // Get counts for each zone
-  const workspaceCount = activeQuests.filter(q => q.zone === 'workspace').length;
-  const gameLoungeCount = activeQuests.filter(q => q.zone === 'game-lounge').length;
-  const meetingRoomCount = activeQuests.filter(q => q.zone === 'meeting-room').length;
 
   // Get zone icon
   const getZoneIcon = (zone: ZoneType) => {
@@ -108,6 +130,9 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
     return 'Hard';
   }
 
+  // MODIFIED: Use the new gameTimeSince logic
+  const elapsed = gameTimeSince(player.gameStartDate);
+
   return (
     <div className="space-y-6">
       {/* Player Header Card */}
@@ -144,13 +169,13 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
               </div>
             </div>
 
-            {/* Day/Month */}
+            {/* Day/Month - UPDATED LOGIC HERE */}
             <div className="bg-black/30 rounded-lg px-4 py-2 min-w-[80px]">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-purple-400" />
                 <div>
                   <p className="text-xs text-gray-400">Day / Month</p>
-                  <p className="text-lg text-white">{player.currentDay} / {player.currentMonth}</p>
+                  <p className="text-lg text-white">{elapsed.days} / {elapsed.months}</p>
                 </div>
               </div>
             </div>
@@ -218,9 +243,9 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             <p className="text-xs text-gray-500">days</p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-500">Soft Skills</p>
-            <p className="text-xl text-white">75</p>
-            <p className="text-xs text-gray-500">%</p>
+            <p className="text-xs text-gray-500">Skill Proficiency</p>
+            <p className="text-xl text-white">{overallSkillProficiency}%</p>
+            {/* <p className="text-xs text-gray-500">average</p> */}
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500">Reputation</p>
@@ -241,51 +266,46 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
       >
         <button
           onClick={() => setSelectedTab('overview')}
-          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all ${
-            selectedTab === 'overview'
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
-              : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-          }`}
+          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all ${selectedTab === 'overview'
+            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            }`}
         >
           📊 Overview
         </button>
         <button
           onClick={() => setSelectedTab('workspace')}
-          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-2 ${
-            selectedTab === 'workspace'
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
-              : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-          }`}
+          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-2 ${selectedTab === 'workspace'
+            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            }`}
         >
           {getZoneIcon('workspace')} Workspace
         </button>
         <button
           onClick={() => setSelectedTab('game-lounge')}
-          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-2 ${
-            selectedTab === 'game-lounge'
-              ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/50'
-              : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-          }`}
+          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-2 ${selectedTab === 'game-lounge'
+            ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/50'
+            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            }`}
         >
           {getZoneIcon('game-lounge')} Game Lounge
         </button>
         <button
           onClick={() => setSelectedTab('meeting-room')}
-          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-2 ${
-            selectedTab === 'meeting-room'
-              ? 'bg-orange-600 text-white shadow-lg shadow-orange-500/50'
-              : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-          }`}
+          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-2 ${selectedTab === 'meeting-room'
+            ? 'bg-orange-600 text-white shadow-lg shadow-orange-500/50'
+            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            }`}
         >
           {getZoneIcon('meeting-room')} Meeting Room
         </button>
         <button
           onClick={() => setSelectedTab('cafeteria')}
-          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-2 ${
-            selectedTab === 'cafeteria'
-              ? 'bg-green-600 text-white shadow-lg shadow-green-500/50'
-              : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-          }`}
+          className={`px-6 py-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-2 ${selectedTab === 'cafeteria'
+            ? 'bg-green-600 text-white shadow-lg shadow-green-500/50'
+            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            }`}
         >
           {getZoneIcon('cafeteria')} Cafeteria
         </button>
@@ -301,7 +321,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             transition={{ delay: 0.2 }}
           >
             <h2 className="text-2xl mb-4">Career Dashboard</h2>
-            
+
             <div className="grid grid-cols-3 gap-4 mb-6">
               {/* Active Quests */}
               <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4">
@@ -331,13 +351,13 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                 </div>
                 <div className="space-y-2">
                   {urgentQuests.map(quest => {
-                    const daysLeft = quest.deadline 
+                    const daysLeft = quest.deadline
                       ? calculateDeadline(quest.deadline)
                       : 0;
                     return (
-                      <div key={quest.id} className="text-sm">
+                      <div key={quest.id} className="text-sm flex justify-between">
                         <span className="text-white">• {quest.title}</span>
-                        <span className="text-red-400"> - {daysLeft} day{daysLeft !== 1 ? 's' : ''} remaining</span>
+                        <span className="text-red-400">{daysLeft} day{daysLeft !== 1 ? 's' : ''} remaining</span>
                       </div>
                     );
                   })}
@@ -353,7 +373,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             transition={{ delay: 0.3 }}
           >
             <h2 className="text-2xl mb-4">All Quests</h2>
-            
+
             <div className="space-y-3">
               {activeQuests
                 .slice()
@@ -364,7 +384,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                   return aDeadline - bDeadline;
                 })
                 .map((quest, index) => {
-                  const daysLeft = quest.deadline 
+                  const daysLeft = quest.deadline
                     ? calculateDeadline(quest.deadline)
                     : null;
 
@@ -383,22 +403,22 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                             <AlertCircle className="w-5 h-5 text-yellow-400" />
                             <h3 className="text-lg text-white">{quest.title}</h3>
                           </div>
-                          
+
                           <p className="text-sm text-gray-400 mb-3">{quest.description}</p>
-                          
+
                           <div className="flex flex-wrap gap-2">
                             {/* Zone Badge */}
                             <span className={`px-3 py-1 rounded-full text-xs ${getZoneColor(quest.zone)}`}>
                               {quest.zone.replace('-', ' ')}
                             </span>
-                            
+
                             {/* Difficulty Badge */}
                             {quest.difficulty && (
                               <span className={`px-3 py-1 rounded-full text-xs ${getDifficultyColor(quest.difficulty)}`}>
                                 {getDifficultyLabel(quest.difficulty)}
                               </span>
                             )}
-                            
+
                             {/* Rewards */}
                             {quest.expReward > 0 && (
                               <span className="px-3 py-1 rounded-full text-xs bg-cyan-900/50 text-cyan-400">
@@ -412,7 +432,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                             )}
                           </div>
                         </div>
-                        
+
                         {/* Days Remaining */}
                         {daysLeft !== null && (
                           <div className="text-right ml-4">

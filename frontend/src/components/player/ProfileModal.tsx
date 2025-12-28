@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGame } from '../../contexts/GameContext';
+import { gameTimeSince } from '../../utils/calculations';
 import {
   User,
   ChevronRight,
@@ -26,7 +27,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
 
   // Calculate progress to next level
   const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
-
+  const elapsed = gameTimeSince(player.gameStartDate);
   // Close on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -91,10 +92,10 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                 <div className="flex items-center gap-2">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                     <img
-                  src={player.githubinfo?.avatar_url || user?.avatar || ''}
-                  alt={player.username}
-                  className="w-10 h-10 rounded-full"
-                />
+                      src={player.githubinfo?.avatar_url || user?.avatar || ''}
+                      alt={player.username}
+                      className="w-10 h-10 rounded-full"
+                    />
                   </div>
                   <div>
                     <h2 className="text-sm text-white">{user?.username || 'Player'}</h2>
@@ -129,7 +130,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     <Calendar className="w-3 h-3 text-purple-400" />
                     <div>
                       <p className="text-xs text-gray-400">Day / Month</p>
-                      <p className="text-xs text-white">{player.currentDay} / {player.currentMonth}</p>
+                      <p className="text-xs text-white">{elapsed.days} / {elapsed.months}</p>
                     </div>
                   </div>
 
@@ -146,13 +147,13 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     <Settings className="w-4 h-4 text-gray-400" />
                   </button> */}
                   <div className='mr-4'>
-                     {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
-            >
-              <X className="w-5 h-5" />
-            </button>
+                    {/* Close Button */}
+                    <button
+                      onClick={onClose}
+                      className="top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -235,9 +236,8 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                 <div className="bg-black/30 rounded p-2 text-center">
                   <p className="text-xs text-gray-500">Reputation</p>
                   <p
-                    className={`text-sm ${
-                      (player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                    }`}
+                    className={`text-sm ${(player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'
+                      }`}
                   >
                     {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
                   </p>
@@ -262,11 +262,10 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                       width: `${Math.min(100, Math.abs((player.reputation ?? 0) / 20) * 100)}%`,
                     }}
                     transition={{ duration: 0.5, delay: 0.4 }}
-                    className={`h-full ${
-                      (player.reputation ?? 0) >= 0
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500'
-                        : 'bg-gradient-to-r from-red-500 to-orange-500'
-                    }`}
+                    className={`h-full ${(player.reputation ?? 0) >= 0
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500'
+                      : 'bg-gradient-to-r from-red-500 to-orange-500'
+                      }`}
                   />
                 </div>
                 {(player.reputation ?? 0) < -10 && (

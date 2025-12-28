@@ -577,3 +577,28 @@ export function updateQuestSkills(
 export function calculateDeadline(deadline: number): number {
   return Math.ceil((deadline - Math.floor(Date.now())/1000)/(60*60*24)) // milliseconds
 }
+
+//============================
+// TIME ADVANCEMENT
+//===========================
+
+// --- New Time System Integration ---
+type DateInput = string | { $date: string };
+
+function normalizeDate(input: DateInput): string {
+  return typeof input === "string" ? input : input.$date;
+}
+
+export function gameTimeSince(input: DateInput): { days: number; months: number } {
+  const dateString = normalizeDate(input);
+  const past = new Date(dateString).getTime();
+  const now = Date.now();
+
+  const diffMs = now - past;
+  const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  const months = Math.floor(totalDays / 30);
+  const days = (totalDays % 30) + 1; // reset to 1 after each 30 days
+
+  return { days, months };
+}

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ZoneType } from '../../types/game';
 import { SimpleRadarChart } from '../charts/SimpleRadarChart';
 import { ScrambleTextOnHover } from '../effects/ScrambleText';
+import { PROFESSIONAL_ATTRIBUTES } from '../../data/gameConfig';
 import {
   User,
   ChevronRight,
@@ -35,15 +36,8 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
   // Calculate progress to next level
   const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
 
-  // Professional Attributes List
-  // Order and angles set to place attributes approximately where requested
-  const attributesList = [
-    { id: 1, name: 'Coding Skill', score: 75, maxScore: 100, description: 'Workspace proficiency', angle: 270 },
-    { id: 2, name: 'Soft Skills', score: 80, maxScore: 100, description: 'Meeting Room success', angle: 198 },
-    { id: 3, name: 'Reliability', score: 90, maxScore: 100, description: 'Deadline consistency', angle: 342 },
-    { id: 4, name: 'Problem Solving', score: 65, maxScore: 100, description: 'Game Lounge effectiveness', angle: 54 },
-    { id: 5, name: 'Stress Resistance', score: 60, maxScore: 100, description: 'Performance under pressure', angle: 126 },
-  ];
+  // Use shared professional attributes from game config
+  const attributesList = PROFESSIONAL_ATTRIBUTES;
 
   return (
     <div className="min-h-screen bg-[#0a0f1c] text-white">
@@ -130,7 +124,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                   <TrendingUp className="w-5 h-5 text-blue-400 mx-auto mb-1" />
                   <p className="text-xs text-gray-500">Level</p>
                   <p className="text-2xl text-white">{player.level}</p>
-                  <p className="text-xs text-gray-600">{player.currentMonthTasksCompleted}</p>
+                  {/* <p className="text-xs text-gray-600">{player.currentMonthTasksCompleted}</p> */}
                 </div>
 
                 {/* Salary */}
@@ -298,12 +292,12 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               <div>
                 <p className="text-sm text-gray-500 mb-2">Tasks Completed</p>
                 <p className="text-3xl text-white">{player.currentMonthTasksCompleted}</p>
-                <p className="text-xs text-gray-600 mt-1">{player.currentMonthEarnings}</p>
+                {/* <p className="text-xs text-gray-600 mt-1">{player.currentMonthEarnings}</p> */}
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-2">Current Salary</p>
                 <p className="text-3xl text-white">${player.baseSalary}</p>
-                <p className="text-xs text-gray-600 mt-1">{player.currentMonthEarnings}</p>
+                {/* <p className="text-xs text-gray-600 mt-1">{player.currentMonthEarnings}</p> */}
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-2">Days Worked</p>
