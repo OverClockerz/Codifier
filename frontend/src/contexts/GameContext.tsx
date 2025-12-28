@@ -6,6 +6,7 @@ import { fetchPlayerData, updatePlayerData } from '../services/api';
 import { shopItems } from '../data/shopItems';
 import { LOGIN_DATE_TIME } from '../components/auth/GitHubAuthModal';
 import { GameOverAlert } from '../components/extras/GameOverAlert';
+import { gameTimeSince } from '../utils/calculations';
 
 /**
  * GAME CONTEXT - MAIN GAME STATE MANAGEMENT
@@ -49,7 +50,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-
+  //Default Game State without Player Backend
   const [player, setPlayer] = useState<PlayerState>({
     id: '',
     username: '',
@@ -58,26 +59,33 @@ export function GameProvider({ children }: { children: ReactNode }) {
       avatar_url: '',
       github_email: '',
     },
-    gameStartDate: new Date().toISOString(),
-    level: 1,
+    gameStartDate: '',
+    level: 0,
     experience: 0,
-    experienceToNextLevel: 100,
-    currency: 100,
-    mood: 70,
-    stress: 20,
+    experienceToNextLevel: 0,
+    currency: 0,
+    mood: 0,
+    stress: 0,
     isBurntOut: false,
-    baseSalary: 100000000,
+    baseSalary: 0,
     currentMonthEarnings: 0,
     currentMonthTasksCompleted: 0,
     paidLeaves: 0,
-    currentDay: 1,
-    currentMonth: 1,
-    lastLoginDate: LOGIN_DATE_TIME,
+    currentDay: 0,
+    currentMonth: 0,
+    lastLoginDate: new Date(),
+    proficiency: {
+      coding_skill: 0,
+      soft_skill: 0,
+      reliability_skill: 0,
+      problem_solving: 0,
+      stress_resistance: 0
+    },
     careerHistory: [],
     currentRun: {
-      runNumber: 1,
-      startLevel: 1,
-      maxLevelAchieved: 1,
+      runNumber: 0,
+      startLevel: 0,
+      maxLevelAchieved: 0,
       totalExperience: 0,
       monthsWorked: 0,
     },
@@ -96,7 +104,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [monthlyReports, setMonthlyReports] = useState<MonthlyReport[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showLevelUp, setShowLevelUp] = useState(false);
-  
+
   // Game Over State
   const [isGameOver, setIsGameOver] = useState(false);
 
@@ -127,7 +135,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // Check for expired quest deadlines
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = Math.floor(Date.now()/1000);
+      const now = Math.floor(Date.now() / 1000);
       activeQuests.forEach(quest => {
         if (quest.deadline && quest.status === 'in-progress' && now > quest.deadline) {
           failQuest(quest.id);
@@ -163,7 +171,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     let finalExp = expGain;
     let finalCurrency = currencyGain;
-    
+
     activeBuffs.forEach(buff => {
       if (buff.effect.expBoost) finalExp += Math.floor(expGain * (buff.effect.expBoost / 100));
       if (buff.effect.currencyBoost) finalCurrency += Math.floor(currencyGain * (buff.effect.currencyBoost / 100));
@@ -267,7 +275,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const purchaseItem = (itemId: string): boolean => {
     const { SHOP_ITEMS } = require('../data/shopItems');
     const item = SHOP_ITEMS.find((i: any) => i.id === itemId);
-    
+
     if (!item || player.currency < item.price) return false;
 
     setPlayer(prev => ({ ...prev, currency: prev.currency - item.price }));
@@ -315,7 +323,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         if (prev.some(b => b.itemId === itemId)) return prev;
         return [...prev, { itemId: item.id, name: item.name, effect, appliedAt: Date.now() }];
       });
-      
+
       setInventory(prev => prev.map(i => i.item.id === itemId ? { ...i, quantity: i.quantity - 1 } : i).filter(i => i.quantity > 0));
     }
   };
@@ -397,7 +405,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     setPlayer(prev => ({ ...prev, currency: prev.currency + totalEarnings, currentMonthEarnings: 0 }));
   };
-
+//reset player career
   const resetCareer = async () => {
     console.log("🔄 Reset Career Initiated");
     try {
@@ -425,6 +433,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
         currentDay: 1,
         currentMonth: 1,
         lastLoginDate: LOGIN_DATE_TIME,
+        proficiency: {
+          coding_skill: 0,
+          soft_skill: 0,
+          reliability_skill: 0,
+          problem_solving: 0,
+          stress_resistance: 0
+        },
         careerHistory: [
           ...(player.careerHistory || []),
           { ...player.currentRun, reasonForEnd: 'fired', endDate: new Date().toISOString() },
@@ -451,9 +466,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setCompletedQuests([]);
       setInventory([]);
       setActiveBuffs([]);
-      
+
       // 3. Close the modal IMMEDIATELY so the user sees something happened
-      setIsGameOver(false); 
+      setIsGameOver(false);
       console.log("✅ Alert closed");
 
       // 4. Then sync with backend
@@ -466,7 +481,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setIsGameOver(false); // Ensure modal closes even if error
     }
   };
-
+  const elapsed = gameTimeSince(player.gameStartDate);
+  //save game to backend
   const saveGame = async () => {
     if (!user?.id) return;
     try {
@@ -483,9 +499,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
         currentMonthEarnings: player.currentMonthEarnings,
         currentMonthTasksCompleted: player.currentMonthTasksCompleted,
         paidLeaves: player.paidLeaves,
-        currentDay: player.currentDay,
-        currentMonth: player.currentMonth,
+        currentDay: elapsed.days,
+        currentMonth: elapsed.months,
         lastLoginDate: LOGIN_DATE_TIME,
+        proficiency: {
+          coding_skill: player.proficiency.coding_skill,
+          soft_skill: player.proficiency.soft_skill,
+          reliability_skill: player.proficiency.reliability_skill,
+          problem_solving: player.proficiency.problem_solving,
+          stress_resistance: player.proficiency.stress_resistance
+        },
         careerHistory: player.careerHistory,
         currentRun: player.currentRun,
         reputation: player.reputation,
@@ -507,7 +530,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(`office_game_${user.id}`, JSON.stringify({ player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications }));
     }
   };
-
+//load game from backend
   const loadGame = async () => {
     if (!user?.id) return;
     try {
@@ -531,6 +554,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         currentDay: backendData.currentDay,
         currentMonth: backendData.currentMonth,
         lastLoginDate: backendData.lastLoginDate,
+        proficiency: backendData.proficiency,
         careerHistory: backendData.careerHistory,
         currentRun: backendData.currentRun,
         reputation: backendData.reputation,
@@ -544,7 +568,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setPlayer(transformedPlayer);
       setActiveQuests(backendData.activeQuests);
       setCompletedQuests(backendData.completedQuests);
-      
+
       const transformedInventory = backendData.inventory.map((item: any) => ({
         item: shopItems.find(si => si.id === item.itemId || si.id === item.item?.id) || item.item,
         quantity: item.quantity,
@@ -608,15 +632,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-      
+
       {/* This is now rendered via Portal inside the component itself,
         but we pass the state from here. 
       */}
-      <GameOverAlert 
-        isOpen={isGameOver} 
-        onRestart={resetCareer} 
+      <GameOverAlert
+        isOpen={isGameOver}
+        onRestart={resetCareer}
       />
-      
+
     </GameContext.Provider>
   );
 }

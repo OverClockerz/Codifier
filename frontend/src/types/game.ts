@@ -68,6 +68,7 @@ export interface PlayerState {
   currentDay: number; // In-game day counter
   currentMonth: number;
   lastLoginDate: Date;
+  proficiency: PlayerProficiency;
   careerHistory: CareerRun[];
   currentRun: CareerRun;
   reputation: number; // Reputation score (-20 to +∞, fired at -20)
@@ -77,6 +78,14 @@ export interface PlayerState {
   activeQuests: Quest[]; // IDs of active quests
   completedQuests: Quest[]; // IDs of completed quests
   inventory: InventoryItem[]; // Array of inventory items
+}
+
+export interface PlayerProficiency {
+  coding_skill: number;
+  soft_skill: number;
+  reliability_skill: number;
+  problem_solving: number;
+  stress_resistance: number;
 }
 
 export interface GitHubInfo {

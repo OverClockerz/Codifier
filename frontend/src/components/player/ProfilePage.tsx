@@ -57,7 +57,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               >
                 <ArrowLeft className="w-5 h-5" />
               </motion.button>
-              
+
               <h1 className="text-xl md:text-2xl bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 <ScrambleTextOnHover text="OFFICE" />
               </h1>
@@ -79,7 +79,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               >
                 {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-              
+
               <button
                 onClick={logout}
                 className="flex items-center gap-2 px-2.5 md:px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors"
@@ -106,10 +106,10 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                   <img
-                  src={player.githubinfo?.avatar_url || user?.avatar || ''}
-                  alt={player.username}
-                  className="w-14 h-14 rounded-full"
-                />
+                    src={player.githubinfo?.avatar_url || user?.avatar || ''}
+                    alt={player.username}
+                    className="w-14 h-14 rounded-full"
+                  />
                 </div>
                 <div>
                   <h2 className="text-xl text-white">{user?.username || 'Player'}</h2>
@@ -130,9 +130,9 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                 {/* Salary */}
                 <div className="text-center">
                   <DollarSign className="w-5 h-5 text-yellow-400 mx-auto mb-1" />
-                  <p className="text-xs text-gray-500">Salary</p>
-                  <p className="text-2xl text-white">${player.baseSalary}</p>
-                  <p className="text-xs text-gray-600">{player.currentMonthEarnings}</p>
+                  <p className="text-xs text-gray-500">Currency</p>
+                  <p className="text-2xl text-white">${player.currency}</p>
+                  {/* <p className="text-xs text-green-400">+{player.currentMonthEarnings}</p> */}
                 </div>
 
                 {/* Paid Leaves */}
@@ -170,21 +170,20 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
               </span>
             </div>
             <div className="h-3 bg-gray-800 rounded-full overflow-hidden">
-              <div 
-                className={`h-full ${
-                  (player.reputation ?? 0) >= 0 
-                    ? 'bg-linear-to-r from-green-500 to-emerald-500' 
-                    : 'bg-linear-to-r from-red-500 to-orange-500'
-                }`}
+              <div
+                className={`h-full ${(player.reputation ?? 0) >= 0
+                  ? 'bg-linear-to-r from-green-500 to-emerald-500'
+                  : 'bg-linear-to-r from-red-500 to-orange-500'
+                  }`}
                 style={{ width: `${Math.min(100, Math.abs((player.reputation ?? 0) / 20) * 100)}%` }}
               ></div>
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              {(player.reputation ?? 0) < -20 
+              {(player.reputation ?? 0) < -20
                 ? 'Critical! You will be fired!'
-                : (player.reputation ?? 0) < 0 
-                ? 'Warning: Improve reputation to avoid termination'
-                : 'Reputation affects monthly salary and job security'}
+                : (player.reputation ?? 0) < 0
+                  ? 'Warning: Improve reputation to avoid termination'
+                  : 'Reputation affects monthly salary and job security'}
             </p>
           </motion.div>
 
@@ -196,7 +195,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
             className="bg-gray-900/50 border border-gray-800 rounded-xl p-6"
           >
             <h3 className="text-lg text-white mb-6">Professional Attributes</h3>
-            
+
             <div className="grid md:grid-cols-2 gap-6">
               {/* Radar Chart + Legend */}
               <div className="flex flex-col items-center justify-center bg-gray-800/30 rounded-xl p-4">
@@ -294,10 +293,12 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                 <p className="text-3xl text-white">{player.currentMonthTasksCompleted}</p>
                 {/* <p className="text-xs text-gray-600 mt-1">{player.currentMonthEarnings}</p> */}
               </div>
-              <div>
+              <div >
                 <p className="text-sm text-gray-500 mb-2">Current Salary</p>
-                <p className="text-3xl text-white">${player.baseSalary}</p>
-                {/* <p className="text-xs text-gray-600 mt-1">{player.currentMonthEarnings}</p> */}
+                <div className='flex items-baseline gap-2'>
+                  <p className="text-3xl text-white">${player.baseSalary}</p>
+                  <p className="text-xs text-green-400">+{player.currentMonthEarnings}</p>
+                </div>
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-2">Days Worked</p>

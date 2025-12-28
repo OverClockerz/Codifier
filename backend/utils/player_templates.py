@@ -1,4 +1,6 @@
-from datetime import date, datetime
+from datetime import datetime, timedelta, timezone
+
+IST = timezone(timedelta(hours=5, minutes=30))
 
 InitialPlayerState = {
     "username": "",
@@ -25,8 +27,14 @@ InitialPlayerState = {
     "gameStartDate": datetime.now(),
     "currentDay": 1,
     "currentMonth": 1,
-    "lastLoginDate": datetime.utcnow(),
-
+    "lastLoginDate": datetime.now(IST),
+    "proficiency": {
+        "coding_skill": 0,
+        "soft_skill": 0,
+        "reliability_skill": 0,
+        "problem_solving": 0,
+        "stress_resistance": 0,
+    },
     "careerHistory": [],
 
     "currentRun": {
