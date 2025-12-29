@@ -22,7 +22,7 @@ import {
 import { useState } from 'react';
 import { ZoneType } from '../types/game';
 // import { getDifficultyLabel } from '../data/quests';
-import { PROFESSIONAL_ATTRIBUTES } from '../data/gameConfig';
+import { getProfessionalAttributes } from '../data/gameConfig';
 import { PlayerCard } from './player/PlayerCard';
 import { Workspace } from '../zones/Workspace';
 import { GameLounge } from '../zones/GameLounge';
@@ -71,9 +71,10 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
   // Calculate progress to next level
   const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
 
-  // Calculate overall skill proficiency from shared attributes
+  // Calculate overall skill proficiency from player's actual proficiency
+  const attributesList = getProfessionalAttributes(player.proficiency);
   const overallSkillProficiency = Math.round(
-    PROFESSIONAL_ATTRIBUTES.reduce((sum, a) => sum + a.score, 0) / PROFESSIONAL_ATTRIBUTES.length
+    attributesList.reduce((sum, a) => sum + a.score, 0) / attributesList.length
   );
 
   // Get urgent quests (less than 3 days remaining)

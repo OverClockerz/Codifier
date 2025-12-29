@@ -83,7 +83,7 @@ export const GAME_CONSTANTS = {
   HOURS_PER_DAY: 8,
 };
 
-import { GameConfig } from '../types/game';
+import { GameConfig, PlayerProficiency } from '../types/game';
 
 // ===========================
 // GAME SETTINGS
@@ -118,12 +118,24 @@ export const GAME_CONFIG: GameConfig = {
  * Professional attributes used across the game
  * - GameDashboard: calculates overall skill proficiency as average
  * - ProfilePage: displays detailed breakdown with radar chart
+ * 
+ * ⚠️ IMPORTANT: Always use getProfessionalAttributes(player.proficiency) with actual player data
+ * Never use hardcoded values - this ensures database changes reflect immediately
  */
-export const PROFESSIONAL_ATTRIBUTES = [
-  { id: 1, name: 'Coding Skill', score: 100, maxScore: 100, description: 'Workspace proficiency', angle: 270 },
-  { id: 2, name: 'Soft Skills', score: 80, maxScore: 100, description: 'Meeting Room success', angle: 198 },
-  { id: 3, name: 'Reliability', score: 90, maxScore: 100, description: 'Deadline consistency', angle: 342 },
-  { id: 4, name: 'Problem Solving', score: 20, maxScore: 100, description: 'Game Lounge effectiveness', angle: 54 },
-  { id: 5, name: 'Stress Resistance', score: 60, maxScore: 100, description: 'Performance under pressure', angle: 126 },
-];
+export function getProfessionalAttributes(proficiency: PlayerProficiency) {
+  console.log('📊 Raw Proficiency Data from Database:', proficiency);
+  
+  const attributes = [
+    { id: 1, name: 'Coding Skill', score: proficiency.coding_skill>100?100:proficiency.coding_skill, maxScore: 100, description: 'Workspace proficiency', angle: 270 },
+    { id: 2, name: 'Soft Skills', score: proficiency.soft_skill>100?100:proficiency.soft_skill, maxScore: 100, description: 'Meeting Room success', angle: 198 },
+    { id: 3, name: 'Reliability', score: proficiency.reliability_skill>100?100:proficiency.reliability_skill, maxScore: 100, description: 'Deadline consistency', angle: 342 },
+    { id: 4, name: 'Problem Solving', score: proficiency.problem_solving>100?100:proficiency.problem_solving, maxScore: 100, description: 'Game Lounge effectiveness', angle: 54 },
+    { id: 5, name: 'Stress Resistance', score: proficiency.stress_resistance>100?100:proficiency.stress_resistance, maxScore: 100, description: 'Performance under pressure', angle: 126 },
+  ];
+
+  console.log('🎮 Professional Attributes with Scores:', attributes);
+  
+  return attributes;
+}
+
 

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { ZoneType } from '../../types/game';
 import { SimpleRadarChart } from '../charts/SimpleRadarChart';
 import { ScrambleTextOnHover } from '../effects/ScrambleText';
-import { PROFESSIONAL_ATTRIBUTES } from '../../data/gameConfig';
+import { getProfessionalAttributes } from '../../data/gameConfig';
 import {
   User,
   ChevronRight,
@@ -36,8 +36,8 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
   // Calculate progress to next level
   const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
 
-  // Use shared professional attributes from game config
-  const attributesList = PROFESSIONAL_ATTRIBUTES;
+  // Fetch professional attributes from player proficiency data
+  const attributesList = getProfessionalAttributes(player.proficiency);
 
   return (
     <div className="min-h-screen bg-[#0a0f1c] text-white">
