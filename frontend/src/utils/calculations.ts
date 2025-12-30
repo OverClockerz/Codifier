@@ -598,7 +598,7 @@ export function gameTimeSince(input: DateInput): { days: number; months: number 
   const totalDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
   // const months = Math.floor(totalDays / 30)===-1? 0: Math.floor(totalDays / 30);
-  const months = Math.ceil(totalDays / 30);
+  const months = Math.floor(totalDays / 30);
   const days = (totalDays % 30) + 1; // reset to 1 after each 30 days
 
   return { days, months };

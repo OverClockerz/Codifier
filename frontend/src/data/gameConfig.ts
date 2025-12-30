@@ -123,7 +123,7 @@ export const GAME_CONFIG: GameConfig = {
  * Never use hardcoded values - this ensures database changes reflect immediately
  */
 export function getProfessionalAttributes(proficiency: PlayerProficiency) {
-  console.log('📊 Raw Proficiency Data from Database:', proficiency);
+  // console.log('📊 Raw Proficiency Data from Database:', proficiency);
   
   const attributes = [
     { id: 1, name: 'Coding Skill', score: proficiency.coding_skill>100?100:proficiency.coding_skill, maxScore: 100, description: 'Workspace proficiency', angle: 270 },
@@ -133,7 +133,7 @@ export function getProfessionalAttributes(proficiency: PlayerProficiency) {
     { id: 5, name: 'Stress Resistance', score: proficiency.stress_resistance>100?100:proficiency.stress_resistance, maxScore: 100, description: 'Performance under pressure', angle: 126 },
   ];
 
-  console.log('🎮 Professional Attributes with Scores:', attributes);
+  // console.log('🎮 Professional Attributes with Scores:', attributes);
   
   return attributes;
 }

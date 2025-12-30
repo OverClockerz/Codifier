@@ -1,4 +1,4 @@
-import { Problem, Difficulty, SupportedLanguage, EvaluationResult } from "../types/types";
+import { Problem, Difficulty, SupportedLanguage, EvaluationResult,Question, Attempt, ComprehensionEvaluationResult } from "../types/types";
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
