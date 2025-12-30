@@ -28,7 +28,7 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
 
   const handleComplete = () => {
     if (result === 'success') {
-      completeQuest(quest.id, performanceScore);
+      completeQuest(quest.id, performanceScore,player);
     } else {
       failQuest(quest.id);
     }

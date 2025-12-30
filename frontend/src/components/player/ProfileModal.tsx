@@ -215,7 +215,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                 <div className="bg-black/30 rounded p-2 text-center">
                   <p className="text-xs text-gray-500">Salary</p>
                   <p className="text-sm text-white">${player.baseSalary}</p>
-                  <p className="text-xs text-green-400">+{player.currentMonthEarnings}</p>
+                  <p className={player.currentMonthEarnings >= 0 ? "text-xs text-green-400" : "text-xs text-red-400"}>{player.currentMonthEarnings >= 0 ? '+' : ''}{player.currentMonthEarnings}</p>
                 </div>
 
                 {/* Code Quality */}
@@ -302,7 +302,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Earnings:</span>
-                      <span className="text-green-400">+${player.currentMonthEarnings}</span>
+                      <span className={player.currentMonthEarnings >= 0 ? "text-xs text-green-400" : "text-xs text-red-400"}>{player.currentMonthEarnings >= 0 ? '+' : ''}{player.currentMonthEarnings}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Rating:</span>

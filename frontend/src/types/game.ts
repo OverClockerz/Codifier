@@ -73,7 +73,7 @@ export interface PlayerState {
   currentRun: CareerRun;
   reputation: number; // Reputation score (-20 to +∞, fired at -20)
   skills: Record<string, number>; // Skill name -> level (0-100)
-  activeBuffs: ActiveBuff[]; // Temporary buffs applied
+  activeBuffs: ActiveBuff; // List of permanent buffs applied
   permanentBuffs: Buff[]; // Permanent buffs acquired
   activeQuests: Quest[]; // IDs of active quests
   completedQuests: Quest[]; // IDs of completed quests
@@ -147,11 +147,10 @@ export interface Buff {
 }
 
 export interface ActiveBuff {
-  itemId: string;
-  name: string;
-  effect: ItemEffect;
-  appliedAt: number;
-  expiresAt?: number;
+  stressReduction?: number;
+  moodIncrease?: number;
+  expBoost?: number; 
+  currencyBoost?: number; 
 }
 
 // ============================================================

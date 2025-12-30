@@ -5,7 +5,7 @@
  * This includes calculations for buffs/effects, salary, skills, reputation, exp, mood, stress, etc.
  */
 
-import { PlayerState, Quest, ShopItem, Buff, ActiveBuff } from '../types/game';
+import { PlayerState, Quest, ShopItem, Buff, ActiveBuff, ItemEffect } from '../types/game';
 import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS } from '../data/gameConfig';
 
 // ===========================
@@ -334,20 +334,20 @@ export function applyConsumableItem(
   }
 
   // Timed buff effects
-  if (effect.duration) {
-    const appliedAt = Date.now();
-    const expiresAt = Date.now() + effect.duration * 60 * 1000;
-    activeBuff = {
-      itemId: item.id,
-      name: item.name,
-      effect: effect,
-      appliedAt: appliedAt,
-      expiresAt: expiresAt,
-    };
-  }
-  if (activeBuff) {
-    playerData.activeBuffs.push(activeBuff);
-  } 
+  // if (effect.duration) {
+  //   const appliedAt = Date.now();
+  //   const expiresAt = Date.now() + effect.duration * 60 * 1000;
+  //   activeBuff = {
+  //     itemId: item.id,
+  //     name: item.name,
+  //     effect: effect,
+  //     appliedAt: appliedAt,
+  //     expiresAt: expiresAt,
+  //   };
+  // }
+  // if (activeBuff) {
+  //   playerData.activeBuffs.push(activeBuff);
+  // } 
 
   return data;
 }
@@ -364,9 +364,16 @@ export function applyPermanentBuff(playerData: PlayerState, item: ShopItem): Pla
     data.permanentBuffs = [];
   }
 
-  // Check if already owned
+  // Check if already owned before applying
   if (!data.permanentBuffs.some((buff) => buff.itemId === item.id)) {
     data.permanentBuffs.push(permanentBuff);
+    Object.keys(permanentBuff.effect).forEach((key) => {
+      if (key in data.activeBuffs) {
+        console.log('Applying permanent buff:', key, permanentBuff.effect[key as keyof ItemEffect]);
+        data.activeBuffs[key as keyof ActiveBuff]! += permanentBuff.effect[key as keyof ItemEffect] || 0;
+      }
+    });
+    
   }
 
   return data;
@@ -594,12 +601,19 @@ export function gameTimeSince(input: DateInput): { days: number; months: number 
   const past = new Date(dateString).getTime();
   const now = Date.now();
 
-  const diffMs = now - past;
-  const totalDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  // Prevent negative differences
+  const diffMs = Math.max(0, now - past);
+  const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  // const months = Math.floor(totalDays / 30)===-1? 0: Math.floor(totalDays / 30);
-  const months = Math.floor(totalDays / 30);
-  const days = (totalDays % 30) + 1; // reset to 1 after each 30 days
+  // Months start at 1 instead of 0
+  const months = Math.floor(totalDays / 30) + 1;
+
+  // Days cycle from 1–30
+  const days = (totalDays % 30) + 1;
+
+  console.log('Total days:', totalDays, 'Calculated months:', months, 'Days:', days);
+
+  
 
   return { days, months };
 }
