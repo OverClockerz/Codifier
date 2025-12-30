@@ -297,7 +297,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                 <p className="text-sm text-gray-500 mb-2">Current Salary</p>
                 <div className='flex items-baseline gap-2'>
                   <p className="text-3xl text-white">${player.baseSalary}</p>
-                  <p className="text-xs text-green-400">+{player.currentMonthEarnings}</p>
+                  <p className={player.currentMonthEarnings >= 0 ? "text-xs text-green-400" : "text-xs text-red-400"}>{player.currentMonthEarnings >= 0 ? '+' : ''}{player.currentMonthEarnings}</p>
                 </div>
               </div>
               <div>

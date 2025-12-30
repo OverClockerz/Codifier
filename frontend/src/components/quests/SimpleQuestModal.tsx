@@ -10,7 +10,7 @@ interface SimpleQuestModalProps {
 }
 
 export function SimpleQuestModal({ quest, onClose }: SimpleQuestModalProps) {
-  const { completeQuest, failQuest, updateMoodStress } = useGame();
+  const { completeQuest, failQuest,player, updateMoodStress } = useGame();
   const [answer, setAnswer] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,8 +42,8 @@ export function SimpleQuestModal({ quest, onClose }: SimpleQuestModalProps) {
 
     // Random performance score (70-100)
     const performanceScore = 70 + Math.random() * 30;
-    
-    completeQuest(quest.id, performanceScore);
+
+    completeQuest(quest.id, performanceScore, player);
     setIsSubmitting(false);
     onClose();
   };

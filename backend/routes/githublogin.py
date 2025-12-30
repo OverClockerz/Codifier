@@ -1,7 +1,8 @@
 from flask import request, jsonify,Blueprint
 from dotenv import load_dotenv
+from utils.paid_leaves import calculate_paid_leaves
 from extensions import mongo
-from utils.player_templates import InitialPlayerState
+from utils.player_templates import IST, InitialPlayerState
 from datetime import datetime
 import copy
 import os
@@ -65,7 +66,13 @@ def github_callback():
 
     if existing_player:
         # ✅ User already exists → DO NOT overwrite
-        existing_player["lastLoginDate"] = datetime.utcnow()
+        print(existing_player)
+        calculate_paid_leaves(existing_player)
+        existing_player["lastLoginDate"] = datetime.now(IST)
+        mongo.db.players.update_one(
+            {"username": username},
+            {"$set": existing_player}
+        )
         return jsonify({
         'message': 'GitHub login successful',
         'user': user_data

@@ -236,7 +236,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
           <div className="text-center">
             <p className="text-xs text-gray-500">Salary</p>
             <p className="text-xl text-white">${player.baseSalary}</p>
-            <p className="text-xs text-green-400">+{player.currentMonthEarnings}</p>
+            <p className={player.currentMonthEarnings >= 0 ? "text-xs text-green-400" : "text-xs text-red-400"}>{player.currentMonthEarnings >= 0 ? '+' : ''}{player.currentMonthEarnings}</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500">Paid Leaves</p>
@@ -449,33 +449,6 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
                 })}
             </div>
           </motion.div>
-
-          {/* Active Buffs */}
-          {activeBuffs.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-gray-900/50 border border-gray-800 rounded-xl p-4"
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <Shield className="w-4 h-4 text-purple-400" />
-                <span className="text-sm text-gray-400">Active Buffs</span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {activeBuffs.map((buff) => (
-                  <div key={buff.itemId} className="bg-purple-900/20 border border-purple-800/50 rounded-lg p-3">
-                    <div className="text-white mb-1">{buff.name}</div>
-                    {buff.expiresAt && (
-                      <div className="text-xs text-gray-500">
-                        {Math.floor((buff.expiresAt - Date.now()) / 60000)}m remaining
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
         </>
       ) : selectedTab === 'workspace' ? (
         <Workspace />

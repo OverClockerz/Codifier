@@ -4,7 +4,7 @@ import { getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS, GAME_CONS
 import { useAuth } from './AuthContext';
 import { fetchPlayerData, updatePlayerData } from '../services/api';
 import { shopItems } from '../data/shopItems';
-import { LOGIN_DATE_TIME } from '../components/auth/GitHubAuthModal';
+// import { LOGIN_DATE_TIME } from '../components/auth/GitHubAuthModal';
 import { GameOverAlert } from '../components/extras/GameOverAlert';
 import { gameTimeSince } from '../utils/calculations';
 
@@ -27,10 +27,9 @@ interface GameContextType {
   // Actions
   setPlayer: (player: PlayerState) => void;
   startQuest: (questId: string) => void;
-  completeQuest: (questId: string, performanceScore: number) => void;
+  completeQuest: (questId: string, performanceScore: number, player: PlayerState) => void;
   failQuest: (questId: string) => void;
   purchaseItem: (itemId: string) => boolean;
-  useItem: (itemId: string) => void;
   takePaidLeave: () => boolean;
   updateMoodStress: (moodChange: number, stressChange: number) => void;
   addExperience: (amount: number) => void;
@@ -91,7 +90,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     },
     reputation: 0,
     skills: {},
-    activeBuffs: [],
+    activeBuffs: {},
     permanentBuffs: [],
     activeQuests: [],
     completedQuests: [],
@@ -122,22 +121,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, [player, activeQuests, completedQuests, inventory]);
 
-  // Check for expired buffs
+  // Game loop: periodically update player details from backend
   useEffect(() => {
+    if (!user?.id) return;
     const interval = setInterval(() => {
-      const now = Date.now();
-      setActiveBuffs(prev => prev.filter(buff => !buff.expiresAt || buff.expiresAt > now));
-    }, 60000);
-
+      loadGame();
+    }, 5000); // every 5 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [user?.id]);
 
   // Check for expired quest deadlines
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Math.floor(Date.now() / 1000);
       activeQuests.forEach(quest => {
-        if (quest.deadline && quest.status === 'in-progress' && now > quest.deadline) {
+        if (quest.deadline  && now > quest.deadline) {
           failQuest(quest.id);
           addNotification({
             type: 'alert',
@@ -161,7 +159,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const completeQuest = (questId: string, performanceScore: number = 100) => {
+  const completeQuest = (questId: string, performanceScore: number = 100, player: PlayerState) => {
     const quest = activeQuests.find(q => q.id === questId);
     if (!quest) return;
 
@@ -169,13 +167,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const expGain = Math.floor(quest.expReward * multiplier);
     const currencyGain = Math.floor(quest.currencyReward * multiplier);
 
-    let finalExp = expGain;
-    let finalCurrency = currencyGain;
-
-    activeBuffs.forEach(buff => {
-      if (buff.effect.expBoost) finalExp += Math.floor(expGain * (buff.effect.expBoost / 100));
-      if (buff.effect.currencyBoost) finalCurrency += Math.floor(currencyGain * (buff.effect.currencyBoost / 100));
-    });
+    let finalExp = expGain + Math.floor(expGain * (player.activeBuffs.expBoost || 0) / 100);
+    let finalCurrency = currencyGain + Math.floor(currencyGain * (player.activeBuffs.currencyBoost || 0) / 100);
 
     addExperience(finalExp);
     addCurrency(finalCurrency);
@@ -199,10 +192,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    activeBuffs.forEach(buff => {
-      if (buff.effect.stressReduction) stressChange -= Math.floor(Math.abs(stressChange) * (buff.effect.stressReduction / 100));
-      if (buff.effect.moodIncrease) moodChange += Math.floor(10 * (buff.effect.moodIncrease / 100));
-    });
+    stressChange += Math.floor(stressChange * (-(player.activeBuffs.stressReduction || 0) / 100));
+    moodChange += Math.floor(moodChange * ((player.activeBuffs.moodIncrease || 0) / 100));
 
     updateMoodStress(moodChange, stressChange);
 
@@ -291,42 +282,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return true;
   };
 
-  const useItem = (itemId: string) => {
-    const inventoryItem = inventory.find(i => i.item.id === itemId);
-    if (!inventoryItem) return;
-
-    const { item } = inventoryItem;
-    const { effect } = item;
-
-    if (effect.stressReduction || effect.moodIncrease) {
-      updateMoodStress(effect.moodIncrease || 0, -(effect.stressReduction || 0));
-    }
-
-    if (effect.paidLeaves) {
-      setPlayer(prev => ({ ...prev, paidLeaves: prev.paidLeaves + effect.paidLeaves! }));
-    }
-
-    if (effect.expBoost || effect.currencyBoost) {
-      const expiresAt = effect.duration ? Date.now() + effect.duration * 60 * 1000 : undefined;
-      setActiveBuffs(prev => [...prev, { itemId: item.id, name: item.name, effect, appliedAt: Date.now(), expiresAt }]);
-    }
-
-    if (item.type === 'consumable') {
-      setInventory(prev => prev.map(i => i.item.id === itemId ? { ...i, quantity: i.quantity - 1 } : i).filter(i => i.quantity > 0));
-    } else if (item.type === 'permanent-buff') {
-      setPlayer(prev => {
-        if ((prev.permanentBuffs || []).some(buff => buff.itemId === itemId)) return prev;
-        return { ...prev, permanentBuffs: [...(prev.permanentBuffs || []), { itemId: item.id, name: item.name, effect: item.effect }] };
-      });
-
-      setActiveBuffs(prev => {
-        if (prev.some(b => b.itemId === itemId)) return prev;
-        return [...prev, { itemId: item.id, name: item.name, effect, appliedAt: Date.now() }];
-      });
-
-      setInventory(prev => prev.map(i => i.item.id === itemId ? { ...i, quantity: i.quantity - 1 } : i).filter(i => i.quantity > 0));
-    }
-  };
 
   const takePaidLeave = (): boolean => {
     if (player.paidLeaves <= 0) return false;
@@ -338,7 +293,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setPlayer(prev => {
       const newMood = Math.max(0, Math.min(100, prev.mood + moodChange));
       const newStress = Math.max(0, Math.min(100, prev.stress + stressChange));
-      return { ...prev, mood: newMood, stress: newStress, isBurntOut: newMood <= GAME_CONSTANTS.BURNOUT_MOOD_THRESHOLD };
+      return { ...prev, mood: newMood, stress: newStress, isBurntOut: newMood === GAME_CONSTANTS.BURNOUT_MOOD_THRESHOLD };
     });
   };
 
@@ -432,7 +387,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         paidLeaves: 0,
         currentDay: 1,
         currentMonth: 1,
-        lastLoginDate: LOGIN_DATE_TIME,
+        lastLoginDate: player.lastLoginDate,
         proficiency: {
           coding_skill: 0,
           soft_skill: 0,
@@ -453,7 +408,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         },
         reputation: 0,
         skills: {},
-        activeBuffs: [],
+        activeBuffs: {},
         permanentBuffs: [],
         activeQuests: [],
         completedQuests: [],
@@ -501,7 +456,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         paidLeaves: player.paidLeaves,
         currentDay: elapsed.days,
         currentMonth: elapsed.months,
-        lastLoginDate: LOGIN_DATE_TIME,
+        lastLoginDate: player.lastLoginDate,
         proficiency: {
           coding_skill: player.proficiency.coding_skill,
           soft_skill: player.proficiency.soft_skill,
@@ -513,6 +468,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         currentRun: player.currentRun,
         reputation: player.reputation,
         skills: player.skills,
+        activeBuffs: player.activeBuffs,
         permanentItems: player.permanentBuffs,
         activeQuests: activeQuests,
         completedQuests: completedQuests,
@@ -615,7 +571,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
         completeQuest,
         failQuest,
         purchaseItem,
-        useItem,
         takePaidLeave,
         updateMoodStress,
         addExperience,

@@ -22,9 +22,9 @@ InitialPlayerState = {
     "baseSalary": 1000,
     "currentMonthEarnings": 0,
     "currentMonthTasksCompleted": 0,
-    "paidLeaves": 0,
+    "paidLeaves": 5,
 
-    "gameStartDate": datetime.now(),
+    "gameStartDate": datetime.now(IST),
     "currentDay": 1,
     "currentMonth": 1,
     "lastLoginDate": datetime.now(IST),
@@ -54,7 +54,12 @@ InitialPlayerState = {
         "problem_solving": 5,
         "communication": 4
     },
-    "activeBuffs": [],
+    "activeBuffs": {
+        "stressReduction": 0,
+        "moodIncrease": 0,
+        "expBoost": 0, 
+        "currencyBoost": 0, 
+    },
     "permanentItems": [],
     "activeQuests": [],
     "completedQuests": [],
@@ -68,8 +73,15 @@ MCQ_QUEST = {
       "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",
       "frequency": "daily",
       "skillCategory": "technical",
-      "difficulty": "on a scale of 1-10",
+      "difficulty": "on a scale of 1-4",
       "expReward": "within 10-100",
+      "proficiency": {
+        "coding_skill": "float value of 0-0.5 depending on the problem",
+        "soft_skill": "float  value of 0-0.5 depending on the problem",
+        "reliability_skill": "float  value of 0-0.5 depending on the problem",
+        "problem_solving": "float  value of 0-0.5 depending on the problem",
+        "stress_resistance": "float  value of 0-0.5 depending on the problem"
+      },
       "currencyReward": "within 10-100",
       "stressImpact": "within 10 to 40",
       "moodImpact": "within -5 to -20",
