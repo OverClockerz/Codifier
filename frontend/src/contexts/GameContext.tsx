@@ -135,7 +135,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const interval = setInterval(() => {
       const now = Math.floor(Date.now() / 1000);
       activeQuests.forEach(quest => {
-        if (quest.deadline  && now > quest.deadline) {
+        if (quest.deadline && now > quest.deadline) {
           failQuest(quest.id);
           addNotification({
             type: 'alert',
@@ -360,7 +360,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     setPlayer(prev => ({ ...prev, currency: prev.currency + totalEarnings, currentMonthEarnings: 0 }));
   };
-//reset player career
+  //reset player career
   const resetCareer = async () => {
     console.log("🔄 Reset Career Initiated");
     try {
@@ -486,7 +486,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(`office_game_${user.id}`, JSON.stringify({ player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications }));
     }
   };
-//load game from backend
+  //load game from backend
   const loadGame = async () => {
     if (!user?.id) return;
     try {

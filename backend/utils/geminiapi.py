@@ -16,6 +16,7 @@ def generate_response(data={
 
     # The client gets the API key from the environment variable `GEMINI_API_KEY`.
     KEY=os.getenv("GEMINI_API_KEY")
+    print(KEY)
     client = genai.Client(api_key=KEY)
 
     response = client.models.generate_content(

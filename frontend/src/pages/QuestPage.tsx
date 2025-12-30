@@ -5,6 +5,7 @@ import { Quest } from '../types/game';
 import { useGame } from '../contexts/GameContext';
 import { QuestTasks } from '../components/quests/QuestTasks';
 import { CodingPlatform } from '../components/quests/CodingPlatform';
+import { ComprehensionQuest } from '../components/quests/ComprehensionQuest';
 
 interface QuestPageProps {
   quest: Quest;
@@ -36,7 +37,7 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
 
   const handleComplete = () => {
     if (result === 'success') {
-      completeQuest(quest.id, performanceScore,player);
+      completeQuest(quest.id, performanceScore, player);
     } else {
       failQuest(quest.id);
     }
@@ -102,7 +103,8 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
           transition={{ duration: 0.35, ease: 'easeOut' }}
           className="flex-1 w-full overflow-hidden"
         >
-            <CodingPlatform className="h-full w-full" />
+          {/* <CodingPlatform className="h-full w-full" /> */}
+          <ComprehensionQuest />
         </motion.div>
       ) : (
         <div className="flex-1 overflow-y-auto">
@@ -219,11 +221,10 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
                 className="space-y-6"
               >
                 <div
-                  className={`${
-                    result === 'success'
-                      ? 'bg-green-900/20 border-green-800/50'
-                      : 'bg-red-900/20 border-red-800/50'
-                  } border rounded-2xl p-8`}
+                  className={`${result === 'success'
+                    ? 'bg-green-900/20 border-green-800/50'
+                    : 'bg-red-900/20 border-red-800/50'
+                    } border rounded-2xl p-8`}
                 >
                   <div className="flex items-center justify-center gap-3 mb-6">
                     {result === 'success' ? (
@@ -260,13 +261,13 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
                         <div className="flex justify-between text-gray-400">
                           <span>Mood Change:</span>
                           <span className={
-                            quest.zone === 'game-lounge' 
-                              ? 'text-green-400' 
-                              : quest.zone === 'meeting-room' && performanceScore >= 70
+                            quest.zone === 'game-lounge'
                               ? 'text-green-400'
-                              : 'text-red-400'
+                              : quest.zone === 'meeting-room' && performanceScore >= 70
+                                ? 'text-green-400'
+                                : 'text-red-400'
                           }>
-                            {quest.zone === 'game-lounge' || (quest.zone === 'meeting-room' && performanceScore >= 70) 
+                            {quest.zone === 'game-lounge' || (quest.zone === 'meeting-room' && performanceScore >= 70)
                               ? '+' + Math.floor(Math.abs(quest.moodImpact) * (performanceScore / 100))
                               : quest.moodImpact > 0 ? '+' : ''}{quest.zone === 'workspace' || (quest.zone === 'meeting-room' && performanceScore < 70) ? Math.floor(quest.moodImpact * (performanceScore / 100)) : ''}
                           </span>
@@ -278,39 +279,38 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
                               ? 'text-green-400'
                               : 'text-orange-400'
                           }>
-                            {quest.zone === 'game-lounge' 
+                            {quest.zone === 'game-lounge'
                               ? '-' + Math.floor(Math.abs(quest.stressImpact) * (performanceScore / 100))
                               : quest.zone === 'meeting-room' && performanceScore >= 70
-                              ? '-' + Math.floor(quest.stressImpact * ((performanceScore / 100) * 0.5))
-                              : '+' + Math.floor(quest.stressImpact * (performanceScore / 100))}
+                                ? '-' + Math.floor(quest.stressImpact * ((performanceScore / 100) * 0.5))
+                                : '+' + Math.floor(quest.stressImpact * (performanceScore / 100))}
                           </span>
                         </div>
                         <div className="flex justify-between text-gray-400">
                           <span>Reputation:</span>
                           <span className={performanceScore >= 50 ? 'text-green-400' : 'text-red-400'}>
-                            {performanceScore < 50 
+                            {performanceScore < 50
                               ? quest.difficulty <= 2 ? '-0.5%' : quest.difficulty <= 3 ? '-1.5%' : '-3%'
                               : performanceScore < 70
-                              ? '+' + (quest.difficulty <= 2 ? '0.005%' : quest.difficulty <= 3 ? '0.02%' : '0.1%')
-                              : '+' + (quest.difficulty <= 2 ? '0.01%' : quest.difficulty <= 3 ? '0.05%' : '0.2%')}
+                                ? '+' + (quest.difficulty <= 2 ? '0.005%' : quest.difficulty <= 3 ? '0.02%' : '0.1%')
+                                : '+' + (quest.difficulty <= 2 ? '0.01%' : quest.difficulty <= 3 ? '0.05%' : '0.2%')}
                           </span>
                         </div>
                       </div>
-                      
+
                       {/* Performance Grade */}
                       <div className="mt-4 pt-4 border-t border-gray-800">
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-400">Performance Grade:</span>
-                          <span className={`text-lg ${
-                            performanceScore >= 90 ? 'text-green-400' :
+                          <span className={`text-lg ${performanceScore >= 90 ? 'text-green-400' :
                             performanceScore >= 70 ? 'text-blue-400' :
-                            performanceScore >= 50 ? 'text-yellow-400' :
-                            'text-red-400'
-                          }`}>
+                              performanceScore >= 50 ? 'text-yellow-400' :
+                                'text-red-400'
+                            }`}>
                             {performanceScore >= 90 ? 'A - Excellent' :
-                             performanceScore >= 70 ? 'B - Good' :
-                             performanceScore >= 50 ? 'C - Average' :
-                             'D - Poor'}
+                              performanceScore >= 70 ? 'B - Good' :
+                                performanceScore >= 50 ? 'C - Average' :
+                                  'D - Poor'}
                           </span>
                         </div>
                       </div>
@@ -363,11 +363,10 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
 
                 <button
                   onClick={handleComplete}
-                  className={`w-full ${
-                    result === 'success'
-                      ? `bg-${color}-600 hover:bg-${color}-700`
-                      : 'bg-gray-700 hover:bg-gray-600'
-                  } text-white px-8 py-4 rounded-xl text-lg transition-colors`}
+                  className={`w-full ${result === 'success'
+                    ? `bg-${color}-600 hover:bg-${color}-700`
+                    : 'bg-gray-700 hover:bg-gray-600'
+                    } text-white px-8 py-4 rounded-xl text-lg transition-colors`}
                 >
                   {result === 'success' ? 'Claim Rewards & Continue' : 'Return to Dashboard'}
                 </button>

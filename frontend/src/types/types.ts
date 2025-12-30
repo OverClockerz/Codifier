@@ -69,7 +69,7 @@ export interface Attempt {
   id: string;
   question: Question;
   userAnswer: string;
-  evaluation: EvaluationResult;
+  evaluation: ComprehensionEvaluationResult;
   timestamp: number;
 }
 

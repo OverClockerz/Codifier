@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { EvaluationResult } from '../types';
+import { ComprehensionEvaluationResult } from '../../../types/types';
 
 interface FeedbackDisplayProps {
-  evaluation: EvaluationResult;
+  evaluation: ComprehensionEvaluationResult;
 }
 
 const FeedbackDisplay: React.FC<FeedbackDisplayProps> = ({ evaluation }) => {
@@ -34,48 +34,42 @@ const FeedbackDisplay: React.FC<FeedbackDisplayProps> = ({ evaluation }) => {
   };
 
   return (
-    <div className="mt-8 space-y-6 animate-fade-in-up">
+    <div className="mt-4 space-y-3 animate-fade-in-up">
       
       {/* 1. Dashboard KPI Card */}
-      <div className={`p-6 rounded-xl border ${scoreBg} flex items-center justify-between relative overflow-hidden`}>
-        {/* Ambient Glow */}
-        <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full blur-3xl opacity-20 ${evaluation.score >= 70 ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
-        
+      <div className={`p-4 rounded-lg border ${scoreBg} flex items-center justify-between relative overflow-hidden`}>
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-lg font-bold text-slate-100">Assessment Result</h3>
-            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${badgeClass}`}>
-                {isPassing ? 'Passing' : 'Review Needed'}
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-sm font-bold text-slate-100">Result</h3>
+            <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded border ${badgeClass}`}>
+                {isPassing ? 'Passing' : 'Review'}
             </span>
           </div>
-          <p className="text-sm text-slate-400 max-w-md">
-            {evaluation.isCorrect 
-                ? 'Excellent work. Your response demonstrates strong technical understanding.' 
-                : 'Your answer needs refinement. Review the missing concepts below.'}
+          <p className="text-xs text-slate-400 max-w-sm">
+            {evaluation.isCorrect ? 'Well done.' : 'Review the missing concepts below.'}
           </p>
         </div>
 
-        <div className="flex flex-col items-center relative z-10 pl-6 border-l border-slate-700/50">
-          <span className={`text-5xl font-black tracking-tighter ${scoreColor}`}>{evaluation.score}</span>
-          <span className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">Score</span>
+        <div className="flex flex-col items-center relative z-10 pl-4 border-l border-slate-700/50">
+          <span className={`text-4xl font-black tracking-tighter ${scoreColor}`}>{evaluation.score}</span>
+          <span className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mt-0.5">Score</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* 2. Grammar Panel */}
-        <div className="bg-slate-900 rounded-xl border border-slate-800 shadow-lg flex flex-col">
-            <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-                <h4 className="font-semibold text-slate-300 flex items-center text-sm">
-                    <i className="fas fa-spell-check text-indigo-400 mr-2"></i> Grammar & Syntax
+        <div className="bg-slate-900 rounded-lg border border-slate-800 flex flex-col">
+            <div className="p-3 border-b border-slate-800 flex items-center justify-between">
+                <h4 className="font-semibold text-slate-300 flex items-center text-xs">
+                    <i className="fas fa-spell-check text-indigo-400 mr-2"></i> Grammar
                 </h4>
                 {spellingErrors.length === 0 && <i className="fas fa-check text-emerald-500 text-xs"></i>}
             </div>
-            <div className="p-4 flex-1">
+            <div className="p-3 flex-1">
                 {spellingErrors.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic">No spelling or grammatical errors detected.</p>
+                    <p className="text-xs text-slate-500 italic">No errors detected.</p>
                 ) : (
-                    <ul className="list-disc list-inside text-sm text-rose-400 space-y-2">
+                    <ul className="list-disc list-inside text-xs text-rose-400 space-y-1">
                         {spellingErrors.map((err, idx) => (
                             <li key={idx}>{err}</li>
                         ))}
@@ -85,20 +79,20 @@ const FeedbackDisplay: React.FC<FeedbackDisplayProps> = ({ evaluation }) => {
         </div>
 
         {/* 3. Concepts Panel */}
-        <div className="bg-slate-900 rounded-xl border border-slate-800 shadow-lg flex flex-col">
-            <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-                <h4 className="font-semibold text-slate-300 flex items-center text-sm">
+        <div className="bg-slate-900 rounded-lg border border-slate-800 flex flex-col">
+            <div className="p-3 border-b border-slate-800">
+                <h4 className="font-semibold text-slate-300 flex items-center text-xs">
                     <i className="fas fa-lightbulb text-amber-500 mr-2"></i> Key Concepts
                 </h4>
             </div>
-            <div className="p-4 flex-1">
+            <div className="p-3 flex-1">
                 {missingConcepts.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic">You covered all core technical concepts.</p>
+                    <p className="text-xs text-slate-500 italic">All covered.</p>
                 ) : (
-                    <ul className="space-y-2">
+                    <ul className="space-y-1">
                         {missingConcepts.map((concept, idx) => (
-                            <li key={idx} className="flex items-start text-sm text-slate-400">
-                                <i className="fas fa-arrow-right text-slate-600 mt-1 mr-2 text-xs"></i>
+                            <li key={idx} className="flex items-start text-xs text-slate-400">
+                                <i className="fas fa-arrow-right text-slate-600 mt-0.5 mr-2 text-[8px]"></i>
                                 {concept}
                             </li>
                         ))}
@@ -109,35 +103,35 @@ const FeedbackDisplay: React.FC<FeedbackDisplayProps> = ({ evaluation }) => {
       </div>
 
       {/* 4. Technical Analysis */}
-      <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
-        <h4 className="font-semibold text-slate-300 mb-3 flex items-center text-sm uppercase tracking-wide">
-             <i className="fas fa-chart-bar text-indigo-400 mr-2"></i> AI Analysis
+      <div className="bg-slate-900 p-3 rounded-lg border border-slate-800">
+        <h4 className="font-semibold text-slate-300 mb-2 flex items-center text-xs uppercase tracking-wide">
+             <i className="fas fa-chart-bar text-indigo-400 mr-2"></i> Analysis
         </h4>
-        <p className="text-sm text-slate-400 leading-relaxed whitespace-pre-wrap border-l-2 border-slate-700 pl-4">
+        <p className="text-xs text-slate-400 leading-relaxed whitespace-pre-wrap border-l-2 border-slate-700 pl-3">
           {evaluation.technicalAccuracy}
         </p>
       </div>
 
-      {/* 5. Model Solution (Code Editor Style) */}
-      <div className="bg-slate-900 rounded-xl border border-slate-800 shadow-lg overflow-hidden">
-        <div className="bg-slate-950 border-b border-slate-800 p-3 px-4 flex justify-between items-center">
+      {/* 5. Model Solution */}
+      <div className="bg-slate-900 rounded-lg border border-slate-800 overflow-hidden">
+        <div className="bg-slate-950 border-b border-slate-800 p-2 px-3 flex justify-between items-center">
              <div className="flex items-center gap-2">
-                <i className="fas fa-code-branch text-emerald-400 text-sm"></i>
-                <h4 className="font-semibold text-slate-300 text-sm">Optimal Solution</h4>
+                <i className="fas fa-code-branch text-emerald-400 text-xs"></i>
+                <h4 className="font-semibold text-slate-300 text-xs">Solution</h4>
              </div>
              <button 
                 onClick={handleCopy}
-                className="text-xs flex items-center gap-1.5 text-slate-500 hover:text-white transition-colors"
+                className="text-xs flex items-center gap-1 text-slate-500 hover:text-white transition-colors"
              >
                 {copied ? (
                     <><i className="fas fa-check text-emerald-400"></i> Copied</>
                 ) : (
-                    <><i className="far fa-copy"></i> Copy Code</>
+                    <><i className="far fa-copy"></i> Copy</>
                 )}
              </button>
         </div>
-        <div className="p-5 bg-slate-950">
-            <div className="text-sm text-slate-300 font-mono leading-relaxed whitespace-pre-wrap">
+        <div className="p-3 bg-slate-950">
+            <div className="text-xs text-slate-300 font-mono leading-relaxed whitespace-pre-wrap">
                 {evaluation.improvedAnswer}
             </div>
         </div>

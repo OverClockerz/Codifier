@@ -84,6 +84,12 @@ export function MusicPlayer() {
     const savedMuted = localStorage.getItem(
       "office_music_muted",
     );
+    const savedIsPlaying = localStorage.getItem(
+      "office_music_playing",
+    );
+    const savedHasInteracted = localStorage.getItem(
+      "office_music_interacted",
+    );
 
     if (savedVolume) {
       const vol = parseFloat(savedVolume);
@@ -95,6 +101,14 @@ export function MusicPlayer() {
 
     if (savedMuted === "true") {
       setIsMuted(true);
+    }
+
+    if (savedHasInteracted === "true") {
+      setHasInteracted(true);
+    }
+
+    if (savedIsPlaying === "true") {
+      setIsPlaying(true);
     }
   }, []);
 
@@ -115,6 +129,22 @@ export function MusicPlayer() {
     );
   }, [isMuted]);
 
+  // Save playing state to localStorage
+  useEffect(() => {
+    localStorage.setItem(
+      "office_music_playing",
+      isPlaying.toString(),
+    );
+  }, [isPlaying]);
+
+  // Save interaction state to localStorage
+  useEffect(() => {
+    localStorage.setItem(
+      "office_music_interacted",
+      hasInteracted.toString(),
+    );
+  }, [hasInteracted]);
+
   const handlePlay = async () => {
     if (!audioRef.current) return;
 
@@ -130,6 +160,7 @@ export function MusicPlayer() {
       }
     } catch (error) {
       console.error("Audio playback failed:", error);
+      setIsPlaying(false);
     }
   };
 
@@ -153,27 +184,31 @@ export function MusicPlayer() {
     }
   };
 
-  // Auto-play attempt (will work after first user interaction)
+  // Auto-play or restore playing state
   useEffect(() => {
     const attemptAutoplay = async () => {
-      if (audioRef.current && !hasInteracted) {
-        try {
+      if (!audioRef.current) return;
+
+      try {
+        // If we should be playing (from localStorage), try to play
+        if (isPlaying || (!hasInteracted && !localStorage.getItem("office_music_interacted"))) {
           await audioRef.current.play();
           setIsPlaying(true);
           setHasInteracted(true);
-        } catch (error) {
-          // Autoplay blocked - user needs to interact first
-          console.log(
-            "Autoplay blocked - waiting for user interaction",
-          );
         }
+      } catch (error) {
+        // Autoplay blocked - user needs to interact first
+        console.log(
+          "Autoplay blocked - waiting for user interaction",
+        );
+        setIsPlaying(false);
       }
     };
 
     // Small delay to ensure audio element is ready
     const timer = setTimeout(attemptAutoplay, 500);
     return () => clearTimeout(timer);
-  }, [hasInteracted]);
+  }, [hasInteracted, isPlaying]);
 
   const handleNextTrack = () => {
     if (isTransitioning) return;
@@ -182,16 +217,16 @@ export function MusicPlayer() {
       (currentTrackIndex + 1) % MUSIC_TRACKS.length;
     setCurrentTrackIndex(nextIndex);
     localStorage.setItem('office_music_track', nextIndex.toString());
-    
+
     if (audioRef.current) {
       const wasPlaying = isPlaying;
       // Pause current playback
       audioRef.current.pause();
       setIsPlaying(false);
-      
+
       // Set new source
       audioRef.current.src = getTrackUrl(nextIndex);
-      
+
       // Load and play if was playing
       if (wasPlaying) {
         audioRef.current.load();
@@ -218,16 +253,16 @@ export function MusicPlayer() {
     setIsTransitioning(true);
     setCurrentTrackIndex(index);
     localStorage.setItem('office_music_track', index.toString());
-    
+
     if (audioRef.current) {
       const wasPlaying = isPlaying;
       // Pause current playback
       audioRef.current.pause();
       setIsPlaying(false);
-      
+
       // Set new source
       audioRef.current.src = getTrackUrl(index);
-      
+
       // Load and play if was playing
       if (wasPlaying) {
         audioRef.current.load();
@@ -313,7 +348,7 @@ export function MusicPlayer() {
                   <ChevronDown className="w-4 h-4" />
                 </button>
               </div>
-              
+
               <div className="space-y-2">
                 {MUSIC_TRACKS.map((track, index) => (
                   <motion.button
@@ -322,11 +357,10 @@ export function MusicPlayer() {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => selectTrack(index)}
                     disabled={isTransitioning}
-                    className={`w-full p-3 rounded-xl text-left transition-all ${
-                      index === currentTrackIndex
-                        ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30'
-                        : 'bg-gray-800/50 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600'
-                    } ${isTransitioning ? 'opacity-50 cursor-wait' : ''}`}
+                    className={`w-full p-3 rounded-xl text-left transition-all ${index === currentTrackIndex
+                      ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30'
+                      : 'bg-gray-800/50 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600'
+                      } ${isTransitioning ? 'opacity-50 cursor-wait' : ''}`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">{track.emoji}</span>
@@ -431,11 +465,10 @@ export function MusicPlayer() {
               setShowPlaylist(!showPlaylist);
               setShowControls(false);
             }}
-            className={`w-10 h-10 backdrop-blur-xl border rounded-full flex items-center justify-center transition-all shadow-lg ${
-              showPlaylist
-                ? 'bg-blue-600 border-blue-500 text-white'
-                : 'bg-gray-900/80 border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
-            }`}
+            className={`w-10 h-10 backdrop-blur-xl border rounded-full flex items-center justify-center transition-all shadow-lg ${showPlaylist
+              ? 'bg-blue-600 border-blue-500 text-white'
+              : 'bg-gray-900/80 border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
+              }`}
             aria-label="Show playlist"
           >
             <List className="w-4 h-4" />
@@ -447,9 +480,8 @@ export function MusicPlayer() {
             whileTap={{ scale: 0.95 }}
             onClick={handleNextTrack}
             disabled={isTransitioning}
-            className={`w-10 h-10 bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:border-gray-700 transition-all shadow-lg ${
-              isTransitioning ? 'opacity-50 cursor-wait' : ''
-            }`}
+            className={`w-10 h-10 bg-gray-900/80 backdrop-blur-xl border border-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:border-gray-700 transition-all shadow-lg ${isTransitioning ? 'opacity-50 cursor-wait' : ''
+              }`}
             aria-label="Next track"
           >
             <SkipForward className="w-4 h-4" />
@@ -480,11 +512,10 @@ export function MusicPlayer() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handlePlay}
-            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg ${
-              isPlaying
-                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)]"
-                : "bg-gray-900/80 backdrop-blur-xl border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700"
-            }`}
+            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg ${isPlaying
+              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+              : "bg-gray-900/80 backdrop-blur-xl border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700"
+              }`}
             aria-label={
               isPlaying ? "Pause music" : "Play music"
             }
