@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
+import time
 from flask import Blueprint, request, jsonify
 from extensions import mongo
 from utils.geminiapi import generate_response
 import json
-from utils.player_templates import MCQ_QUEST
+from utils.player_templates import CODING_QUEST, COMPREHENSIVE_QUEST, MCQ_QUEST, TYPING_QUEST
 
 api_quests_bp = Blueprint('api_quests', __name__)
 
@@ -42,10 +44,12 @@ def update_user_quests():
 @api_quests_bp.route("/api/quests/generate", methods=["GET"])
 
 def generate_quests():
-
-    quest_threshold = 13
     
     username = request.args.get("username")
+
+    zone = request.args.get("zone")
+
+    quest_amount = int(request.args.get("quest_amount"))
 
     if not username:
         return jsonify({"error": "Username parameter required"}), 400
@@ -58,19 +62,27 @@ def generate_quests():
     if not player:
         return jsonify({"error": "Player not found"}), 404  
     
-    quest_amount = quest_threshold - len(player.get("activeQuests", []))
     print(f"Generating {quest_amount} quests for user {username}")
 
     if quest_amount <= 0:
-        return jsonify({"message": "Player has sufficient active quests"}), 200
+        return jsonify({"message": "Cannot generate less than 1 quest"}), 200
 
     try:
-        activeQuests = json.loads(generate_response(MCQ_QUEST, quest_amount))
+        match(zone):
+            case "workspace":   
+                activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST,CODING_QUEST], quest_amount,zone))
+            case "meeting-room":
+                activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST,TYPING_QUEST], quest_amount,zone))
+            case "game-lounge":
+                activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST], quest_amount,zone))    
 
     except Exception as e : 
         return jsonify({"error": "Failed to generate quests", "details": str(e)}), 500
     
     if activeQuests:
+        for quest in activeQuests:
+            quest["deadline"] = int((datetime.fromtimestamp(int(time.time())) +timedelta(days=quest["deadline"])).timestamp())
+
         mongo.db.players.update_one(
             {"username": username},
             {"$push": {"activeQuests": {"$each": activeQuests}}}

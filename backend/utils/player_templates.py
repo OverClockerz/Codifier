@@ -31,7 +31,7 @@ InitialPlayerState = {
     "proficiency": {
         "coding_skill": 0,
         "soft_skill": 0,
-        "reliability_skill": 0,
+        "critical_thinking_skill": 0,
         "problem_solving": 0,
         "stress_resistance": 0,
     },
@@ -71,22 +71,19 @@ MCQ_QUEST = {
       "title": "Put the quest title here",
       "description": "Put the quest description here",
       "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",
-      "frequency": "daily",
-      "skillCategory": "technical",
       "difficulty": "on a scale of 1-4",
-      "expReward": "within 10-100",
+      "expReward": "within 10-30 depending on the difficulty",
       "proficiency": {
-        "coding_skill": "float value of 0-0.5 depending on the problem",
-        "soft_skill": "float  value of 0-0.5 depending on the problem",
-        "reliability_skill": "float  value of 0-0.5 depending on the problem",
+        "coding_skill": "float value of 0-0.5 depending on the problem only for coding quests",
+        "soft_skill": "float  value of 0-0.5 depending on the problem only for meeting room quests",
+        "critical_thinking_skill": "float  value of 0-0.5 depending on the problem only for comprehensive type quests in game lounge",
         "problem_solving": "float  value of 0-0.5 depending on the problem",
         "stress_resistance": "float  value of 0-0.5 depending on the problem"
       },
-      "currencyReward": "within 10-100",
-      "stressImpact": "within 10 to 40",
-      "moodImpact": "within -5 to -20",
-      "deadline": "deadline in unix timestamp format randomly within 3-5 days from the day of assignment in 2025",
-      "assignedBy": "manager-alex",
+      "currencyReward": "within 50-100",
+      "stressImpact": "within 10 to 20",
+      "moodImpact": "within -5 to -10",
+      "deadline": "deadline in no. of days within 3-5 days, depending ont the difficulty",
       "skills": ["put the skills improved by completing this quest in a list format"],
       "type": "MCQ",
       "question_data":'''list of 3 questions in this form [ {
@@ -96,3 +93,100 @@ MCQ_QUEST = {
       }
       ]'''
 } 
+
+COMPREHENSIVE_QUEST = {
+      "id": "unique-quest-id",
+      "title": "Put the quest title here",
+      "description": "Put the quest description here",
+      "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",
+      "difficulty": "on a scale of 1-4",
+      "expReward": "within 50-100 depending on the difficulty",    
+      "proficiency": {
+            "coding_skill": "float value of 0-0.5 depending on the problem only for coding quests",
+            "soft_skill": "float  value of 0-0.5 depending on the problem only for meeting room quests",
+            "critical_thinking_skill": "float  value of 0-0.5 depending on the problem only for comprehensive type quests in game lounge",
+            "problem_solving": "float  value of 0-0.5 depending on the problem",
+            "stress_resistance": "float  value of 0-0.5 depending on the problem"
+      },
+      "currencyReward": "within 100-200",
+      "stressImpact": "within 20 to 30",
+      "moodImpact": "within -10 to -20",
+      "deadline": "deadline in no. of days within 5-7 days, depending ont the difficulty",
+      "skills": ["put the skills improved by completing this quest in a list format"],
+      "type": "Comprehensive",
+      "question_data":{
+          "question": "put the long comprehensive critical thinking question here, this should be a scenario based question requiring detailed answer, and the topinc to should be relevant to the zone",
+      }
+}
+
+CODING_QUEST= {
+  "id": "unique-quest-id",
+  "title": "Put the quest title here",
+  "description": "Put the quest description here, this will be the detailed coding questions that is to be displayed, question only.",
+  "zone": "workspace",
+  "difficulty": "on a scale of 1-4",
+  "expReward": "within 100-150 depending on the difficulty",
+  "proficiency": {
+    "coding_skill": "0-0.5 (only for coding quests)",
+    "soft_skill": "0-0.5 (only for meeting room quests)",
+    "critical_thinking_skill": "0-0.5 (only for comprehensive quests in game lounge)",
+    "problem_solving": "0-0.5 depending on the problem",
+    "stress_resistance": "0-0.5 depending on the problem"
+  },
+  "currencyReward": "within 200-300",
+  "stressImpact": "within 30-40",
+  "moodImpact": "witinn -20 to -30",
+  "deadline": "deadline in no. of days within 7-9 days, depending ont the difficulty",
+  "skills": ["list of skills improved by completing this quest"],
+  "type": "Coding",
+  "examples": [
+    {
+      "input": "Put example input here",
+      "expectedOutput": "Put expected output here",
+      "isHidden": False
+    },
+    {
+      "input": "Put another example input here",
+      "expectedOutput": "Put expected output here",
+      "isHidden": False
+    }
+  ],
+  "testCases": [
+    {
+      "input": "Put hidden test input here",
+      "expectedOutput": "Put expected output here",
+      "isHidden": True
+    },
+    {
+      "input": "Put another hidden test input here",
+      "expectedOutput": "Put expected output here",
+      "isHidden": True
+    }
+  ]
+}
+
+TYPING_QUEST = {
+      "id": "unique-quest-id",
+      "title": "Put the quest title here",
+      "description": "Put the quest description here",
+      "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",
+      "difficulty": "on a scale of 1-4",
+      "expReward": "within 50-100 depending on the difficulty",    
+      "proficiency": {
+            "coding_skill": "float value of 0-0.5 depending on the problem only for coding quests",
+            "soft_skill": "float  value of 0-0.5 depending on the problem only for meeting room quests",
+            "critical_thinking_skill": "float  value of 0-0.5 depending on the problem only for comprehensive type quests in game lounge",
+            "problem_solving": "float  value of 0-0.5 depending on the problem",
+            "stress_resistance": "float  value of 0-0.5 depending on the problem"
+      },
+      "currencyReward": "within 100-200",
+      "stressImpact": "within 20 to 30",
+      "moodImpact": "within -10 to -20",
+      "deadline": "deadline in no. of days within 5-7 days, depending ont the difficulty",
+      "skills": ["put the skills improved by completing this quest in a list format"],
+      "type": "Typing",
+      "question_data":{
+          "question": "put the long typing paragraph here, size depending on the difficulty, at least 20 words.",
+          "time":"put the time limit in seconds here, depending on the difficulty"
+      }
+}
