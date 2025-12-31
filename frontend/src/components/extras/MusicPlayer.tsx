@@ -4,7 +4,6 @@ import {
   Volume2,
   VolumeX,
   Music,
-  ChevronUp,
   ChevronDown,
   SkipForward,
   List,
@@ -337,7 +336,7 @@ export function MusicPlayer() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              className="absolute bottom-full right-0 mb-3 bg-gray-900/95 backdrop-blur-xl border border-gray-800 rounded-2xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-[280px] max-h-[400px] overflow-y-auto"
+              className="absolute bottom-full right-0 mb-3 bg-gray-900/95 backdrop-blur-xl border border-gray-800 rounded-2xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-70 max-h-100 overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm text-white">🎵 Playlist</h3>
@@ -358,7 +357,7 @@ export function MusicPlayer() {
                     onClick={() => selectTrack(index)}
                     disabled={isTransitioning}
                     className={`w-full p-3 rounded-xl text-left transition-all ${index === currentTrackIndex
-                      ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30'
+                      ? 'bg-linear-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30'
                       : 'bg-gray-800/50 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600'
                       } ${isTransitioning ? 'opacity-50 cursor-wait' : ''}`}
                   >
@@ -371,14 +370,14 @@ export function MusicPlayer() {
                           </span>
                           {index === currentTrackIndex && isPlaying && (
                             <motion.div
-                              className="flex gap-[2px] items-end h-3"
+                              className="flex gap-0.5 items-end h-3"
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                             >
                               {[0, 1, 2].map((i) => (
                                 <motion.div
                                   key={i}
-                                  className="w-[3px] bg-blue-400 rounded-full"
+                                  className="w-0.75 bg-blue-400 rounded-full"
                                   animate={{
                                     height: ['40%', '100%', '40%'],
                                   }}
@@ -408,7 +407,7 @@ export function MusicPlayer() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              className="absolute bottom-full right-0 mb-3 bg-gray-900/95 backdrop-blur-xl border border-gray-800 rounded-2xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-[200px]"
+              className="absolute bottom-full right-0 mb-3 bg-gray-900/95 backdrop-blur-xl border border-gray-800 rounded-2xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-50"
             >
               {/* Volume Control */}
               <div className="mb-4">
@@ -513,7 +512,7 @@ export function MusicPlayer() {
             whileTap={{ scale: 0.95 }}
             onClick={handlePlay}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg ${isPlaying
-              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+              ? "bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)]"
               : "bg-gray-900/80 backdrop-blur-xl border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700"
               }`}
             aria-label={
@@ -549,7 +548,7 @@ export function MusicPlayer() {
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="absolute right-full mr-3 bottom-0 bg-gray-900/90 backdrop-blur-sm px-3 py-2 rounded-lg border border-gray-800 shadow-lg max-w-[200px]"
+            className="absolute right-full mr-3 bottom-0 bg-gray-900/90 backdrop-blur-sm px-3 py-2 rounded-lg border border-gray-800 shadow-lg max-w-50"
           >
             <div className="flex items-center gap-2">
               <span className="text-lg">{currentTrack.emoji}</span>

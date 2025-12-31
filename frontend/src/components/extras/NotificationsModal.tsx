@@ -145,7 +145,7 @@ export function NotificationsModal({ isOpen, onClose }: NotificationsModalProps)
           </div>
 
           {/* Notifications List */}
-          <div className="max-h-[500px] overflow-y-auto">
+          <div className="max-h-125 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="py-16 text-center">
                 <Bell className="w-12 h-12 text-gray-600 mx-auto mb-3" />

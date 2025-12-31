@@ -15,7 +15,7 @@ export function CallToAction() {
     <section id="contact" className="relative py-32 px-6 bg-black overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20" />
+        <div className="absolute inset-0 bg-linear-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20" />
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
@@ -26,7 +26,7 @@ export function CallToAction() {
             repeat: Infinity,
             ease: "linear"
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-[100px]"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-blue-500/20 rounded-full blur-[100px]"
         />
       </div>
 
@@ -46,13 +46,13 @@ export function CallToAction() {
             viewport={{ once: true }}
             className="inline-block mb-8"
           >
-            <span className="px-6 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-blue-300 backdrop-blur-sm">
+            <span className="px-6 py-3 bg-linear-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-blue-300 backdrop-blur-sm">
               🎮 Educational RPG Experience
             </span>
           </motion.div>
 
           {/* Heading */}
-          <h2 className="text-5xl md:text-7xl mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="text-5xl md:text-7xl mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Ready to Start Your Career?
           </h2>
           
@@ -84,7 +84,7 @@ export function CallToAction() {
               type="submit"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center gap-2 whitespace-nowrap"
+              className="px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center gap-2 whitespace-nowrap"
             >
               Get Early Access
               <ArrowRight className="w-5 h-5" />
@@ -104,9 +104,9 @@ export function CallToAction() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
                 viewport={{ once: true }}
-                className="p-6 bg-gradient-to-br from-gray-900/50 to-gray-900/30 border border-gray-800 rounded-2xl backdrop-blur-sm"
+                className="p-6 bg-linear-to-br from-gray-900/50 to-gray-900/30 border border-gray-800 rounded-2xl backdrop-blur-sm"
               >
-                <div className="text-3xl md:text-4xl mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                <div className="text-3xl md:text-4xl mb-2 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                   {stat.value}
                 </div>
                 <div className="text-gray-400">{stat.label}</div>

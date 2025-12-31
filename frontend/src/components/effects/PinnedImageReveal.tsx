@@ -93,7 +93,7 @@ const PinnedImageReveal: React.FC<PinnedImageRevealProps> = ({
           ref={imageWrapperRef} 
           className="flex-1 relative"
         >
-          <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20 blur-3xl`} />
+          <div className={`absolute inset-0 bg-linear-to-br ${gradient} opacity-20 blur-3xl`} />
           <div className="relative rounded-2xl overflow-hidden border border-gray-800">
             <img 
               src={imageUrl} 
@@ -107,7 +107,7 @@ const PinnedImageReveal: React.FC<PinnedImageRevealProps> = ({
         <div className="flex-1">
           <h2 
             ref={titleRef}
-            className={`text-5xl md:text-6xl mb-6 bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}
+            className={`text-5xl md:text-6xl mb-6 bg-linear-to-r ${gradient} bg-clip-text text-transparent`}
           >
             {title}
           </h2>

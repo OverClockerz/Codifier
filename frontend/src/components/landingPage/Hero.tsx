@@ -33,7 +33,7 @@ export function Hero({ onStartCareer }: HeroProps) {
       {/* Animated Background */}
       <div className="absolute inset-0">
         <div 
-          className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-purple-900/10 to-pink-900/10"
+          className="absolute inset-0 bg-linear-to-br from-blue-900/10 via-purple-900/10 to-pink-900/10"
           style={{
             transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
             transition: 'transform 0.3s ease-out',
@@ -43,7 +43,7 @@ export function Hero({ onStartCareer }: HeroProps) {
       </div>
 
       {/* Grid Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:100px_100px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[100px_100px]" />
 
       {/* Content */}
       <div className="relative h-full flex flex-col items-center justify-center px-6 text-center">
@@ -53,7 +53,7 @@ export function Hero({ onStartCareer }: HeroProps) {
           transition={{ duration: 1, delay: 0.2 }}
           className="mb-6"
         >
-          <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm backdrop-blur-sm">
+          <span className="inline-block px-4 py-2 bg-linear-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm backdrop-blur-sm">
             🏢 A Gamified Career Simulation
           </span>
         </motion.div>
@@ -66,7 +66,7 @@ export function Hero({ onStartCareer }: HeroProps) {
         >
           <ScrambleText
             text="OFFICE"
-            className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+            className="block bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
             speed={80}
             delay={400}
             as="span"
@@ -88,7 +88,7 @@ export function Hero({ onStartCareer }: HeroProps) {
           transition={{ duration: 1, delay: 0.8 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.5)]"
+          className="px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.5)]"
           onClick={onStartCareer}
         >
           Start Your Career

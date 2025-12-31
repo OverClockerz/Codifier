@@ -39,7 +39,7 @@ export function Gallery() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <h2 className="text-5xl md:text-7xl mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="text-5xl md:text-7xl mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Explore the Universe
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
@@ -62,14 +62,14 @@ export function Gallery() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
               whileHover={{ scale: 1.05 }}
-              className="relative flex-shrink-0 w-[500px] h-[600px] rounded-3xl overflow-hidden border border-gray-800 group cursor-pointer"
+              className="relative shrink-0 w-125 h-150 rounded-3xl overflow-hidden border border-gray-800 group cursor-pointer"
             >
               <img
                 src={item.image}
                 alt={item.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
               
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <motion.h3 
@@ -81,7 +81,7 @@ export function Gallery() {
                   {item.title}
                 </motion.h3>
                 <motion.div
-                  className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500"
+                  className="w-20 h-1 bg-linear-to-r from-blue-500 to-purple-500"
                   initial={{ scaleX: 0 }}
                   whileHover={{ scaleX: 1 }}
                   transition={{ duration: 0.3 }}
@@ -96,8 +96,8 @@ export function Gallery() {
       </div>
 
       {/* Gradient Fade on Edges */}
-      <div className="absolute top-0 left-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
-      <div className="absolute top-0 right-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute top-0 left-0 bottom-0 w-32 bg-linear-to-r from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute top-0 right-0 bottom-0 w-32 bg-linear-to-l from-black to-transparent pointer-events-none z-10" />
     </section>
   );
 }
