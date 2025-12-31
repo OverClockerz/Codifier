@@ -76,7 +76,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     proficiency: {
       coding_skill: 0,
       soft_skill: 0,
-      reliability_skill: 0,
+      critical_thinking_skill: 0,
       problem_solving: 0,
       stress_resistance: 0
     },
@@ -391,7 +391,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         proficiency: {
           coding_skill: 0,
           soft_skill: 0,
-          reliability_skill: 0,
+          critical_thinking_skill: 0,
           problem_solving: 0,
           stress_resistance: 0
         },
@@ -460,7 +460,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         proficiency: {
           coding_skill: player.proficiency.coding_skill,
           soft_skill: player.proficiency.soft_skill,
-          reliability_skill: player.proficiency.reliability_skill,
+          critical_thinking_skill: player.proficiency.critical_thinking_skill,
           problem_solving: player.proficiency.problem_solving,
           stress_resistance: player.proficiency.stress_resistance
         },

@@ -33,7 +33,7 @@ export function QuestTasks({ quest, onComplete }: QuestTasksProps) {
 
   const handleSubmit = () => {
     setIsSubmitted(true);
-    
+
     // Calculate score based on correct answers
     let correctAnswers = 0;
     tasks.forEach((task, index) => {
@@ -71,7 +71,7 @@ export function QuestTasks({ quest, onComplete }: QuestTasksProps) {
         </div>
         <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
+            className="h-full bg-linear-to-r from-blue-500 to-cyan-500"
             initial={{ width: 0 }}
             animate={{ width: `${((currentTask + 1) / totalTasks) * 100}%` }}
             transition={{ duration: 0.3 }}
@@ -100,11 +100,10 @@ export function QuestTasks({ quest, onComplete }: QuestTasksProps) {
                 <button
                   key={index}
                   onClick={() => setAnswers({ ...answers, [currentTask]: index })}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                    answers[currentTask] === index
+                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${answers[currentTask] === index
                       ? 'border-blue-500 bg-blue-500/10'
                       : 'border-gray-700 bg-gray-900/50 hover:border-gray-600'
-                  }`}
+                    }`}
                 >
                   <span className="text-white">{String.fromCharCode(65 + index)}. {option}</span>
                 </button>

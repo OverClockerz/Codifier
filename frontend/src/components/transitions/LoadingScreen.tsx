@@ -20,7 +20,7 @@ export function LoadingScreen({ message = 'Loading...', tips }: LoadingScreenPro
   }, [tips]);
 
   return (
-    <div className="fixed inset-0 bg-black z-[200] flex flex-col items-center justify-center">
+    <div className="fixed inset-0 bg-black z-200 flex flex-col items-center justify-center">
       {/* Animated Background Grid */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
         <div className="absolute inset-0" style={{
@@ -67,7 +67,7 @@ export function LoadingScreen({ message = 'Loading...', tips }: LoadingScreenPro
             ],
           }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="text-8xl md:text-9xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+          className="text-8xl md:text-9xl bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
         >
           OFFICE
         </motion.h1>
@@ -93,7 +93,7 @@ export function LoadingScreen({ message = 'Loading...', tips }: LoadingScreenPro
         <motion.div
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 1, repeat: Infinity }}
-          className="absolute inset-0 m-auto w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+          className="absolute inset-0 m-auto w-8 h-8 rounded-full bg-linear-to-r from-blue-500 to-purple-500"
         />
       </div>
 
@@ -154,7 +154,7 @@ export function LoadingScreen({ message = 'Loading...', tips }: LoadingScreenPro
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: '100%' }}
-        className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+        className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500"
       />
     </div>
   );

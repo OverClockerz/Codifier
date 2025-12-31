@@ -45,19 +45,19 @@ export const ConsolePanel: React.FC<Props> = ({
   }) || [];
 
   return (
-    <div className="flex flex-col h-full bg-[#1e1e1e] border-t border-slate-700">
+    <div className="flex flex-col h-full bg-editor-bg border-t border-slate-700">
       {/* Tabs */}
       <div className="flex items-center border-b border-slate-700 bg-slate-900 justify-between pr-2">
         <div className="flex overflow-x-auto">
           <button
             onClick={() => setActiveTab('test-cases')}
-            className={`px-4 py-2 text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'test-cases' ? 'text-white border-b-2 border-blue-500 bg-[#1e1e1e]' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-4 py-2 text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'test-cases' ? 'text-white border-b-2 border-blue-500 bg-editor-bg' : 'text-slate-400 hover:text-slate-200'}`}
           >
             <CheckCircle2 size={16} /> Test Results
           </button>
           <button
             onClick={() => setActiveTab('custom')}
-            className={`px-4 py-2 text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'custom' ? 'text-white border-b-2 border-blue-500 bg-[#1e1e1e]' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-4 py-2 text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-colors ${activeTab === 'custom' ? 'text-white border-b-2 border-blue-500 bg-editor-bg' : 'text-slate-400 hover:text-slate-200'}`}
           >
             <FlaskConical size={16} /> Custom Test
           </button>
@@ -69,7 +69,7 @@ export const ConsolePanel: React.FC<Props> = ({
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 font-mono text-sm relative">
         {isLoading ? (
-          <div className="absolute inset-0 z-10 bg-[#1e1e1e]/80 flex flex-col items-center justify-center text-slate-400 gap-3 backdrop-blur-sm">
+          <div className="absolute inset-0 z-10 bg-editor-bg/80 flex flex-col items-center justify-center text-slate-400 gap-3 backdrop-blur-sm">
             <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             <span>Evaluating Code...</span>
           </div>
@@ -119,7 +119,7 @@ export const ConsolePanel: React.FC<Props> = ({
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-center justify-between flex-wrap gap-2 sticky top-0 bg-[#1e1e1e] z-10 py-1 pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between flex-wrap gap-2 sticky top-0 bg-editor-bg z-10 py-1 pb-3 border-b border-slate-800">
                 <div>
                   <h3 className={`font-bold flex items-center gap-2 ${result.passedAll ? 'text-green-400' : 'text-red-400'}`}>
                     {result.passedAll ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
@@ -187,13 +187,13 @@ export const ConsolePanel: React.FC<Props> = ({
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <div className="relative">
                                     <span className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Expected Output</span>
-                                    <div className="bg-[#0f172a] p-2 rounded border border-slate-700 text-green-400/90 font-mono text-xs overflow-x-auto whitespace-pre-wrap min-h-[36px]">
+                                    <div className="bg-[#0f172a] p-2 rounded border border-slate-700 text-green-400/90 font-mono text-xs overflow-x-auto whitespace-pre-wrap min-h-9">
                                         {r.expectedOutput}
                                     </div>
                                 </div>
                                 <div className="relative">
                                     <span className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Actual Output</span>
-                                    <div className={`p-2 rounded border font-mono text-xs overflow-x-auto whitespace-pre-wrap min-h-[36px]
+                                    <div className={`p-2 rounded border font-mono text-xs overflow-x-auto whitespace-pre-wrap min-h-9
                                         ${r.passed 
                                         ? 'bg-[#0f172a] border-slate-700 text-slate-300' 
                                         : 'bg-red-950/20 border-red-500/20 text-red-300'}`}>

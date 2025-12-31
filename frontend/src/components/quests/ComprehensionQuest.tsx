@@ -4,7 +4,11 @@ import * as GeminiService from '../../services/geminiService';
 import QuestionCard from './ComprehensionQuest/QuestionCard';
 import FeedbackDisplay from './ComprehensionQuest/FeedbackDisplay';
 
-export const ComprehensionQuest: React.FC = () => {
+interface ComprehensionQuestProps {
+    onComplete?: (success: boolean, score: number) => void;
+}
+
+export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComplete }) => {
     const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
     const [userAnswer, setUserAnswer] = useState('');
     const [currentEvaluation, setCurrentEvaluation] = useState<ComprehensionEvaluationResult | null>(null);
@@ -67,33 +71,37 @@ export const ComprehensionQuest: React.FC = () => {
             // setCurrentAttemptId(attemptResult.id);
             // setRefreshHistoryTrigger(prev => prev + 1);
             setStatus(Status.SUCCESS);
+            // notify parent of outcome
+            const score = attemptResult.evaluation?.score ?? 0;
+            const success = score >= 60;
+            onComplete && onComplete(success, Math.round(score));
         } catch (error) {
             console.error(error);
             setStatus(Status.ERROR);
         }
     };
 
-    const handleHistorySelect = (attempt: Attempt) => {
-        setCurrentQuestion(attempt.question);
-        setUserAnswer(attempt.userAnswer);
-        setCurrentEvaluation(attempt.evaluation);
-        // setCurrentAttemptId(attempt.id);
-        setStatus(Status.SUCCESS);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    // const handleHistorySelect = (attempt: Attempt) => {
+    //     setCurrentQuestion(attempt.question);
+    //     setUserAnswer(attempt.userAnswer);
+    //     setCurrentEvaluation(attempt.evaluation);
+    //     // setCurrentAttemptId(attempt.id);
+    //     setStatus(Status.SUCCESS);
+    //     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // };
 
-    const handleTryAgain = () => {
-        setCurrentEvaluation(null);
-        // setCurrentAttemptId(null);
-        setStatus(Status.SUCCESS);
-    };
+    // const handleTryAgain = () => {
+    //     setCurrentEvaluation(null);
+    //     // setCurrentAttemptId(null);
+    //     setStatus(Status.SUCCESS);
+    // };
 
     return (
         <div className="h-full w-full bg-slate-950 flex flex-col font-sans text-slate-300 relative overflow-hidden">
 
             {/* --- CONFIRMATION MODAL --- */}
             {isSubmitModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-fade-in px-4">
+                <div className="fixed inset-0 z-100 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-fade-in px-4">
                     <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 w-full max-w-sm transform transition-all scale-100 animate-fade-in-up">
                         <div className="text-center mb-6">
                             <div className="bg-indigo-500/10 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-500/20 shadow-[0_0_15px_rgba(99,102,241,0.3)]">

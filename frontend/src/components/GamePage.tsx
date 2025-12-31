@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
 import { ZoneType, Quest, GitHubInfo } from '../types/game';
 import { GameDashboard } from './GameDashboard';
-import { QuestList } from './quests/QuestList';
+// import { QuestList } from './quests/QuestList';
 import { SimpleQuestModal } from './quests/SimpleQuestModal';
 import { ZoneTransition } from './transitions/ZoneTransition';
 import { QuestStartTransition } from './transitions/QuestStartTransition';
@@ -50,7 +50,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
               <h1 className="text-xl md:text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 <ScrambleTextOnHover text="OFFICE" />
               </h1>
-              <button 
+              <button
                 onClick={() => setShowProfileModal(true)}
                 className="hidden md:flex items-center gap-2 px-2 py-2 bg-gray-900/50 hover:bg-gray-800/50 rounded-full border border-gray-800 hover:border-gray-700 transition-all cursor-pointer"
               >
@@ -67,7 +67,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
             <div className="hidden lg:flex items-center gap-6">
               {/* Digital Clock */}
               <DigitalClock />
-              
+
               <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-900/20 border border-blue-800/30 rounded-lg">
                 <span className="text-xs text-gray-400">Level</span>
                 <span className="text-sm text-blue-400">{player.level}</span>
@@ -107,7 +107,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
               >
                 {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-              
+
               <button
                 onClick={logout}
                 className="flex items-center gap-2 px-3 md:px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors"
@@ -184,7 +184,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                   Welcome back, {user?.username}!
                 </h2>
                 <p className="text-lg md:text-xl text-gray-400">
-                  {player.isBurntOut 
+                  {player.isBurntOut
                     ? '⚠️ You are burnt out! Visit the Game Lounge or Cafeteria to recover.'
                     : 'Ready to advance your career? Choose a zone or continue your quests.'}
                 </p>
@@ -199,7 +199,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
             )}
 
             {/* Zone Selector or Quest List */}
-            <div className="mt-8">
+            {/* <div className="mt-8">
               {selectedZone ? (
                 <QuestList
                   zone={selectedZone}
@@ -207,7 +207,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                   onStartQuest={handleStartQuest}
                 />
               ) : null}
-            </div>
+            </div> */}
           </div>
         </ZoneTransition>
       </main>
@@ -226,7 +226,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
         questTitle={questStarting || ''}
         onComplete={() => setQuestStarting(null)}
       />
-      
+
       <LevelUpTransition
         show={showLevelUp}
         level={player.level}

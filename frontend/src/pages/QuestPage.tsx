@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { X, Code, Trophy, Zap, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { Quest } from '../types/game';
@@ -6,6 +6,7 @@ import { useGame } from '../contexts/GameContext';
 import { QuestTasks } from '../components/quests/QuestTasks';
 import { CodingPlatform } from '../components/quests/CodingPlatform';
 import { ComprehensionQuest } from '../components/quests/ComprehensionQuest';
+import MCQQuest from '../components/quests/mcq/MCQQuest';
 
 interface QuestPageProps {
   quest: Quest;
@@ -83,7 +84,7 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
             </div>
             <div>
               <h1 className="text-2xl text-white">{quest.title}</h1>
-              <p className="text-sm text-gray-400 capitalize">{quest.zone.replace('-', ' ')} • {quest.frequency}</p>
+              <p className="text-sm text-gray-400 capitalize">{quest.zone.replace('-', ' ')}</p>
             </div>
           </div>
           <button
@@ -103,8 +104,29 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
           transition={{ duration: 0.35, ease: 'easeOut' }}
           className="flex-1 w-full overflow-hidden"
         >
-          {/* <CodingPlatform className="h-full w-full" /> */}
-          <ComprehensionQuest />
+          {/* Render the appropriate interactive UI depending on quest.type */}
+          {quest.type === 'Coding' && (
+            <div className="h-full w-full">
+              <CodingPlatform className="h-full w-full" onComplete={handleTaskComplete} />
+            </div>
+          )}
+
+          {quest.type === 'Comprehensive' && (
+            <div className="h-full w-full">
+              <ComprehensionQuest onComplete={handleTaskComplete} />
+            </div>
+          )}
+
+          {quest.type === 'MCQ' && (
+            <div className="h-full w-full">
+              <MCQQuest quest={quest} onComplete={handleTaskComplete} />
+            </div>
+          )}
+
+          {/* Fallback: generic task runner */}
+          {!(quest.type === 'Coding' || quest.type === 'Comprehensive' || quest.type === 'MCQ') && (
+            <QuestTasks quest={quest} onComplete={handleTaskComplete} />
+          )}
         </motion.div>
       ) : (
         <div className="flex-1 overflow-y-auto">

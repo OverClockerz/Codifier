@@ -31,7 +31,7 @@ InitialPlayerState = {
     "proficiency": {
         "coding_skill": 0,
         "soft_skill": 0,
-        "reliability_skill": 0,
+        "critical_thinking_skill": 0,
         "problem_solving": 0,
         "stress_resistance": 0,
     },
