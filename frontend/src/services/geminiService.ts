@@ -7,7 +7,7 @@ const API_BASE_URL = 'http://localhost:5000/api';
  */
 export const getCurrentProblem = async (): Promise<Problem> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/problem`, {
+    const response = await fetch(`${API_BASE_URL}/problem`, {//pass username and quest id as params
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
