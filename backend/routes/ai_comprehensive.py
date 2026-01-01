@@ -13,7 +13,7 @@ ai_comprehensive_bp = Blueprint('ai_comprehensive', __name__)
 def evaluate_answer():
     data = request.get_json()
     question_obj = data.get('question_data', {})
-    user_answer = data.get('user_answer')
+    user_answer = data.get('userAnswer')
 
     if not question_obj or not user_answer:
         return jsonify({"error": "Missing data"}), 400

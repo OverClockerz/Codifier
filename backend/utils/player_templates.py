@@ -114,6 +114,7 @@ COMPREHENSIVE_QUEST = {
       "type": "Comprehensive",
       "question_data":{
           "question": "put the long comprehensive critical thinking question here, this should be a scenario based question requiring detailed answer, and the topinc to should be relevant to the zone",
+          "topic": "put the topic of the question here, should be relevant to the zone",
       }
 }
 
@@ -123,7 +124,7 @@ CODING_QUEST= {
   "description": "Put the quest description here, this will be the detailed coding questions that is to be displayed, question only.",
   "zone": "workspace",
   "difficulty": "on a scale of 1-4",
-  "constrainst":"[put the constraints as string elements of this list]",
+  "constraints":"[put the constraints as string elements of this list]",
   "expReward": "within 100-150 depending on the difficulty",
   "topics" : "[list of all the topics of the problem as elements of this list]",
   "boilerplates":{
@@ -158,27 +159,22 @@ CODING_QUEST= {
   "testCases": '''two of the five test cases will be not hidden[
     {
       "input": "Put hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": False
     },
     {
       "input": "Put another hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": False
     },
     {
       "input": "Put hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": True
     },
     {
       "input": "Put hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": True
     },
     {
       "input": "Put hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": True
     }
   ]'''

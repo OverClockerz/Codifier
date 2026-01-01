@@ -107,13 +107,13 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
           {/* Render the appropriate interactive UI depending on quest.type */}
           {quest.type === 'Coding' && (
             <div className="h-full w-full">
-              <CodingPlatform className="h-full w-full" onComplete={handleTaskComplete} />
+              <CodingPlatform className="h-full w-full" onComplete={handleTaskComplete} initialProblem={quest} />
             </div>
           )}
 
           {quest.type === 'Comprehensive' && (
             <div className="h-full w-full">
-              <ComprehensionQuest onComplete={handleTaskComplete} />
+              <ComprehensionQuest onComplete={handleTaskComplete} initialQuestion={quest.question_data} />
             </div>
           )}
 
@@ -365,11 +365,11 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="flex justify-between">
                             <span className="text-gray-500">Mood:</span>
-                            <span className="text-red-400">-10</span>
+                            <span className="text-red-400">{quest.moodImpact}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-500">Stress:</span>
-                            <span className="text-orange-400">+15</span>
+                            <span className="text-orange-400">+{quest.stressImpact}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-500">Reputation:</span>

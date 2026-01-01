@@ -12,14 +12,15 @@ import { Play, Send, Zap, ChevronDown, WifiOff } from 'lucide-react';
 interface CodingPlatformProps {
   className?: string;
   onComplete?: (success: boolean, score: number) => void;
+  initialProblem?: any;
 }
 
-export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-screen", onComplete }) => {
-  const { state, actions } = useCodingPlatform();
+export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-screen", onComplete, initialProblem }) => {
+  const { state, actions } = useCodingPlatform(initialProblem);
   const {
     problem, code, evaluation, isGenerating, isRunning, activeTab,
     showAiChat, aiMessage, backendError, customInput, customOutput,
-    difficulty, language, showConfirmDialog, pendingLanguage
+    language, showConfirmDialog, pendingLanguage
   } = state;
 
   return (

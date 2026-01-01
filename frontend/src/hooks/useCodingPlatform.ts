@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { generateProblem, getCurrentProblem, evaluateSolution, getAiAssistance, runCustomTestCase } from '../services/geminiService';
-import { Problem, Difficulty, SupportedLanguage, EvaluationResult } from '../types/types';
+import { getCurrentProblem, evaluateSolution, getAiAssistance, runCustomTestCase } from '../services/geminiService';
+import { Problem, SupportedLanguage, EvaluationResult } from '../types/types';
 
-export const useCodingPlatform = () => {
+export const useCodingPlatform = (initialProblem?: Problem) => {
   // State
   const [problem, setProblem] = useState<Problem | null>(null);
   const [code, setCode] = useState<string>('');
@@ -22,7 +22,7 @@ export const useCodingPlatform = () => {
   const [customOutput, setCustomOutput] = useState<{ output: string; error?: string } | null>(null);
 
   // Settings
-  const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.Medium);
+  // const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.Medium);
   const [language, setLanguage] = useState<SupportedLanguage>(SupportedLanguage.Python);
   const [topic, setTopic] = useState<string>('');
 
@@ -32,7 +32,15 @@ export const useCodingPlatform = () => {
 
   // Initial Load: Check DB for existing problem
   useEffect(() => {
-    fetchInitialProblem();
+    if (initialProblem) {
+      setProblem(initialProblem);
+      setCode(initialProblem.boilerplates[language]);
+      if (initialProblem.examples && initialProblem.examples.length > 0) {
+        setCustomInput(initialProblem.examples[0].input);
+      }
+    } else {
+      fetchInitialProblem();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -55,27 +63,27 @@ export const useCodingPlatform = () => {
     }
   };
 
-  const handleGenerateProblem = async () => {
-    setIsGenerating(true);
-    setEvaluation(null);
-    setAiMessage('');
-    setCustomOutput(null);
-    setBackendError(null);
-    try {
-      const newProblem = await generateProblem(difficulty, topic);
-      setProblem(newProblem);
-      setCode(newProblem.boilerplates[language]);
+  // const handleGenerateProblem = async () => {
+  //   setIsGenerating(true);
+  //   setEvaluation(null);
+  //   setAiMessage('');
+  //   setCustomOutput(null);
+  //   setBackendError(null);
+  //   try {
+  //     const newProblem = await generateProblem(difficulty, topic);
+  //     setProblem(newProblem);
+  //     setCode(newProblem.boilerplates[language]);
       
-      if (newProblem.examples.length > 0) {
-        setCustomInput(newProblem.examples[0].input);
-      }
-    } catch (error: any) {
-      console.error("Failed to generate", error);
-      setBackendError("Failed to generate new problem. Backend may be offline.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  //     if (newProblem.examples.length > 0) {
+  //       setCustomInput(newProblem.examples[0].input);
+  //     }
+  //   } catch (error: any) {
+  //     console.error("Failed to generate", error);
+  //     setBackendError("Failed to generate new problem. Backend may be offline.");
+  //   } finally {
+  //     setIsGenerating(false);
+  //   }
+  // };
 
   const initiateLanguageChange = (newLang: SupportedLanguage) => {
     if (newLang === language) return;
@@ -152,14 +160,14 @@ export const useCodingPlatform = () => {
       backendError,
       customInput,
       customOutput,
-      difficulty,
+      // difficulty,
       language,
       topic,
       showConfirmDialog,
       pendingLanguage
     },
     actions: {
-      setDifficulty,
+      // setDifficulty,
       setLanguage,
       setTopic,
       setCode,
@@ -167,7 +175,7 @@ export const useCodingPlatform = () => {
       setCustomInput,
       setShowAiChat,
       setShowConfirmDialog,
-      handleGenerateProblem,
+      // handleGenerateProblem,
       handleRunCode,
       handleAiAssist,
       initiateLanguageChange,

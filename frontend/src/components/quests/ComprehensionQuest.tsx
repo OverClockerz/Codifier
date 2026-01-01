@@ -6,9 +6,10 @@ import FeedbackDisplay from './ComprehensionQuest/FeedbackDisplay';
 
 interface ComprehensionQuestProps {
     onComplete?: (success: boolean, score: number) => void;
+    initialQuestion?: Question | any;
 }
 
-export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComplete }) => {
+export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComplete, initialQuestion }) => {
     const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
     const [userAnswer, setUserAnswer] = useState('');
     const [currentEvaluation, setCurrentEvaluation] = useState<ComprehensionEvaluationResult | null>(null);
@@ -35,26 +36,36 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
     //     return () => document.removeEventListener("mousedown", handleClickOutside);
     // }, []);
 
-    const handleGenerateQuestion = useCallback(async () => {
-        setStatus(Status.LOADING);
-        setCurrentEvaluation(null);
-        // setCurrentAttemptId(null);
-        setUserAnswer('');
-        try {
-            const newQuestion = await GeminiService.generateNewQuestion(topic);
-            setCurrentQuestion(newQuestion);
-            setStatus(Status.SUCCESS);
-        } catch (error) {
-            console.error(error);
-            setStatus(Status.ERROR);
-        }
-    }, [topic]);
+    // const handleGenerateQuestion = useCallback(async () => {
+    //     setStatus(Status.LOADING);
+    //     setCurrentEvaluation(null);
+    //     // setCurrentAttemptId(null);
+    //     setUserAnswer('');
+    //     try {
+    //         const newQuestion = await GeminiService.generateNewQuestion(topic);
+    //         setCurrentQuestion(newQuestion);
+    //         setStatus(Status.SUCCESS);
+    //     } catch (error) {
+    //         console.error(error);
+    //         setStatus(Status.ERROR);
+    //     }
+    // }, [topic]);
 
     // AUTO-GENERATE ON LOAD
+    // useEffect(() => {
+    //     handleGenerateQuestion();
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
+
+    // Initialize from quest-provided question data when available
     useEffect(() => {
-        handleGenerateQuestion();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        if (initialQuestion) {
+            // Quest schema may either be the question object, or contain `question_data` which is the object
+            const q = initialQuestion.question ? initialQuestion : (initialQuestion.question_data ? initialQuestion.question_data : initialQuestion);
+            setCurrentQuestion(q as Question);
+            setStatus(Status.SUCCESS);
+        }
+    }, [initialQuestion]);
 
     const handlePreSubmit = () => {
         if (!currentQuestion || !userAnswer.trim()) return;
@@ -132,7 +143,7 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
                 </div>
             )}
 
-            <header className="h-16 border-b border-slate-800 bg-slate-900 flex items-center justify-between px-6 sticky top-0 z-50 shadow-sm">
+            {/* <header className="h-16 border-b border-slate-800 bg-slate-900 flex items-center justify-between px-6 sticky top-0 z-50 shadow-sm">
                 <div className="flex-1 flex justify-center items-center gap-4 max-w-2xl">
                     <div className="relative w-64">
                         <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
@@ -156,7 +167,7 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
                         )}
                     </button>
                 </div>
-            </header>
+            </header> */}
 
 
             {/* --- MAIN CONTENT --- */}
@@ -184,7 +195,7 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
                             <div className="bg-slate-900 rounded-lg border border-slate-800 shadow-lg overflow-hidden">
                                 <QuestionCard
                                     question={currentQuestion}
-                                    isGenerating={status === Status.LOADING && !currentQuestion.text}
+                                    isGenerating={status === Status.LOADING && !currentQuestion.question}
                                 />
                             </div>
 

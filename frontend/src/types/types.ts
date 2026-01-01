@@ -1,8 +1,8 @@
-export enum Difficulty {
-  Easy = "Easy",
-  Medium = "Medium",
-  Hard = "Hard",
-}
+// export enum Difficulty {
+//   Easy = "Easy",
+//   Medium = "Medium",
+//   Hard = "Hard",
+// }
 
 export enum SupportedLanguage {
   Python = "python",
@@ -13,7 +13,7 @@ export interface Problem {
   id: string;
   title: string;
   description: string;
-  difficulty: Difficulty;
+  difficulty: number;
   topics: string[];
   constraints: string[];
   boilerplates: Record<SupportedLanguage, string>;
@@ -50,10 +50,10 @@ export interface EvaluationResult {
 
 export interface Question {
   id: string;
-  text: string;
+  question: string;
   topic: string;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  timestamp: number;
+  difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
+  timestamp?: number;
 }
 
 export interface ComprehensionEvaluationResult {
