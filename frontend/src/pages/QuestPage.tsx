@@ -365,11 +365,11 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="flex justify-between">
                             <span className="text-gray-500">Mood:</span>
-                            <span className="text-red-400">-10</span>
+                              <span className="text-red-400">{quest.moodImpact}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-500">Stress:</span>
-                            <span className="text-orange-400">+15</span>
+                            <span className="text-orange-400">+{quest.stressImpact}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-500">Reputation:</span>

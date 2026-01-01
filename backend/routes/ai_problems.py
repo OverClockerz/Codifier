@@ -7,17 +7,17 @@ import traceback
 
 ai_problems_bp = Blueprint("ai_problems", __name__)
 
-@ai_problems_bp.route("/api/problem", methods=["GET"])
-def get_current_problem():
-    try:
-        if db is not None:
-            existing_problem = db.db.problems.find_one({}, {'_id': 0})
-            if existing_problem:
-                return jsonify(existing_problem)
-        new_problem = generate_and_save_problem()
-        return jsonify(new_problem)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+# @ai_problems_bp.route("/api/problem", methods=["GET"])
+# def get_current_problem():
+#     try:
+#         if db is not None:
+#             existing_problem = db.db.problems.find_one({}, {'_id': 0})
+#             if existing_problem:
+#                 return jsonify(existing_problem)
+#         new_problem = generate_and_save_problem()
+#         return jsonify(new_problem)
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
 
 
 @ai_problems_bp.route("/api/evaluate", methods=["POST"])

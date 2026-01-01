@@ -123,7 +123,7 @@ CODING_QUEST= {
   "description": "Put the quest description here, this will be the detailed coding questions that is to be displayed, question only.",
   "zone": "workspace",
   "difficulty": "on a scale of 1-4",
-  "constrainst":"[put the constraints as string elements of this list]",
+  "constraints":"[put the constraints as string elements of this list]",
   "expReward": "within 100-150 depending on the difficulty",
   "topics" : "[list of all the topics of the problem as elements of this list]",
   "boilerplates":{

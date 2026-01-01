@@ -287,7 +287,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const quest = activeQuests.find(q => q.id === questId);
     if (!quest) return;
 
-    updateMoodStress(-10, 15);
+    updateMoodStress(quest.moodImpact, quest.stressImpact);
 
     let reputationLoss = 0;
     if (quest.deadline && Date.now() > quest.deadline) {
