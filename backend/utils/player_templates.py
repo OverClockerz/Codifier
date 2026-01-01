@@ -65,7 +65,7 @@ InitialPlayerState = {
 }
 
 MCQ_QUEST = {
-      "id": "unique-quest-id",
+      "id": "unique quest id hash",
       "title": "Put the quest title here",
       "description": "Put the quest description here",
       "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",
@@ -93,7 +93,7 @@ MCQ_QUEST = {
 } 
 
 COMPREHENSIVE_QUEST = {
-      "id": "unique-quest-id",
+      "id": "unique quest id hash",
       "title": "Put the quest title here",
       "description": "Put the quest description here",
       "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",
@@ -119,7 +119,7 @@ COMPREHENSIVE_QUEST = {
 }
 
 CODING_QUEST= {
-  "id": "unique-quest-id",
+  "id": "unique quest id hash",
   "title": "Put the quest title here",
   "description": "Put the quest description here, this will be the detailed coding questions that is to be displayed, question only.",
   "zone": "workspace",
@@ -181,7 +181,7 @@ CODING_QUEST= {
 }
 
 TYPING_QUEST = {
-      "id": "unique-quest-id",
+      "id": "unique quest id hash",
       "title": "Put the quest title here",
       "description": "Put the quest description here",
       "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",

@@ -422,7 +422,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         level: newStartLevel,
         experience: 0,
         experienceToNextLevel: getExperienceForLevel(newStartLevel),
-        currency: 100,
+        currency: player.currency,
         mood: 70,
         stress: 20,
         isBurntOut: false,
