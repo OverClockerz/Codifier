@@ -4,16 +4,14 @@ from flask import Blueprint, jsonify, request
 
 from utils.ai_helpers import generate_response
 
-
 ai_comprehensive_bp = Blueprint('ai_comprehensive', __name__)
 
-
-
-@ai_comprehensive_bp.route('/api/evaluate', methods=['POST'])
+@ai_comprehensive_bp.route('/api/evaluate_comprehensive', methods=['POST'])
 def evaluate_answer():
     data = request.get_json()
-    question_obj = data.get('question_data', {})
-    user_answer = data.get('userAnswer')
+    print(data)
+    question_obj = data.get('question', {})
+    user_answer = data.get('user_answer')
 
     if not question_obj or not user_answer:
         return jsonify({"error": "Missing data"}), 400

@@ -1,6 +1,7 @@
 import os
 import json
 import random
+import re
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
@@ -15,38 +16,32 @@ GEMINI_MODEL = "gemini-2.5-flash"
 client = genai.Client(api_key=API_KEY)
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=10))
-def get_gemini_response(prompt, model=GEMINI_MODEL, response_schema=None, json_mode=False):
+def get_gemini_response(prompt, model=GEMINI_MODEL, schema=None):
     try:
-        mime_type = "application/json" if (response_schema or json_mode) else "text/plain"
-        
-        config = types.GenerateContentConfig(
-            temperature=0.3, # Strict
-            top_p=0.95,
-            top_k=40,
-            response_mime_type=mime_type,
-            response_schema=response_schema
-        )
-        
-        response = client.models.generate_content(
-            model=model,
-            contents=prompt,
-            config=config
-        )
-        
-        result = response.text
-        if mime_type == "application/json":
-            try:
-                clean_result = result.replace('```json', '').replace('```', '').strip()
-                return json.loads(clean_result)
-            except json.JSONDecodeError:
-                return {}
-        
-        return result
+        if schema:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=schema,
+                    temperature=0.3
+                )
+            )
+            return response.parsed  # ✅ dict or list
+
+        else:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt
+            )
+            return response.text  # ✅ plain text
+
     except Exception as e:
         print(f"Gemini API Error: {e}")
-        raise e
+        return None
 
-def generate_and_save_problem(difficulty="Medium", topic="Algorithms"):
+def generate_and_save_problem(difficulty="4", topic="Algorithms"):
     prompt = f"""
     Generate a unique coding problem for a coding interview platform.
     Difficulty: {difficulty}
@@ -58,7 +53,7 @@ def generate_and_save_problem(difficulty="Medium", topic="Algorithms"):
         "title": "string",
         "description": "string (markdown allowed)",
         "constraints": ["string"],
-        "difficulty": "{difficulty}",
+        "difficulty": "{difficulty} on a scale of 1-4",
         "topics": ["string"],
         "boilerplates": {{
             "python": "def solution(arg1):\\n    pass",
@@ -147,19 +142,19 @@ def generate_response(data=None, num=1):
 
     # --- 2. CALL GEMINI API ---
     try:
-        model = genai.GenerativeModel(model_name)
-        
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                response_mime_type="application/json", # Forces JSON output
-                response_schema=schema,                # Forces specific structure
-                temperature=0.7 
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=schema,
+                temperature=0.3
             )
         )
-
+        
         result_text = response.text
-        parsed_json = json.loads(result_text)
+        parsed_json = response.parsed
+        print(parsed_json)
 
         # --- 3. FORMATTING FIX FOR APP.PY ---
         # app.py expects a list (it calls result[0]). 

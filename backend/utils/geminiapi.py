@@ -26,9 +26,9 @@ def generate_response(data, num=1, zone="workspace"):
     client = genai.Client(api_key=KEY)
 
     prompt = (
-    f"Generate a list of {num} questions based on the above data and return it in the same list of JSON format without giving ```json ``` tags 40% quests will be mcq 30% will be comprehensive and 30% will be coding/typing"
+    f"Generate a list of {num} questions based on the above data and return it in the same list of JSON format without giving ```json ``` tags 40% quests will be mcq 30% will be comprehensive and 30% will be coding/typing. If zone is workspace it will generate technical technical quests including coding quests and if it is meeting-room it will generate soft skill quests including typing quests"
     if zone in ("workspace", "meeting-room")
-    else f"Generate a list of {num} questions based on the above data and return it in the same list of JSON format without giving ```json ``` tags 60% quests will be mcq 40% will be comprehensive"
+    else f"Generate a list of {num} questions based on the above data and return it in the same list of JSON format without giving ```json ``` tags 60% quests will be mcq 40% will be comprehensive. Generate mathematcial aptitude and critical thinking quests"
    )
 
 

@@ -122,7 +122,7 @@ export const getAiAssistance = async (problem: Problem, userCode: string, query:
 export const evaluateSubmission = async (question: Question, answer: string): Promise<Attempt> => {
   try {
     // Step 1: Get AI Evaluation
-    const evalResponse = await fetch(`${API_BASE_URL}/evaluate`, {
+    const evalResponse = await fetch(`${API_BASE_URL}/evaluate_comprehensive`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -147,16 +147,16 @@ export const evaluateSubmission = async (question: Question, answer: string): Pr
         evaluation: evaluationData
     };
 
-    // Step 3: Save to MongoDB
-    const saveResponse = await fetch(`${API_BASE_URL}/attempts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newAttempt)
-    });
+    // // Step 3: Save to MongoDB
+    // const saveResponse = await fetch(`${API_BASE_URL}/attempts`, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(newAttempt)
+    // });
 
-    if (!saveResponse.ok) {
-        console.warn("Warning: Failed to save attempt to history database.");
-    }
+    // if (!saveResponse.ok) {
+    //     console.warn("Warning: Failed to save attempt to history database.");
+    // }
 
     return newAttempt;
 
