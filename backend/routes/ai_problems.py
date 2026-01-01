@@ -7,17 +7,29 @@ import traceback
 
 ai_problems_bp = Blueprint("ai_problems", __name__)
 
-# @ai_problems_bp.route("/api/problem", methods=["GET"])
-# def get_current_problem():
-#     try:
-#         if db is not None:
-#             existing_problem = db.db.problems.find_one({}, {'_id': 0})
-#             if existing_problem:
-#                 return jsonify(existing_problem)
-#         new_problem = generate_and_save_problem()
-#         return jsonify(new_problem)
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
+@ai_problems_bp.route("/api/problem", methods=["GET"])
+def get_current_problem():
+    try:
+        # Prefer problems attached to a player's activeQuests
+        username = request.args.get('username')
+        if db is not None and username:
+            player = db.db.players.find_one({'username': username}, {'_id': 0, 'activeQuests': 1})
+            if player and player.get('activeQuests'):
+                for quest in player.get('activeQuests', []):
+                    if quest.get('zone') == 'workspace' and quest.get('type') == 'Coding':
+                        # The quest itself contains the full problem definition
+                        return jsonify(quest)
+            return jsonify({'error': 'No active coding quest found for user.'}), 404
+
+        # Backwards-compatible fallback for callers that don't provide a username
+        if db is not None:
+            existing_problem = db.db.problems.find_one({}, {'_id': 0})
+            if existing_problem:
+                return jsonify(existing_problem)
+        new_problem = generate_and_save_problem()
+        return jsonify(new_problem)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @ai_problems_bp.route("/api/evaluate", methods=["POST"])

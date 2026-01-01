@@ -114,6 +114,7 @@ COMPREHENSIVE_QUEST = {
       "type": "Comprehensive",
       "question_data":{
           "question": "put the long comprehensive critical thinking question here, this should be a scenario based question requiring detailed answer, and the topinc to should be relevant to the zone",
+          "topic": "put the topic of the question here, should be relevant to the zone",
       }
 }
 
@@ -158,27 +159,22 @@ CODING_QUEST= {
   "testCases": '''two of the five test cases will be not hidden[
     {
       "input": "Put hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": False
     },
     {
       "input": "Put another hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": False
     },
     {
       "input": "Put hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": True
     },
     {
       "input": "Put hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": True
     },
     {
       "input": "Put hidden test input here",
-      "expectedOutput": "Put expected output here",
       "isHidden": True
     }
   ]'''

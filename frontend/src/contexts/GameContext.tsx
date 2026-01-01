@@ -286,7 +286,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const failQuest = (questId: string) => {
     const quest = activeQuests.find(q => q.id === questId);
     if (!quest) return;
-
     updateMoodStress(quest.moodImpact, quest.stressImpact);
 
     let reputationLoss = 0;
