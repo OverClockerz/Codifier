@@ -101,8 +101,15 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
         {/* REWARDS & ACTION BUTTON */}
         {/* ============================================================ */}
         <div className="flex items-center justify-between">
-          {/* Reward Badges */}
+          {/* Type Badges */}
           <div className="flex gap-2 flex-wrap">
+            {quest.expReward > 0 && (
+              <Tooltip content="Type of Active Quest">
+                <span className="px-2 py-1 bg-[rgba(142,3,255,0.25)] text-[#acd7ff] text-xs rounded">
+                  {quest.type}
+                </span>
+              </Tooltip>
+            )}
             {/* EXP Badge */}
             {quest.expReward > 0 && (
               <Tooltip content="Experience Points Reward">
