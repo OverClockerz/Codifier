@@ -122,13 +122,15 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
 
   // Get difficulty badge color
   const getDifficultyColor = (difficulty: number) => {
-    if (difficulty <= 2) return 'bg-green-600 text-white';
-    if (difficulty <= 4) return 'bg-yellow-600 text-white';
+    if (difficulty === 1) return 'bg-gray-600 text-white';
+    if (difficulty === 2) return 'bg-green-600 text-white';
+    if (difficulty === 3) return 'bg-yellow-600 text-white';
     return 'bg-red-600 text-white';
   };
   const getDifficultyLabel = (difficulty: number) => {
-    if (difficulty <= 2) return 'Easy';
-    if (difficulty <= 4) return 'Medium';
+    if (difficulty === 1) return 'Basic';
+    if (difficulty === 2) return 'Easy';
+    if (difficulty === 3) return 'Medium';
     return 'Hard';
   }
 
