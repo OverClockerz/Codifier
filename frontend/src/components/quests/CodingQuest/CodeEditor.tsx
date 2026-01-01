@@ -180,8 +180,8 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, language
         {/* Line Numbers Gutter */}
         {showLineNumbers && (
            <div 
-             className={`flex-shrink-0 pt-4 pr-3 text-right select-none min-w-[3rem] border-r
-             ${islightTheme ? 'bg-gray-100 text-gray-400 border-gray-200' : 'bg-[#1e1e1e] text-slate-600 border-slate-800'}`}
+             className={`shrink-0 pt-4 pr-3 text-right select-none min-w-12 border-r
+             ${islightTheme ? 'bg-gray-100 text-gray-400 border-gray-200' : 'bg-editor-bg text-slate-600 border-slate-800'}`}
              style={{ 
                fontFamily: '"JetBrains Mono", monospace',
                fontSize: fontSize 
@@ -201,7 +201,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ code, onChange, language
           disabled={readOnly}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className={`font-mono leading-6 min-h-full flex-1 ${islightTheme ? 'text-gray-800' : 'text-[#d4d4d4]'}`}
+          className={`font-mono leading-6 min-h-full flex-1 ${islightTheme ? 'text-gray-800' : 'text-editor-fg'}`}
           style={{
             fontFamily: '"JetBrains Mono", monospace',
             fontSize: fontSize,

@@ -65,7 +65,7 @@ export function ZoneTransition({ children, zone, onTransitionComplete }: ZoneTra
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center"
+            className="fixed inset-0 z-100 flex items-center justify-center"
           >
             {/* Animated Background */}
             <motion.div
@@ -73,7 +73,7 @@ export function ZoneTransition({ children, zone, onTransitionComplete }: ZoneTra
               animate={{ scale: 1.5, rotate: 360 }}
               exit={{ scale: 0, rotate: 720 }}
               transition={{ duration: 0.8, ease: 'easeInOut' }}
-              className={`absolute inset-0 bg-gradient-to-r ${config.gradient} opacity-20 blur-3xl`}
+              className={`absolute inset-0 bg-linear-to-r ${config.gradient} opacity-20 blur-3xl`}
             />
 
             {/* Particle Effects */}
@@ -116,7 +116,7 @@ export function ZoneTransition({ children, zone, onTransitionComplete }: ZoneTra
               transition={{ duration: 0.6, type: 'spring', stiffness: 200 }}
               className="relative z-10 flex flex-col items-center gap-6"
             >
-              <div className={`w-32 h-32 rounded-3xl bg-gradient-to-r ${config.gradient} p-1 shadow-2xl`}>
+              <div className={`w-32 h-32 rounded-3xl bg-linear-to-r ${config.gradient} p-1 shadow-2xl`}>
                 <div className="w-full h-full bg-black rounded-3xl flex items-center justify-center">
                   <config.icon className="w-16 h-16 text-white" />
                 </div>
@@ -126,7 +126,7 @@ export function ZoneTransition({ children, zone, onTransitionComplete }: ZoneTra
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-4xl md:text-6xl bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+                className="text-4xl md:text-6xl bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent"
               >
                 {config.title}
               </motion.h2>
@@ -137,7 +137,7 @@ export function ZoneTransition({ children, zone, onTransitionComplete }: ZoneTra
                   initial={{ width: '0%' }}
                   animate={{ width: '100%' }}
                   transition={{ duration: 0.7, ease: 'easeInOut' }}
-                  className={`h-full bg-gradient-to-r ${config.gradient}`}
+                  className={`h-full bg-linear-to-r ${config.gradient}`}
                 />
               </div>
 

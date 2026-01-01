@@ -20,7 +20,7 @@ export const GameOverAlert: React.FC<GameOverAlertProps> = ({ isOpen, onRestart 
   // This ensures it sits on top of EVERYTHING and clicks always register
   return createPortal(
     <div 
-      className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-300"
+      className="fixed inset-0 z-99999 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-300"
       style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
       <div 
@@ -57,7 +57,7 @@ export const GameOverAlert: React.FC<GameOverAlertProps> = ({ isOpen, onRestart 
               console.log("🔴 Restart Button Clicked"); // Debug log
               onRestart();
             }}
-            className="w-full cursor-pointer relative z-50 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 hover:scale-[1.02] shadow-lg shadow-red-900/40 uppercase tracking-widest border border-red-500 active:scale-95"
+            className="w-full cursor-pointer relative z-50 bg-linear-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 hover:scale-[1.02] shadow-lg shadow-red-900/40 uppercase tracking-widest border border-red-500 active:scale-95"
           >
             Start New Career
           </button>

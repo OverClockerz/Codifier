@@ -18,14 +18,14 @@ export function QuestStartTransition({ show, questTitle, onComplete }: QuestStar
           onAnimationComplete={() => {
             setTimeout(onComplete, 1500);
           }}
-          className="fixed inset-0 z-[150] flex items-center justify-center bg-black/95"
+          className="fixed inset-0 z-150 flex items-center justify-center bg-black/95"
         >
           {/* Radial Pulse */}
           <motion.div
             initial={{ scale: 0, opacity: 1 }}
             animate={{ scale: 3, opacity: 0 }}
             transition={{ duration: 1, ease: 'easeOut' }}
-            className="absolute w-64 h-64 rounded-full bg-gradient-to-r from-blue-500/50 to-purple-500/50 blur-3xl"
+            className="absolute w-64 h-64 rounded-full bg-linear-to-r from-blue-500/50 to-purple-500/50 blur-3xl"
           />
 
           {/* Center Content */}
@@ -46,7 +46,7 @@ export function QuestStartTransition({ show, questTitle, onComplete }: QuestStar
                 <div className="w-full h-full rounded-full border-4 border-transparent border-t-blue-500 border-r-purple-500" />
               </motion.div>
 
-              <div className="w-24 h-24 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-1">
+              <div className="w-24 h-24 rounded-2xl bg-linear-to-r from-blue-600 to-purple-600 p-1">
                 <div className="w-full h-full bg-black rounded-2xl flex items-center justify-center">
                   <Trophy className="w-12 h-12 text-white" />
                 </div>

@@ -18,7 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="h-14 border-b border-slate-700 bg-[#1e293b] flex items-center justify-between px-4 shrink-0 shadow-sm z-10">
       <div className="flex items-center gap-3">
-        <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-1.5 rounded-lg shadow-lg shadow-blue-900/20">
+        <div className="bg-linear-to-br from-blue-600 to-indigo-600 p-1.5 rounded-lg shadow-lg shadow-blue-900/20">
           <Code2 className="text-white" size={20} />
         </div>
         <span className="font-bold text-lg tracking-tight text-white">GeminiCode</span>

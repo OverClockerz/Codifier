@@ -9,17 +9,17 @@ export const TransitionOverlays = forwardRef<HTMLDivElement>((props, ref) => {
   return (
     <div 
       ref={ref}
-      className="fixed inset-0 pointer-events-none z-[9999]"
+      className="fixed inset-0 pointer-events-none z-9999"
       style={{ isolation: 'isolate' }}
     >
       {/* Layer 1: Blue to Purple gradient */}
-      <div className="transition-overlay absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600" />
+      <div className="transition-overlay absolute inset-0 bg-linear-to-br from-blue-600 to-purple-600" />
       
       {/* Layer 2: Purple to Pink gradient */}
-      <div className="transition-overlay absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600" />
+      <div className="transition-overlay absolute inset-0 bg-linear-to-br from-purple-600 to-pink-600" />
       
       {/* Layer 3: Dark overlay (final layer) */}
-      <div className="transition-overlay absolute inset-0 bg-gradient-to-br from-gray-900 to-black" />
+      <div className="transition-overlay absolute inset-0 bg-linear-to-br from-gray-900 to-black" />
     </div>
   );
 });
@@ -64,7 +64,7 @@ export const TransitionOverlaysCustom = forwardRef<HTMLDivElement, { theme?: 'of
     return (
       <div 
         ref={ref}
-        className="fixed inset-0 pointer-events-none z-[9999]"
+        className="fixed inset-0 pointer-events-none z-9999"
         style={{ isolation: 'isolate' }}
       >
         <div className={`transition-overlay absolute inset-0 ${colors[0]}`} />

@@ -115,6 +115,8 @@ export const useCodingPlatform = () => {
 
         const result = await evaluateSolution(problem, code, language, isSubmission);
         setEvaluation(result);
+        // return result so callers can act on submission results
+        return result;
       }
     } catch (error) {
       console.error("Evaluation failed", error);
@@ -122,6 +124,7 @@ export const useCodingPlatform = () => {
     } finally {
       setIsRunning(false);
     }
+    return null;
   };
 
   const handleAiAssist = async () => {

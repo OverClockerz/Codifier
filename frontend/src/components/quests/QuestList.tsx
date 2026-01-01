@@ -12,7 +12,7 @@ interface QuestListProps {
 
 export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
   const { activeQuests } = useGame();
-  
+
   const zoneQuests = activeQuests.filter((q) => q.zone === zone);
   const availableQuests = zoneQuests.filter((q) => q.status === 'available');
   const inProgressQuests = zoneQuests.filter((q) => q.status === 'in-progress');
@@ -34,7 +34,7 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:border-gray-700 transition-all"
+      className="bg-linear-to-br from-gray-900/80 to-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:border-gray-700 transition-all"
     >
       {/* Quest Header */}
       <div className="flex items-start justify-between mb-4">
@@ -79,7 +79,7 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
           <Trophy className="w-4 h-4 text-purple-400" />
           <div>
             <div className="text-xs text-gray-500">Type</div>
-            <div className="text-sm text-purple-400 capitalize">{quest.frequency}</div>
+            {/* <div className="text-sm text-purple-400 capitalize">{quest.frequency}</div> */}
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@ export function QuestList({ zone, onBack, onStartQuest }: QuestListProps) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => onStartQuest(quest.id)}
-          className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all flex items-center justify-center gap-2"
+          className="w-full py-3 bg-linear-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all flex items-center justify-center gap-2"
         >
           <Play className="w-4 h-4" />
           Start Quest

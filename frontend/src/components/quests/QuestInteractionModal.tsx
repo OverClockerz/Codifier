@@ -28,7 +28,7 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
 
   const handleComplete = () => {
     if (result === 'success') {
-      completeQuest(quest.id, performanceScore,player);
+      completeQuest(quest.id, performanceScore, player);
     } else {
       failQuest(quest.id);
     }
@@ -88,7 +88,7 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
               <div className="flex-1">
                 <h2 className="text-2xl text-white mb-2">{quest.title}</h2>
                 <p className="text-gray-400">{quest.description}</p>
-                
+
                 <div className="flex gap-4 mt-4">
                   <div className="flex items-center gap-2">
                     <Trophy className="w-4 h-4 text-yellow-500" />
@@ -100,7 +100,7 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-blue-500" />
-                    <span className="text-sm text-gray-300 capitalize">{quest.frequency}</span>
+                    {/* <span className="text-sm text-gray-300 capitalize">{quest.frequency}</span> */}
                   </div>
                 </div>
               </div>
@@ -167,11 +167,10 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`${
-                  result === 'success'
+                className={`${result === 'success'
                     ? 'bg-green-900/20 border-green-800/50'
                     : 'bg-red-900/20 border-red-800/50'
-                } border rounded-xl p-6`}
+                  } border rounded-xl p-6`}
               >
                 <div className="flex items-center gap-3 mb-3">
                   {result === 'success' ? (
@@ -188,7 +187,7 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
                     </p>
                   </div>
                 </div>
-                
+
                 {result === 'success' && (
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between text-gray-400">
@@ -215,7 +214,7 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
                     </div>
                   </div>
                 )}
-                
+
                 {result === 'failure' && (
                   <p className="text-gray-400 text-sm">
                     Don't worry! You can try other quests or take a break to improve your mood and reduce stress.
@@ -243,7 +242,7 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
                 </button>
               </>
             )}
-            
+
             {isWorking && (
               <button
                 disabled
@@ -252,15 +251,14 @@ export function QuestInteractionModal({ quest, onClose }: QuestInteractionModalP
                 Working...
               </button>
             )}
-            
+
             {result && (
               <button
                 onClick={handleComplete}
-                className={`flex-1 ${
-                  result === 'success'
+                className={`flex-1 ${result === 'success'
                     ? `bg-${color}-600 hover:bg-${color}-700`
                     : 'bg-gray-700 hover:bg-gray-600'
-                } text-white px-6 py-3 rounded-xl transition-colors`}
+                  } text-white px-6 py-3 rounded-xl transition-colors`}
               >
                 {result === 'success' ? 'Claim Rewards' : 'Close'}
               </button>

@@ -84,7 +84,7 @@ export function SimpleQuestModal({ quest, onClose }: SimpleQuestModalProps) {
 
             {/* Quest Header */}
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 p-0.5">
+              <div className="w-16 h-16 rounded-2xl bg-linear-to-r from-blue-500 to-purple-500 p-0.5">
                 <div className="w-full h-full bg-gray-900 rounded-2xl flex items-center justify-center">
                   <Icon className="w-8 h-8 text-white" />
                 </div>
@@ -142,7 +142,7 @@ export function SimpleQuestModal({ quest, onClose }: SimpleQuestModalProps) {
                   <p className="text-gray-400 mb-4">
                     This is a logic puzzle. In the full version, you would solve puzzles here.
                   </p>
-                  <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-lg border border-purple-700/50">
+                  <div className="bg-linear-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-lg border border-purple-700/50">
                     <p className="text-lg mb-4">Sample Logic Puzzle:</p>
                     <p className="text-gray-300">
                       If all Bloops are Razzies and all Razzies are Lazzies, are all Bloops definitely Lazzies?
@@ -179,7 +179,7 @@ export function SimpleQuestModal({ quest, onClose }: SimpleQuestModalProps) {
             </div>
 
             {/* Impact Preview */}
-            <div className="bg-gradient-to-r from-gray-900/50 to-gray-900/30 border border-gray-800 rounded-xl p-4 mb-6">
+            <div className="bg-linear-to-r from-gray-900/50 to-gray-900/30 border border-gray-800 rounded-xl p-4 mb-6">
               <h4 className="text-sm text-gray-400 mb-3">Quest Impact:</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex items-center gap-2">
@@ -204,7 +204,7 @@ export function SimpleQuestModal({ quest, onClose }: SimpleQuestModalProps) {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleComplete}
                 disabled={isSubmitting}
-                className="flex-1 py-4 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl hover:from-green-500 hover:to-emerald-500 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-4 bg-linear-to-r from-green-600 to-emerald-600 rounded-xl hover:from-green-500 hover:to-emerald-500 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

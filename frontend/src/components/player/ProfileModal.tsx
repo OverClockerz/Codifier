@@ -3,13 +3,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useGame } from '../../contexts/GameContext';
 import { gameTimeSince } from '../../utils/calculations';
 import {
-  User,
-  ChevronRight,
   TrendingUp,
   DollarSign,
   Calendar,
-  Bell,
-  Settings,
   X,
 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
@@ -71,7 +67,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-black/95 backdrop-blur-sm z-60"
             onClick={onClose}
           />
 
@@ -82,7 +78,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 w-[95%] max-w-2xl bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 border border-gray-700 rounded-2xl shadow-2xl z-[70] max-h-[85vh] overflow-y-auto"
+            className="fixed top-20 left-1/2 -translate-x-1/2 w-[95%] max-w-2xl bg-linear-to-br from-gray-900 via-gray-900 to-gray-800 border border-gray-700 rounded-2xl shadow-2xl z-70 max-h-[85vh] overflow-y-auto"
           >
 
             {/* Content */}
@@ -90,7 +86,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
               {/* Player Header */}
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                     <img
                       src={player.githubinfo?.avatar_url || user?.avatar || ''}
                       alt={player.username}
@@ -203,7 +199,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                       initial={{ width: 0 }}
                       animate={{ width: `${levelProgress}%` }}
                       transition={{ duration: 0.5, delay: 0.3 }}
-                      className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
+                      className="h-full bg-linear-to-r from-blue-500 to-cyan-500"
                     />
                   </div>
                 </div>
@@ -263,8 +259,8 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                     className={`h-full ${(player.reputation ?? 0) >= 0
-                      ? 'bg-gradient-to-r from-green-500 to-emerald-500'
-                      : 'bg-gradient-to-r from-red-500 to-orange-500'
+                      ? 'bg-linear-to-r from-green-500 to-emerald-500'
+                      : 'bg-linear-to-r from-red-500 to-orange-500'
                       }`}
                   />
                 </div>

@@ -7,20 +7,11 @@ import { SimpleRadarChart } from '../charts/SimpleRadarChart';
 import { ScrambleTextOnHover } from '../effects/ScrambleText';
 import { getProfessionalAttributes } from '../../data/gameConfig';
 import {
-  User,
-  ChevronRight,
   TrendingUp,
   DollarSign,
   Calendar,
-  Bell,
-  Settings,
   Heart,
-  Zap,
   Award,
-  Code,
-  Gamepad2,
-  Users,
-  Coffee,
   Menu,
   X,
   LogOut,
