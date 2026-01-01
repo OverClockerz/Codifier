@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Question, Attempt, Status, ComprehensionEvaluationResult } from '../../types/types';
 import * as GeminiService from '../../services/geminiService';
 import QuestionCard from './ComprehensionQuest/QuestionCard';
-import FeedbackDisplay from './ComprehensionQuest/FeedbackDisplay';
+// import FeedbackDisplay from './ComprehensionQuest/FeedbackDisplay';
 
 interface ComprehensionQuestProps {
     onComplete?: (success: boolean, score: number) => void;
@@ -24,6 +24,7 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
     // const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isGeneratingResults, setIsGeneratingResults] = useState(false);
 
     // Close dropdown if clicking outside
     // useEffect(() => {
@@ -74,21 +75,23 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
 
     const executeSubmit = async () => {
         setIsSubmitModalOpen(false);
+        setIsGeneratingResults(true);
         setStatus(Status.LOADING);
 
         try {
             const attemptResult = await GeminiService.evaluateSubmission(currentQuestion!, userAnswer);
             setCurrentEvaluation(attemptResult.evaluation);
-            // setCurrentAttemptId(attemptResult.id);
-            // setRefreshHistoryTrigger(prev => prev + 1);
             setStatus(Status.SUCCESS);
-            // notify parent of outcome
+            // notify parent of outcome after showing transitional UI briefly
             const score = attemptResult.evaluation?.score ?? 0;
             const success = score >= 60;
+            await new Promise((r) => setTimeout(r, 600));
             onComplete && onComplete(success, Math.round(score));
         } catch (error) {
             console.error(error);
             setStatus(Status.ERROR);
+        } finally {
+            setIsGeneratingResults(false);
         }
     };
 
@@ -134,11 +137,21 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
                             <button
                                 onClick={executeSubmit}
                                 className="flex-1 px-4 py-3 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/25 transition-all flex items-center justify-center gap-2"
+                                disabled={isGeneratingResults}
                             >
                                 <span>Yes, Submit</span>
                                 <i className="fas fa-arrow-right text-xs"></i>
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {isGeneratingResults && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1220]/80">
+                    <div className="text-center text-slate-200">
+                        <div className="mb-4 text-lg font-semibold">Generating Results…</div>
+                        <div className="w-10 h-10 border-2 border-slate-600 border-t-indigo-500 rounded-full animate-spin mx-auto" />
                     </div>
                 </div>
             )}
@@ -177,7 +190,7 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
                     {status === Status.ERROR && (
                         <div className="bg-red-900/20 border border-red-900/50 text-red-400 px-4 py-3 rounded-lg mb-6 flex items-center justify-center">
                             <i className="fas fa-exclamation-triangle mr-3"></i>
-                            <span>Connection Error: Ensure backend is active on port 5001.</span>
+                            <span>Connection Error: Ensure backend is active.</span>
                         </div>
                     )}
 
@@ -205,7 +218,7 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
                                         <i className="fas fa-code"></i>
                                         <span>Answer</span>
                                     </div>
-                                    <span className="text-xs text-slate-600 font-mono">Markdown</span>
+                                    {/* <span className="text-xs text-slate-600 font-mono">Markdown</span> */}
                                 </div>
 
                                 <textarea
@@ -249,11 +262,11 @@ export const ComprehensionQuest: React.FC<ComprehensionQuestProps> = ({ onComple
                                 </div>
                             </div>
 
-                            {currentEvaluation && (
+                            {/* {currentEvaluation && (
                                 <div className="space-y-4 pb-6">
                                     <FeedbackDisplay evaluation={currentEvaluation} />
                                 </div>
-                            )}
+                            )} */}
                         </div>
                     )}
                 </div>

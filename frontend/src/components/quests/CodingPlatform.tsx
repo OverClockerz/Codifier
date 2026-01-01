@@ -23,6 +23,8 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
     language, showConfirmDialog, pendingLanguage
   } = state;
 
+  const [isGeneratingResults, setIsGeneratingResults] = React.useState(false);
+
   return (
     <div className={`flex flex-col bg-[#0f172a] text-slate-200 font-sans overflow-hidden relative ${className}`}>
 
@@ -113,20 +115,26 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
               <button
                 onClick={async () => {
                   if (!problem) return;
-                  const res: any = await actions.handleRunCode(true);
-                  // derive performance score
-                  let perf = 0;
-                  if (res) {
-                    if (typeof res.score === 'number') perf = Math.round(res.score);
-                    else if (res.totalTests && res.results) {
-                      const passed = res.results.filter((r: any) => r.passed).length;
-                      perf = Math.round((passed / res.totalTests) * 100);
+                  setIsGeneratingResults(true);
+                  try {
+                    const res: any = await actions.handleRunCode(true);
+                    // derive performance score
+                    let perf = 0;
+                    if (res) {
+                      if (typeof res.score === 'number') perf = Math.round(res.score);
+                      else if (res.totalTests && res.results) {
+                        const passed = res.results.filter((r: any) => r.passed).length;
+                        perf = Math.round((passed / res.totalTests) * 100);
+                      }
                     }
+                    const success = perf >= 60;
+                    await new Promise((r) => setTimeout(r, 600));
+                    onComplete && onComplete(success, perf);
+                  } finally {
+                    setIsGeneratingResults(false);
                   }
-                  const success = perf >= 60;
-                  onComplete && onComplete(success, perf);
                 }}
-                disabled={isRunning || !problem || !!backendError}
+                disabled={isRunning || !problem || !!backendError || isGeneratingResults}
                 className="flex items-center gap-2 px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-all disabled:opacity-50"
               >
                 <Send size={14} /> Submit
@@ -142,6 +150,14 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
           </div>
         </div>
       </main>
+      {isGeneratingResults && (
+        <div className="absolute inset-0 z-50 bg-[#061022]/80 flex items-center justify-center">
+          <div className="text-center text-slate-200">
+            <div className="mb-4 text-lg font-semibold">Generating Results…</div>
+            <div className="w-10 h-10 border-2 border-slate-600 border-t-blue-500 rounded-full animate-spin mx-auto" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

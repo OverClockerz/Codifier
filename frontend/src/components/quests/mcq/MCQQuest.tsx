@@ -13,25 +13,32 @@ export function MCQQuest({ quest, onComplete }: MCQQuestProps) {
     const [answers, setAnswers] = useState<Record<number, number>>({});
     const [submitted, setSubmitted] = useState(false);
     const [correctCount, setCorrectCount] = useState(0);
+    const [isGeneratingResults, setIsGeneratingResults] = useState(false);
 
     const handleSelect = (qIndex: number, optionIndex: number) => {
         setAnswers((prev) => ({ ...prev, [qIndex]: optionIndex }));
     };
 
-    const handleSubmit = () => {
-        let correct = 0;
-        questions.forEach((q, i) => {
-            if (typeof q["correct option"] !== 'undefined' && answers[i] === q["correct option"]) correct++;
-        });
-        setCorrectCount(correct);
-        setSubmitted(true);
+    const handleSubmit = async () => {
+        setIsGeneratingResults(true);
+        try {
+            let correct = 0;
+            questions.forEach((q, i) => {
+                if (typeof q["correct option"] !== 'undefined' && answers[i] === q["correct option"]) correct++;
+            });
+            setCorrectCount(correct);
+            setSubmitted(true);
 
-        const pct = questions.length > 0 ? correct / questions.length : 0;
-        const performanceScore = Math.round(pct*100); // 70-100 scale
-        const success = pct >= 0.6; // pass threshold 60%
+            const pct = questions.length > 0 ? correct / questions.length : 0;
+            const performanceScore = Math.round(pct * 100);
+            const success = pct >= 0.6;
 
-        // give parent the result so it can call completeQuest and handle rewards
-        onComplete(success, performanceScore);
+            // simulate backend processing and show transitional UI
+            await new Promise((r) => setTimeout(r, 600));
+            onComplete(success, performanceScore);
+        } finally {
+            setIsGeneratingResults(false);
+        }
     };
 
     if (questions.length === 0) {
@@ -61,13 +68,21 @@ export function MCQQuest({ quest, onComplete }: MCQQuestProps) {
                     <div className="text-sm text-slate-400">Answered {Object.keys(answers).length}/{questions.length}</div>
                     <div>
                         {!submitted ? (
-                            <button onClick={handleSubmit} className="px-4 py-2 bg-linear-to-r from-blue-600 to-purple-600 rounded-lg text-white">Submit</button>
+                            <button onClick={handleSubmit} disabled={isGeneratingResults} className="px-4 py-2 bg-linear-to-r from-blue-600 to-purple-600 rounded-lg text-white">Submit</button>
                         ) : (
                             <div className="text-sm text-slate-300">You scored {correctCount}/{questions.length} correct.</div>
                         )}
                     </div>
                 </div>
             </div>
+            {isGeneratingResults && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#071027]/80">
+                    <div className="text-center text-slate-200">
+                        <div className="mb-4 text-lg font-semibold">Generating Results…</div>
+                        <div className="w-10 h-10 border-2 border-slate-600 border-t-indigo-500 rounded-full animate-spin mx-auto" />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

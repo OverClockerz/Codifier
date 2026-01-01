@@ -73,28 +73,51 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
 
   const color = getZoneColor();
 
+  // When results are shown the header should be removed and browser navigation blocked
+  useEffect(() => {
+    if (!result) return;
+
+    const prevOnBeforeUnload = window.onbeforeunload;
+    // Prevent refresh/close
+    window.onbeforeunload = () => 'Results have been generated. Leaving now may cause issues.';
+
+    // Prevent back/forward by re-pushing the current state
+    const onPop = () => {
+      history.pushState(null, '', location.href);
+    };
+    history.pushState(null, '', location.href);
+    window.addEventListener('popstate', onPop);
+
+    return () => {
+      window.onbeforeunload = prevOnBeforeUnload;
+      window.removeEventListener('popstate', onPop);
+    };
+  }, [result]);
+
   return (
     <div className="fixed inset-0 bg-[#0a0f1e] z-50 flex flex-col">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className={`bg-${color}-500/20 p-3 rounded-xl`}>
-              {getZoneIcon()}
+      {/* Header: hide when results are displayed */}
+      {!result && (
+        <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+          <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`bg-${color}-500/20 p-3 rounded-xl`}>
+                {getZoneIcon()}
+              </div>
+              <div>
+                <h1 className="text-2xl text-white">{quest.title}</h1>
+                <p className="text-sm text-gray-400 capitalize">{quest.zone.replace('-', ' ')}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl text-white">{quest.title}</h1>
-              <p className="text-sm text-gray-400 capitalize">{quest.zone.replace('-', ' ')}</p>
-            </div>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-800 rounded-lg"
+            >
+              <X className="w-6 h-6" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-800 rounded-lg"
-          >
-            <X className="w-6 h-6" />
-          </button>
         </div>
-      </div>
+      )}
 
       {/* Body: either the full coding platform (fills remaining viewport) or the quest content */}
       {isWorking && !result ? (

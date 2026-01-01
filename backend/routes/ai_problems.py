@@ -74,6 +74,7 @@ def evaluate_solution():
         2. Do NOT assume the code works. Mentally trace the execution with the provided inputs.
         3. If the code has syntax errors, return "passed": false and the error message.
         4. Check strict equality between your calculated output and expectedOutput.
+        5. Verify the code universally (not just for provided test cases). If you detect logical flaws that would cause failures on unprovided inputs, reflect that in your results.
 
         Return JSON matching:
         {{
