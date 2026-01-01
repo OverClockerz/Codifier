@@ -130,9 +130,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, [user?.id]);
 
-  // Check for expired quest deadlines
+  // Check for expired quest deadlines and burnout status
   useEffect(() => {
     const interval = setInterval(() => {
+      setPlayer(prevPlayer => {
+        if (prevPlayer.isBurntOut && prevPlayer.mood > GAME_CONSTANTS.BURNOUT_MOOD_THRESHOLD) {
+          return { ...prevPlayer, isBurntOut: false };
+        }
+        else if (!prevPlayer.isBurntOut && prevPlayer.mood <= GAME_CONSTANTS.BURNOUT_MOOD_THRESHOLD) {
+          return { ...prevPlayer, isBurntOut: true };
+        }
+        return prevPlayer;
+      });
+
       const now = Math.floor(Date.now() / 1000);
       activeQuests.forEach(quest => {
         if (quest.deadline && now > quest.deadline) {
@@ -153,7 +163,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setActiveQuests(prev =>
       prev.map(q =>
         q.id === questId
-          ? { ...q, status: 'in-progress' as const, startedAt: Math.floor(Date.now()/1000) }
+          ? { ...q, status: 'in-progress' as const, startedAt: Math.floor(Date.now() / 1000) }
           : q
       )
     );
@@ -234,7 +244,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
-    setCompletedQuests(prev => [...prev, { ...quest, status: 'completed', completedAt: Math.floor(Date.now()/1000)}]);
+    setCompletedQuests(prev => [...prev, { ...quest, status: 'completed', completedAt: Math.floor(Date.now() / 1000) }]);
   };
 
   const failQuest = (questId: string) => {
@@ -260,7 +270,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
-    setCompletedQuests(prev => [...prev, { ...quest, status: 'failed', completedAt: Math.floor(Date.now()/1000) }]);
+    setCompletedQuests(prev => [...prev, { ...quest, status: 'failed', completedAt: Math.floor(Date.now() / 1000) }]);
   };
 
   const purchaseItem = (itemId: string): boolean => {
@@ -293,7 +303,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setPlayer(prev => {
       const newMood = Math.max(0, Math.min(100, prev.mood + moodChange));
       const newStress = Math.max(0, Math.min(100, prev.stress + stressChange));
-      return { ...prev, mood: newMood, stress: newStress, isBurntOut: newMood === GAME_CONSTANTS.BURNOUT_MOOD_THRESHOLD };
+      return { ...prev, mood: newMood, stress: newStress};
     });
   };
 
@@ -446,14 +456,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
         level: player.level,
         experience: player.experience,
         experienceToNextLevel: player.experienceToNextLevel,
-        currency: player.currency,
+        currency: player.currency || 0,
         mood: player.mood,
         stress: player.stress,
         isBurntOut: player.isBurntOut,
-        baseSalary: player.baseSalary,
-        currentMonthEarnings: player.currentMonthEarnings,
-        currentMonthTasksCompleted: player.currentMonthTasksCompleted,
-        paidLeaves: player.paidLeaves,
+        baseSalary: player.baseSalary || 0,
+        currentMonthEarnings: player.currentMonthEarnings || 0,
+        currentMonthTasksCompleted: player.currentMonthTasksCompleted || 0,
+        paidLeaves: player.paidLeaves || 0,
         currentDay: elapsed.days,
         currentMonth: elapsed.months,
         lastLoginDate: player.lastLoginDate,
@@ -499,14 +509,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
         level: backendData.level,
         experience: backendData.experience,
         experienceToNextLevel: backendData.experienceToNextLevel,
-        currency: backendData.currency,
-        mood: backendData.mood,
-        stress: backendData.stress,
+        currency: Number(backendData.currency) || 0,
+        mood: Number(backendData.mood) || 0,
+        stress: Number(backendData.stress) || 0,
         isBurntOut: backendData.isBurntOut,
-        baseSalary: backendData.baseSalary,
-        currentMonthEarnings: backendData.currentMonthEarnings,
-        currentMonthTasksCompleted: backendData.currentMonthTasksCompleted,
-        paidLeaves: backendData.paidLeaves,
+        baseSalary: Number(backendData.baseSalary) || 0,
+        currentMonthEarnings: Number(backendData.currentMonthEarnings) || 0,
+        currentMonthTasksCompleted: Number(backendData.currentMonthTasksCompleted) || 0,
+        paidLeaves: Number(backendData.paidLeaves) || 0,
         currentDay: backendData.currentDay,
         currentMonth: backendData.currentMonth,
         lastLoginDate: backendData.lastLoginDate,

@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta, timezone
 
-IST = timezone(timedelta(hours=5, minutes=30))
-
 InitialPlayerState = {
     "username": "",
     "githubinfo": {
@@ -24,10 +22,10 @@ InitialPlayerState = {
     "currentMonthTasksCompleted": 0,
     "paidLeaves": 5,
 
-    "gameStartDate": datetime.now(IST),
+    "gameStartDate": datetime.now(),
     "currentDay": 1,
     "currentMonth": 1,
-    "lastLoginDate": datetime.now(IST),
+    "lastLoginDate": datetime.now(),
     "proficiency": {
         "coding_skill": 0,
         "soft_skill": 0,

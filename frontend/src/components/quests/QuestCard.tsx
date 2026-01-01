@@ -95,7 +95,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
         {/* ============================================================ */}
         {/* QUEST DESCRIPTION */}
         {/* ============================================================ */}
-        <p className="text-sm text-slate-400 mb-3">{quest.description}</p>
+        <p className="text-sm text-slate-400 mb-3">{quest.description.length > 200 ? quest.description.slice(0, 200) + "..." : quest.description}</p>
 
         {/* ============================================================ */}
         {/* REWARDS & ACTION BUTTON */}

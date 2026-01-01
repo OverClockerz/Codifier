@@ -1,5 +1,4 @@
 from datetime import datetime
-from utils.player_templates import IST
 
 def calculate_paid_leaves(player: dict) -> dict:
     last_login = player.get("lastLoginDate")

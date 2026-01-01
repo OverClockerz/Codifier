@@ -89,7 +89,7 @@ export function Cafeteria() {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm text-amber-300 mb-1">Your Budget</div>
-              <div className="text-3xl text-white">${player.currency.toLocaleString()}</div>
+              <div className="text-3xl text-white">${Intl.NumberFormat('en-US').format(player.currency)}</div>
             </div>
             <div className="text-sm text-amber-200">
               💡 Salary is paid at the end of the month

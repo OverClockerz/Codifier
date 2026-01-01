@@ -8,7 +8,7 @@ interface MCQQuestProps {
 }
 
 export function MCQQuest({ quest, onComplete }: MCQQuestProps) {
-    const rawQuestions: any[] = (quest as any).questions || (quest as any).mcqQuestions || [];
+    const rawQuestions: any[] = (quest as any).question_data || [];
     const questions = Array.isArray(rawQuestions) ? rawQuestions : [];
     const [answers, setAnswers] = useState<Record<number, number>>({});
     const [submitted, setSubmitted] = useState(false);
@@ -21,13 +21,13 @@ export function MCQQuest({ quest, onComplete }: MCQQuestProps) {
     const handleSubmit = () => {
         let correct = 0;
         questions.forEach((q, i) => {
-            if (typeof q.correctAnswer !== 'undefined' && answers[i] === q.correctAnswer) correct++;
+            if (typeof q["correct option"] !== 'undefined' && answers[i] === q["correct option"]) correct++;
         });
         setCorrectCount(correct);
         setSubmitted(true);
 
         const pct = questions.length > 0 ? correct / questions.length : 0;
-        const performanceScore = Math.round(70 + pct * 30); // 70-100 scale
+        const performanceScore = Math.round(pct*100); // 70-100 scale
         const success = pct >= 0.6; // pass threshold 60%
 
         // give parent the result so it can call completeQuest and handle rewards

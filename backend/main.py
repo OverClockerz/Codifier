@@ -22,7 +22,6 @@ app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key")
 app.config["MONGO_URI"] = "mongodb://localhost:27017/mydatabase"
 mongo.init_app(app)
 
-from datetime import timedelta
 # --- CORS CONFIGURATION ---
 # Vital for React + Flask Session Cookies
 CORS(
