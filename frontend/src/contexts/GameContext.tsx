@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, Notification } from '../types/game';
 import { getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS, GAME_CONSTANTS } from '../data/gameConfig';
 import { useAuth } from './AuthContext';
@@ -49,6 +49,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const isLoadingRef = useRef(false);
   //Default Game State without Player Backend
   const [player, setPlayer] = useState<PlayerState>({
     id: '',
@@ -110,7 +111,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // Load game on mount
   useEffect(() => {
     if (user?.id && user?.username) {
-      loadGame();
+      // mark loading and then load
+      isLoadingRef.current = true;
+      loadGame().finally(() => {
+        isLoadingRef.current = false;
+      });
     }
   }, [user?.id, user?.username]);
 
@@ -125,10 +130,41 @@ export function GameProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user?.id) return;
     const interval = setInterval(() => {
-      loadGame();
+      // fetch updates but avoid overlapping loads
+      if (!isLoadingRef.current) {
+        isLoadingRef.current = true;
+        loadGame().finally(() => {
+          isLoadingRef.current = false;
+        });
+      }
     }, 5000); // every 5 seconds
     return () => clearInterval(interval);
   }, [user?.id]);
+
+  // Persist currency to localStorage on navigation events (back/forward/refresh)
+  useEffect(() => {
+    if (!user?.id) return;
+    const key = `office_game_currency_${user.id}`;
+    const saveCurrencyToLocal = () => {
+      try {
+        const val = Number(player.currency);
+        if (isFinite(val)) localStorage.setItem(key, String(val));
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    const onBeforeUnload = () => saveCurrencyToLocal();
+    const onPopState = () => saveCurrencyToLocal();
+
+    window.addEventListener('beforeunload', onBeforeUnload);
+    window.addEventListener('popstate', onPopState);
+
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload);
+      window.removeEventListener('popstate', onPopState);
+    };
+  }, [user?.id, player.currency]);
 
   // Check for expired quest deadlines and burnout status
   useEffect(() => {
@@ -303,7 +339,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setPlayer(prev => {
       const newMood = Math.max(0, Math.min(100, prev.mood + moodChange));
       const newStress = Math.max(0, Math.min(100, prev.stress + stressChange));
-      return { ...prev, mood: newMood, stress: newStress};
+      return { ...prev, mood: newMood, stress: newStress };
     });
   };
 
@@ -456,7 +492,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         level: player.level,
         experience: player.experience,
         experienceToNextLevel: player.experienceToNextLevel,
-        currency: player.currency || 0,
+        currency: player.currency ?? Number(localStorage.getItem(`office_game_currency_${user.id}`)),
         mood: player.mood,
         stress: player.stress,
         isBurntOut: player.isBurntOut,
@@ -509,7 +545,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         level: backendData.level,
         experience: backendData.experience,
         experienceToNextLevel: backendData.experienceToNextLevel,
-        currency: Number(backendData.currency) || 0,
+        currency: backendData.currency ?? Number(localStorage.getItem(`office_game_currency_${user.id}`)),
         mood: Number(backendData.mood) || 0,
         stress: Number(backendData.stress) || 0,
         isBurntOut: backendData.isBurntOut,
