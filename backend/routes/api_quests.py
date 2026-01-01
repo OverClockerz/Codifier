@@ -74,15 +74,17 @@ def generate_quests():
             case "meeting-room":
                 activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST,TYPING_QUEST], quest_amount,zone))
             case "game-lounge":
-                activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST], quest_amount,zone))    
+                activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST], quest_amount,zone))   
+        print(activeQuests)             
 
     except Exception as e : 
         return jsonify({"error": "Failed to generate quests", "details": str(e)}), 500
     
     if activeQuests:
         for quest in activeQuests:
-            quest["deadline"] = int((datetime.fromtimestamp(int(time.time())) +timedelta(days=quest["deadline"])).timestamp())
-
+            raw_deadline = str(quest.get("deadline", "3"))
+            days = int(''.join(filter(str.isdigit, raw_deadline)))
+            quest["deadline"] = quest["deadline"] = int((datetime.fromtimestamp(time.time()) + timedelta(days=days)).timestamp())
         mongo.db.players.update_one(
             {"username": username},
             {"$push": {"activeQuests": {"$each": activeQuests}}}

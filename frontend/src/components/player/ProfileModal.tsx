@@ -27,7 +27,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
 
   // Calculate progress to next level
   const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
-  const elapsed = gameTimeSince(player.gameStartDate);
+  const elapsed = gameTimeSince(player);
   // Close on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

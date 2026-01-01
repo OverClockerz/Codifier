@@ -153,7 +153,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setActiveQuests(prev =>
       prev.map(q =>
         q.id === questId
-          ? { ...q, status: 'in-progress' as const, startedAt: Date.now() }
+          ? { ...q, status: 'in-progress' as const, startedAt: Math.floor(Date.now()/1000) }
           : q
       )
     );
@@ -234,7 +234,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
-    setCompletedQuests(prev => [...prev, { ...quest, status: 'completed', completedAt: Date.now() }]);
+    setCompletedQuests(prev => [...prev, { ...quest, status: 'completed', completedAt: Math.floor(Date.now()/1000)}]);
   };
 
   const failQuest = (questId: string) => {
@@ -260,7 +260,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
-    setCompletedQuests(prev => [...prev, { ...quest, status: 'failed', completedAt: Date.now() }]);
+    setCompletedQuests(prev => [...prev, { ...quest, status: 'failed', completedAt: Math.floor(Date.now()/1000) }]);
   };
 
   const purchaseItem = (itemId: string): boolean => {
@@ -436,7 +436,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setIsGameOver(false); // Ensure modal closes even if error
     }
   };
-  const elapsed = gameTimeSince(player.gameStartDate);
+  const elapsed = gameTimeSince(player);
   //save game to backend
   const saveGame = async () => {
     if (!user?.id) return;

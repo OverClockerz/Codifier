@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ShopItem } from "../../types/game"; 
+import { ShopItem } from "../../types/game";
 
 interface ShopButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   item: ShopItem;
@@ -32,12 +32,12 @@ const styles = `
   }
 `;
 
-export const ShopButton: React.FC<ShopButtonProps> = ({ 
-  item, 
-  onPurchase, 
-  className, 
-  children, 
-  ...props 
+export const ShopButton: React.FC<ShopButtonProps> = ({
+  item,
+  onPurchase,
+  className,
+  children,
+  ...props
 }) => {
   const [sparkles, setSparkles] = useState<Sparkle[]>([]);
 
@@ -45,7 +45,7 @@ export const ShopButton: React.FC<ShopButtonProps> = ({
     const newSparkle = { id: Date.now(), x: e.clientX, y: e.clientY };
     setSparkles((prev) => [...prev, newSparkle]);
     setTimeout(() => setSparkles((prev) => prev.filter((s) => s.id !== newSparkle.id)), 800);
-    
+
     if (onPurchase) onPurchase(item);
   };
 

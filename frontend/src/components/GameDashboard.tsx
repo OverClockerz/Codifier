@@ -132,7 +132,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
   }
 
   // MODIFIED: Use the new gameTimeSince logic
-  const elapsed = gameTimeSince(player.gameStartDate);
+  const elapsed = gameTimeSince(player);
 
   return (
     <div className="space-y-6">

@@ -7,6 +7,7 @@
 
 import { PlayerState, Quest, ShopItem, Buff, ActiveBuff, ItemEffect } from '../types/game';
 import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS } from '../data/gameConfig';
+import { useGame } from '../contexts/GameContext';
 
 // ===========================
 // EXPERIENCE & LEVELING
@@ -595,8 +596,9 @@ type DateInput = string | { $date: string };
 function normalizeDate(input: DateInput): string {
   return typeof input === "string" ? input : input.$date;
 }
-
-export function gameTimeSince(input: DateInput): { days: number; months: number } {
+let months = 0;
+export function gameTimeSince(player: PlayerState): { days: number; months: number } {
+  const input = player.gameStartDate;
   const dateString = normalizeDate(input);
   const past = new Date(dateString).getTime();
   const now = Date.now();
@@ -604,16 +606,22 @@ export function gameTimeSince(input: DateInput): { days: number; months: number 
   // Prevent negative differences
   const diffMs = Math.max(0, now - past);
   const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  // Months start at 1 instead of 0
-  const months = Math.floor(totalDays / 30) + 1;
+  const prevMonth = months;
+  months = Math.floor(totalDays / 30) + 1;
+  if (prevMonth !== months) {
+    salaryIncrement(player, months - prevMonth);
+  }
 
   // Days cycle from 1–30
   const days = (totalDays % 30) + 1;
 
   console.log('Total days:', totalDays, 'Calculated months:', months, 'Days:', days);
 
-  
-
   return { days, months };
 }
+function salaryIncrement(player: PlayerState, months: number) {
+  player.currency += player.baseSalary*months + player.currentMonthEarnings;
+  player.currentMonthEarnings = 0;
+  return;
+}
+

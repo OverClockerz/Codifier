@@ -125,7 +125,13 @@ CODING_QUEST= {
   "description": "Put the quest description here, this will be the detailed coding questions that is to be displayed, question only.",
   "zone": "workspace",
   "difficulty": "on a scale of 1-4",
+  "constrainst":"[put the constraints as string elements of this list]",
   "expReward": "within 100-150 depending on the difficulty",
+  "topics" : "[list of all the topics of the problem as elements of this list]",
+  "boilerplates":{
+      "python": "from collections import Counter\n\nclass Solution:\n    def minOperations(self,nums: list[int]) -> int:\n        pass",
+      "java": "import java.util.HashMap;\nimport java.util.Map;\n\nclass Solution {\n    public int minOperations(int[] nums) {\n        return 0;\n    }\n}"
+    },
   "proficiency": {
     "coding_skill": "0-0.5 (only for coding quests)",
     "soft_skill": "0-0.5 (only for meeting room quests)",
@@ -139,7 +145,7 @@ CODING_QUEST= {
   "deadline": "deadline in no. of days within 7-9 days, depending ont the difficulty",
   "skills": ["list of skills improved by completing this quest"],
   "type": "Coding",
-  "examples": [
+  "examples":[
     {
       "input": "Put example input here",
       "expectedOutput": "Put expected output here",
@@ -151,18 +157,33 @@ CODING_QUEST= {
       "isHidden": False
     }
   ],
-  "testCases": [
+  "testCases": '''two of the five test cases will be not hidden[
+    {
+      "input": "Put hidden test input here",
+      "expectedOutput": "Put expected output here",
+      "isHidden": False
+    },
+    {
+      "input": "Put another hidden test input here",
+      "expectedOutput": "Put expected output here",
+      "isHidden": False
+    },
     {
       "input": "Put hidden test input here",
       "expectedOutput": "Put expected output here",
       "isHidden": True
     },
     {
-      "input": "Put another hidden test input here",
+      "input": "Put hidden test input here",
+      "expectedOutput": "Put expected output here",
+      "isHidden": True
+    },
+    {
+      "input": "Put hidden test input here",
       "expectedOutput": "Put expected output here",
       "isHidden": True
     }
-  ]
+  ]'''
 }
 
 TYPING_QUEST = {
@@ -187,6 +208,6 @@ TYPING_QUEST = {
       "type": "Typing",
       "question_data":{
           "question": "put the long typing paragraph here, size depending on the difficulty, at least 20 words.",
-          "time":"put the time limit in seconds here, depending on the difficulty"
+          "time":"put the time limit in seconds here, depending on the difficulty 10-60 seconds"
       }
 }
