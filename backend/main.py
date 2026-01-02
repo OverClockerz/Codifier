@@ -13,6 +13,8 @@ from routes.login import login_bp
 from routes.register import register_bp 
 from routes.dashboard import dashboard_bp   
 from routes.auth import auth_bp
+import certifi
+import sys
 import os
 
 load_dotenv()
@@ -20,6 +22,9 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key")
 app.config["MONGO_URI"] = os.getenv("MONGO_URI", "mongodb://localhost:27017/mydatabase")
+app.config["MONGO_OPTIONS"] = {
+    "tlsCAFile": certifi.where()
+}
 mongo.init_app(app)
 
 # --- CORS CONFIGURATION ---
@@ -57,5 +62,6 @@ app.register_blueprint(login_bp)
 
 if __name__ == '__main__':
     print("🚀 Server running")
+    print("PYTHON VERSION:", sys.version)
     port = int(os.environ.get("PORT", 5000))  # Render provides PORT
     app.run(host="0.0.0.0", port=port, debug=False)

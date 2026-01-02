@@ -77,5 +77,6 @@ def github_callback():
 
     return jsonify({
         'message': 'GitHub login successful',
-        'user': user_data
+        'user': user_data,
+        'redirect_url': 'https://office-07701907-eeb02.web.app'
     })
