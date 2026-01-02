@@ -1,36 +1,36 @@
 import { motion } from 'motion/react';
-import { Twitter, Github, Youtube, Twitch } from 'lucide-react';
+import { Twitter, Github, Youtube, Twitch, Heart } from 'lucide-react';
 
 const footerLinks = {
   Product: [
     { label: 'About', href: '#about' },
     { label: 'Features', href: '#features' },
-    { label: 'Gallery', href: '#gallery' },
+    { label: 'Credits', href: '#credits' },
+    // { label: 'Gallery', href: '#gallery' },
   ],
   Company: [
-    { label: 'Blog', href: '#' },
-    { label: 'Careers', href: '#' },
-    { label: 'Press Kit', href: '#' },
+    { label: 'Github', href: 'https://github.com/OverClockerz/Codifier/' },
+    { label: 'Architecture', href: 'https://github.com/OverClockerz/Codifier/' },
+    { label: 'Project Files', href: 'https://github.com/OverClockerz/Codifier/' },
   ],
   Resources: [
-    { label: 'Documentation', href: '#' },
-    { label: 'Community', href: '#' },
-    { label: 'Support', href: '#' },
-    { label: 'API', href: '#' },
+    { label: 'Documentation', href: 'https://ai.google.dev/gemini-api/docs' },
+    // { label: 'Community', href: '#' },
+    { label: 'Support', href: 'https://support.google.com/gemini/?hl=en#topic=15280100' },
+    { label: 'API', href: 'https://aistudio.google.com/apps' },
   ],
   Legal: [
-    { label: 'Privacy', href: '#' },
-    { label: 'Terms', href: '#' },
-    { label: 'Cookie Policy', href: '#' },
-    { label: 'Licenses', href: '#' },
+    { label: 'Privacy', href: 'https://policies.google.com/privacy?hl=en-US' },
+    { label: 'Terms', href: 'https://policies.google.com/terms?hl=en' },
+    { label: 'Licenses', href: 'https://mit-license.org/' },
   ],
 };
 
 const socialLinks = [
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Github, href: '#', label: 'GitHub' },
+  // { icon: Twitter, href: '#', label: 'Twitter' },
+  { icon: Github, href: 'https://github.com/OverClockerz/', label: 'GitHub' },
   { icon: Youtube, href: '#', label: 'YouTube' },
-  { icon: Twitch, href: '#', label: 'Twitch' },
+  // { icon: Twitch, href: '#', label: 'Twitch' },
 ];
 
 export function Footer() {
@@ -38,7 +38,7 @@ export function Footer() {
     <footer className="relative bg-black border-t border-gray-900 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-t from-blue-950/10 to-transparent" />
-      
+
       <div className="relative max-w-7xl mx-auto px-6 py-16">
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-5 gap-12 mb-12">
@@ -63,6 +63,7 @@ export function Footer() {
                     <motion.a
                       key={index}
                       href={social.href}
+                      target="_blank"
                       whileHover={{ scale: 1.1, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                       className="w-10 h-10 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center hover:border-blue-500/50 transition-colors"
@@ -87,44 +88,34 @@ export function Footer() {
             >
               <h4 className="mb-4 text-gray-300">{category}</h4>
               <ul className="space-y-3">
-                {links.map((link, linkIndex) => (
-                  <li key={linkIndex}>
-                    <a
-                      href={link.href}
-                      className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
+                {links.map((link, linkIndex) => {
+                  const isExternal = /^https?:\/\//.test(link.href);
+                  return (
+                    <li key={linkIndex}>
+                      <a
+                        href={link.href}
+                        className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
+                        target={isExternal ? "_blank" : undefined}
+                        rel={isExternal ? "noopener noreferrer" : undefined}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </motion.div>
           ))}
+
         </div>
 
         {/* Bottom Bar */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center gap-4"
-        >
-          <p className="text-gray-500 text-sm">
-            © 2024 Office. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            <a href="#" className="text-gray-500 hover:text-blue-400 transition-colors text-sm">
-              Privacy Policy
-            </a>
-            <a href="#" className="text-gray-500 hover:text-blue-400 transition-colors text-sm">
-              Terms of Service
-            </a>
-            <a href="#" className="text-gray-500 hover:text-blue-400 transition-colors text-sm">
-              Cookie Settings
-            </a>
+        <div className="mt-32 text-center text-gray-600 font-mono text-[10px] tracking-[0.4em] uppercase">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            Made with <Heart size={12} className="text-red-900 fill-red-900 animate-pulse" /> for the future
           </div>
-        </motion.div>
+          <p>© 2025 Office Interactive // All Protocols Active</p>
+        </div>
       </div>
 
       {/* Decorative Gradient */}
