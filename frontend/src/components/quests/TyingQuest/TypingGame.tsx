@@ -154,7 +154,7 @@ export const TypingGame: React.FC<TypingGameProps> = ({ question, timeLimit, onF
       return (
         <span
           key={index}
-          ref={isCurrent ? (el) => (currentCharRef.current = el) : undefined}
+          ref={isCurrent ? (el) => { currentCharRef.current = el; } : undefined}
           className={`relative font-mono leading-relaxed ${className}`}
         >
           {isCurrent && (

@@ -265,19 +265,45 @@ export function GameProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    setPlayer(prev => {
-      const newSkills = { ...prev.skills };
-      Object.entries(skillsGained).forEach(([skill, gain]) => {
-        newSkills[skill] = Math.min(100, (newSkills[skill] || 0) + gain);
+    // Compute proficiency gains and skill gains, then update player once and persist to backend
+    let newProf: PlayerState['proficiency'] | null = null;
+    if ((quest as any).proficiency) {
+      const prof = (quest as any).proficiency;
+      const fields = ['coding_skill', 'soft_skill', 'critical_thinking_skill', 'problem_solving', 'stress_resistance'] as const;
+      // start from current passed-in player proficiency
+      newProf = { ...player.proficiency };
+      fields.forEach((f) => {
+        const qv = Number(prof[f]);
+        if (!isNaN(qv) && qv !== 0) {
+          // Add the raw value provided by the quest directly (allow fractional values)
+          // Do not round or scale by performance; just add as-is, then clamp to [0,100]
+          newProf![f] = Math.max(0, Math.min(100, (newProf![f] || 0) + qv));
+        }
       });
+    }
 
-      return {
-        ...prev,
-        currentMonthTasksCompleted: (prev.currentMonthTasksCompleted || 0) + 1,
-        reputation: prev.reputation + reputationChange,
-        skills: newSkills,
-      };
+    // Build new skills map based on existing player state
+    const newSkills = { ...(player.skills || {}) } as Record<string, number>;
+    Object.entries(skillsGained).forEach(([skill, gain]) => {
+      newSkills[skill] = Math.min(100, (newSkills[skill] || 0) + gain);
     });
+
+    // Apply combined update to player state
+    setPlayer(prev => ({
+      ...prev,
+      currentMonthTasksCompleted: (prev.currentMonthTasksCompleted || 0) + 1,
+      reputation: prev.reputation + reputationChange,
+      skills: newSkills,
+      ...(newProf ? { proficiency: newProf } : {}),
+    }));
+
+    // Persist proficiency to backend if available
+    if (newProf && user?.id) {
+      // fire-and-forget, but log errors
+      updatePlayerData({ username: player.username, proficiency: newProf }).catch(err => {
+        console.error('Failed to persist proficiency to backend', err);
+      });
+    }
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
     setCompletedQuests(prev => [...prev, { ...quest, status: 'completed', completedAt: Math.floor(Date.now() / 1000) }]);

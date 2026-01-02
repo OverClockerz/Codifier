@@ -1,15 +1,3 @@
-// ============================================================
-// QUEST CARD COMPONENT
-// ============================================================
-// Reusable card component for displaying quests across all zones
-// Supports different themes (blue, purple, orange) for zone-specific styling
-// 
-// FUTURE BACKEND INTEGRATION:
-// - Quest data will come from API instead of local state
-// - Add loading states and error handling
-// - Support real-time quest updates via websockets
-// ============================================================
-
 import { motion } from 'motion/react';
 import { Info } from 'lucide-react';
 import { Quest } from '../../types/game';
@@ -25,16 +13,10 @@ interface QuestCardProps {
 }
 
 export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardProps) {
-  // ============================================================
-  // CALCULATE DAYS REMAINING
-  // ============================================================
-  const daysLeft = quest.deadline 
+  const daysLeft = quest.deadline
     ? calculateDeadline(quest.deadline)
     : null;
 
-  // ============================================================
-  // THEME COLORS
-  // ============================================================
   const themeColors = {
     blue: {
       button: 'bg-[#2b7fff] hover:bg-blue-700',
@@ -60,7 +42,6 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
     onStart(quest.id);
   };
 
-  // Skills tooltip content
   const skillsTooltip = quest.skills && quest.skills.length > 0 ? (
     <div className="max-w-xs">
       <p className="mb-2">Skills you'll improve:</p>
@@ -78,7 +59,8 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
-        className={`bg-[rgba(15,23,43,0.5)] border border-[#45556c] rounded-lg p-4 ${colors.hover} transition-all`}
+        // CHANGE 1: Added 'flex flex-col h-full' to ensure card fills grid and aligns children
+        className={`bg-[rgba(15,23,43,0.5)] border border-[#45556c] rounded-lg p-4 ${colors.hover} transition-all flex flex-col h-full`}
       >
         {/* ============================================================ */}
         {/* QUEST HEADER */}
@@ -95,12 +77,16 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
         {/* ============================================================ */}
         {/* QUEST DESCRIPTION */}
         {/* ============================================================ */}
-        <p className="text-sm text-slate-400 mb-3">{quest.description.length > 200 ? quest.description.slice(0, 200) + "..." : quest.description}</p>
+        {/* CHANGE 2: Added 'h-[4.5rem]' for fixed height (approx 3 lines) and 'line-clamp-3' for cleaner truncation */}
+        <p className="text-sm text-slate-400 mb-4 h-[1.5rem] line-clamp-3 text-ellipsis overflow-hidden">
+          {quest.description.length > 100 ? quest.description.slice(0, 90) + "..." : quest.description}
+        </p>
 
         {/* ============================================================ */}
         {/* REWARDS & ACTION BUTTON */}
         {/* ============================================================ */}
-        <div className="flex items-center justify-between">
+        {/* CHANGE 3: Added 'mt-auto' to force this section to the bottom */}
+        <div className="flex items-center justify-between mt-auto">
           {/* Type Badges */}
           <div className="flex gap-2 flex-wrap">
             {quest.expReward > 0 && (
@@ -118,7 +104,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
                 </span>
               </Tooltip>
             )}
-            
+
             {/* Stress Badge */}
             {quest.stressImpact > 0 && (
               <Tooltip content="Stress will increase">
@@ -127,7 +113,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
                 </span>
               </Tooltip>
             )}
-            
+
             {/* Days Remaining Badge */}
             {daysLeft !== null && (
               <Tooltip content="Days until deadline">
