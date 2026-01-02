@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { useRef } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const galleryItems = [
   {
@@ -23,9 +24,23 @@ const galleryItems = [
 export function Gallery() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  return (
-    <section className="relative py-32 bg-black overflow-hidden">
+  // --- Scroll Logic ---
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      // Scroll by approximately one card width + gap (500px + 32px gap)
+      const scrollAmount = 532; 
+      const currentScroll = scrollContainerRef.current.scrollLeft;
+      
+      scrollContainerRef.current.scrollTo({
+        left: direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
 
+  return (
+    <section className="relative py-32 bg-black overflow-hidden group/section">
+      
       {/* Header */}
       <div className="mb-12 px-6">
         <motion.div
@@ -39,17 +54,38 @@ export function Gallery() {
             Explore the Universe
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Swipe to discover breathtaking worlds
+            Swipe or use arrows to discover worlds
           </p>
         </motion.div>
       </div>
 
-      {/* Native Horizontal Scroll Container 
-        - overflow-x-auto: Enables horizontal scrolling
-        - snap-x & snap-mandatory: Creates a nice snapping effect when scrolling stops
-        - no-scrollbar: You might need a utility class or CSS to hide the scrollbar
-      */}
-      <div
+      {/* --- Navigation Arrows --- */}
+      
+      {/* Left Arrow */}
+      <motion.button
+        whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => scroll('left')}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 z-50 p-4 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white shadow-lg hidden md:flex items-center justify-center hover:border-blue-500/50 transition-colors"
+        aria-label="Scroll left"
+      >
+        <ChevronLeft className="w-8 h-8" />
+      </motion.button>
+
+      {/* Right Arrow */}
+      <motion.button
+        whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => scroll('right')}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 p-4 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white shadow-lg hidden md:flex items-center justify-center hover:border-blue-500/50 transition-colors"
+        aria-label="Scroll right"
+      >
+        <ChevronRight className="w-8 h-8" />
+      </motion.button>
+
+
+      {/* --- Scroll Container --- */}
+      <div 
         ref={scrollContainerRef}
         className="flex gap-8 px-6 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
@@ -57,13 +93,10 @@ export function Gallery() {
         {galleryItems.map((item, index) => (
           <motion.div
             key={index}
-            // Standard entrance animation
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
             viewport={{ once: true }}
-
-            // Layout classes
             className="relative flex-shrink-0 w-[85vw] md:w-[500px] h-[600px] rounded-3xl overflow-hidden border border-gray-800 group cursor-pointer snap-center"
           >
             <img
@@ -79,16 +112,15 @@ export function Gallery() {
               <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </div>
 
-            {/* Glow Border Effect */}
             <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500/50 rounded-3xl transition-all duration-300" />
           </motion.div>
         ))}
-
-        {/* Spacer to ensure the last item isn't flush against the viewport edge */}
+        
+        {/* Spacer */}
         <div className="w-6 flex-shrink-0" />
       </div>
 
-      {/* Optional: Add custom CSS to hide scrollbar if Tailwind 'scrollbar-hide' plugin isn't installed */}
+      {/* Hide Scrollbar CSS */}
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
@@ -99,7 +131,7 @@ export function Gallery() {
         }
       `}</style>
 
-      {/* Gradient Fades on Edges */}
+      {/* Gradient Fades (z-index adjusted to sit below buttons) */}
       <div className="absolute top-0 left-0 bottom-0 w-12 md:w-32 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute top-0 right-0 bottom-0 w-12 md:w-32 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </section>
