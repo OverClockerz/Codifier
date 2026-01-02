@@ -28,7 +28,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
   // ============================================================
   // CALCULATE DAYS REMAINING
   // ============================================================
-  const daysLeft = quest.deadline 
+  const daysLeft = quest.deadline
     ? calculateDeadline(quest.deadline)
     : null;
 
@@ -78,7 +78,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
-        className={`bg-[rgba(15,23,43,0.5)] border border-[#45556c] rounded-lg p-4 ${colors.hover} transition-all`}
+        className={`bg-[rgba(15,23,43,0.5)] border border-[#45556c] rounded-lg p-4 ${colors.hover} transition-all flex flex-col`}
       >
         {/* ============================================================ */}
         {/* QUEST HEADER */}
@@ -118,7 +118,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
                 </span>
               </Tooltip>
             )}
-            
+
             {/* Stress Badge */}
             {quest.stressImpact > 0 && (
               <Tooltip content="Stress will increase">
@@ -127,7 +127,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
                 </span>
               </Tooltip>
             )}
-            
+
             {/* Days Remaining Badge */}
             {daysLeft !== null && (
               <Tooltip content="Days until deadline">

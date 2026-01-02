@@ -31,6 +31,7 @@ export const shopItems: ShopItem[] = [
   {
     id: 'coffee',
     name: 'Premium Coffee',
+    item_type: 'regular',
     description: 'Reduces stress by 10 and increases mood by 15. Instant effect.',
     type: 'consumable',
     effect: {
@@ -41,8 +42,22 @@ export const shopItems: ShopItem[] = [
     icon: '☕',
   },
   {
+    id: 'focus-timer',
+    name: 'Focus Timer',
+    item_type: 'double-edged',
+    description: 'Sacrifices 20% mood due to rigid structure, but reduces stress by 40%through clear work/rest schedule (must have atleast 20 mood to buy)',
+    type: 'consumable',
+    effect: {
+      stressReduction: 40,
+      moodIncrease: -20,
+    },
+    price: 200,
+    icon: '⏱️',
+  },
+  {
     id: 'aromatherapy-kit',
     name: 'Aromatherapy Kit',
+    item_type: 'regular',
     description: 'Instantly reduces stress by 25 and increases mood by 20. Calming scents soothe the mind.',
     type: 'consumable',
     effect: {
@@ -55,6 +70,7 @@ export const shopItems: ShopItem[] = [
   {
     id: 'vacation-package',
     name: 'Vacation Package',
+    item_type: 'regular',
     description: 'Adds 3 paid leave days.',
     type: 'consumable',
     effect: {
@@ -66,6 +82,7 @@ export const shopItems: ShopItem[] = [
   {
     id: 'chocolate-box',
     name: 'Box of Chocolates',
+    item_type: 'regular',
     description: 'Instantly increases mood by 25. Sweet delight!',
     type: 'consumable',
     effect: {
@@ -77,6 +94,7 @@ export const shopItems: ShopItem[] = [
   {
     id: 'stress-ball',
     name: 'Stress Ball',
+    item_type: 'regular',
     description: 'Reduces stress by 20. Quick relief!',
     type: 'consumable',
     effect: {
@@ -91,6 +109,7 @@ export const shopItems: ShopItem[] = [
   {
     id: 'meditation-app',
     name: 'Meditation App Subscription',
+    item_type: 'regular',
     description: 'Permanent 5% stress reduction on all tasks.',
     type: 'permanent-buff',
     effect: {
@@ -102,6 +121,7 @@ export const shopItems: ShopItem[] = [
   {
     id: 'standing-desk',
     name: 'Standing Desk',
+    item_type: 'regular',
     description: 'Permanent 10% mood increase from work tasks.',
     type: 'permanent-buff',
     effect: {
@@ -113,6 +133,7 @@ export const shopItems: ShopItem[] = [
   {
     id: 'headphones',
     name: 'Noise-Canceling Headphones',
+    item_type: 'regular',
     description: 'Permanent 8% stress reduction on all tasks.',
     type: 'permanent-buff',
     effect: {
@@ -122,8 +143,21 @@ export const shopItems: ShopItem[] = [
     icon: '🎧',
   },
   {
+    id: 'smart-desk-lamp',
+    name: 'Smart Desk Lamp',
+    item_type: 'regular',
+    description: 'Permanent 20% productivity boost with adaptive lighting for optimal concentration.',
+    type: 'permanent-buff',
+    effect: {
+      expBoost: 20,
+    },
+    price: 1200,
+    icon: '💡',
+  },
+  {
     id: 'ergonomic-chair',
     name: 'Ergonomic Chair',
+    item_type: 'regular',
     description: 'Permanent buff: Reduces stress from long tasks by 12%.',
     type: 'permanent-buff',
     effect: {
@@ -135,14 +169,15 @@ export const shopItems: ShopItem[] = [
   {
     id: 'monitor-upgrade',
     name: 'Ultra-Wide Monitor',
+    item_type: 'regular',
     description: 'Permanent 7% productivity boost on all workspace tasks.',
     type: 'permanent-buff',
     effect: {
-      expBoost: 7,
+      expBoost: 15,
     },
     price: 750,
     icon: '🖥️',
-  },
+  }
 ];
 
 // Legacy export for backward compatibility

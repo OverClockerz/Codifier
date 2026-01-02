@@ -165,6 +165,7 @@ export interface CareerRun {
 
 export interface ShopItem {
   id: string;
+  item_type: string;
   name: string;
   description: string;
   type: 'consumable' | 'permanent-buff';
