@@ -81,7 +81,7 @@ MCQ_QUEST = {
       "currencyReward": "within 50-100",
       "stressImpact": "within 10 to 20",
       "moodImpact": "within -5 to -10",
-      "deadline": "deadline in no. of days within 3-5 days, depending ont the difficulty",
+      "deadline": "deadline in no. of days within 3-5 days, depending on the difficulty",
       "skills": ["put the skills improved by completing this quest in a list format"],
       "type": "MCQ",
       "question_data":'''list of 3 questions in this form [ {
@@ -109,7 +109,7 @@ COMPREHENSIVE_QUEST = {
       "currencyReward": "within 100-200",
       "stressImpact": "within 20 to 30",
       "moodImpact": "within -10 to -20",
-      "deadline": "deadline in no. of days within 5-7 days, depending ont the difficulty",
+      "deadline": "deadline in no. of days within 5-7 days, depending on the difficulty",
       "skills": ["put the skills improved by completing this quest in a list format"],
       "type": "Comprehensive",
       "question_data":{
@@ -141,40 +141,45 @@ CODING_QUEST= {
   "currencyReward": "within 200-300",
   "stressImpact": "within 30-40",
   "moodImpact": "witinn -20 to -30",
-  "deadline": "deadline in no. of days within 7-9 days, depending ont the difficulty",
+  "deadline": "deadline in no. of days within 7-9 days, depending on the difficulty",
   "skills": ["list of skills improved by completing this quest"],
   "type": "Coding",
   "examples":[
     {
       "input": "Put example input here",
-      "expectedOutput": "Put expected output here",
+      "expectedOutput": "Put correct expected output of the input here",
       "isHidden": False
     },
     {
       "input": "Put another example input here",
-      "expectedOutput": "Put expected output here",
+      "expectedOutput": "Put correct expected output of the input here",
       "isHidden": False
     }
   ],
   "testCases": '''two of the five test cases will be not hidden[
     {
       "input": "Put hidden test input here",
+      "expectedOutput": "Put correct expected output of the input here",
       "isHidden": False
     },
     {
       "input": "Put another hidden test input here",
+      "expectedOutput": "Put correct expected output of the input here",
       "isHidden": False
     },
     {
       "input": "Put hidden test input here",
+      "expectedOutput": "Put correct expected output of the input here",
       "isHidden": True
     },
     {
       "input": "Put hidden test input here",
+      "expectedOutput": "Put correct expected output of the input here",
       "isHidden": True
     },
     {
       "input": "Put hidden test input here",
+      "expectedOutput": "Put correct expected output of the input here",
       "isHidden": True
     }
   ]'''
@@ -197,7 +202,7 @@ TYPING_QUEST = {
       "currencyReward": "within 100-200",
       "stressImpact": "within 20 to 30",
       "moodImpact": "within -10 to -20",
-      "deadline": "deadline in no. of days within 5-7 days, depending ont the difficulty",
+      "deadline": "deadline in no. of days within 5-7 days, depending on the difficulty",
       "skills": ["put the skills improved by completing this quest in a list format"],
       "type": "Typing",
       "question_data":{

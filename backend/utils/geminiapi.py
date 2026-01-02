@@ -72,7 +72,7 @@ def generate_response(data, num=1, zone="workspace"):
    
          Rules:
          - Focus on mathematical aptitude, logical reasoning, and critical thinking
-         - Avoid coding or typing-heavy tasks
+         - Only Multiple choice and comprehensive questions
          '''
         
 
