@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const galleryItems = [
   {
     title: 'Immersive Worlds',
-    image: '/images/about.png',
+    image: 'https://images.unsplash.com/photo-1643546843357-f365789ba489?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmdXR1cmlzdGljJTIwZ2FtaW5nJTIwY2l0eXNjYXBlfGVufDF8fHx8MTc2NTgxMDE3OHww&ixlib=rb-4.1.0&q=80&w=1080',
   },
   {
     title: 'Epic Adventures',
@@ -28,9 +28,9 @@ export function Gallery() {
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       // Scroll by approximately one card width + gap (500px + 32px gap)
-      const scrollAmount = 532; 
+      const scrollAmount = 532;
       const currentScroll = scrollContainerRef.current.scrollLeft;
-      
+
       scrollContainerRef.current.scrollTo({
         left: direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount,
         behavior: 'smooth',
@@ -39,8 +39,9 @@ export function Gallery() {
   };
 
   return (
-    <section className="relative py-32 bg-black overflow-hidden group/section">
-      
+    // ADDED id="gallery" HERE so navigation links can find this section
+    <section id="gallery" className="relative py-32 bg-black overflow-hidden group/section">
+
       {/* Header */}
       <div className="mb-12 px-6">
         <motion.div
@@ -60,7 +61,7 @@ export function Gallery() {
       </div>
 
       {/* --- Navigation Arrows --- */}
-      
+
       {/* Left Arrow */}
       <motion.button
         whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
@@ -85,7 +86,7 @@ export function Gallery() {
 
 
       {/* --- Scroll Container --- */}
-      <div 
+      <div
         ref={scrollContainerRef}
         className="flex gap-8 px-6 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
@@ -115,7 +116,7 @@ export function Gallery() {
             <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500/50 rounded-3xl transition-all duration-300" />
           </motion.div>
         ))}
-        
+
         {/* Spacer */}
         <div className="w-6 flex-shrink-0" />
       </div>
