@@ -53,14 +53,14 @@ export function Hero({ onStartCareer }: HeroProps) {
         </video>
 
         {/* Dynamic Mouse Movement Gradient Layer */}
-        <div 
+        <div
           className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-purple-900/40 to-pink-900/40 mix-blend-overlay"
           style={{
             transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
             transition: 'transform 0.3s ease-out',
           }}
         />
-        
+
         {/* Darkening Overlay (Vignette) to make text readable */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.4),rgba(0,0,0,0.9))]" />
       </div>
@@ -157,6 +157,7 @@ export function Hero({ onStartCareer }: HeroProps) {
           />
         ))}
       </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
     </section>
   );
 }

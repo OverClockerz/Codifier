@@ -50,11 +50,12 @@ const additionalFeatures = [
 export function Features() {
   // Using a tech/network abstract video. 
   // If you want to use your local file, change this back to "./videos/feature-4.mp4"
-  
+
 
   return (
     <section id="features" className="relative bg-black">
-      
+
+
       {/* --- BACKGROUND VIDEO CONTAINER --- */}
       {/* 1. absolute inset-0: Stretches to the full height of the entire Features section
          2. sticky top-0: Makes the video stick to the viewport while you scroll down the section
@@ -76,12 +77,12 @@ export function Features() {
       </div>
 
       {/* --- CONTENT (z-10 ensures it sits ABOVE the video) --- */}
-      
+
       {/* 1. Header Section */}
       <div className="relative z-10 py-32 px-6">
         {/* Subtle gradients to blend with video */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(59,130,246,0.1),transparent_50%),radial-gradient(circle_at_70%_50%,rgba(168,85,247,0.1),transparent_50%)]" />
-        
+
         <div className="relative max-w-7xl mx-auto">
           <ScrollReveal direction="up">
             <div className="text-center mb-20">
@@ -145,7 +146,7 @@ export function Features() {
                 >
                   {/* Glow Effect */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-300`} />
-                  
+
                   {/* Icon */}
                   <div className={`w-14 h-14 mb-6 rounded-2xl bg-gradient-to-r ${feature.gradient} p-0.5`}>
                     <div className="w-full h-full bg-black rounded-2xl flex items-center justify-center">
