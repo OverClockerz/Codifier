@@ -36,6 +36,26 @@ export function Cafeteria() {
     return player.currency >= price;
   };
 
+  const consumptionCriteria = (item: ShopItem) :boolean => {
+    switch (item.item_type) {
+      case 'double-edged':
+        return itemCondition(item.id);
+      case 'regular':
+        return true;
+      default:
+        return true;
+    }
+  }
+
+  function itemCondition(itemId: string): boolean {
+    switch (itemId) {
+      case 'focus-timer':
+        return player.mood >= 20;
+      default:
+        return true;
+    }
+  }
+
   // Get item display icon
   const getItemIcon = (item: ShopItem) => {
     return item.icon;
@@ -109,7 +129,7 @@ export function Cafeteria() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {SHOP_ITEMS.map((item, index) => {
             const purchased = isPurchased(item.id);
-            const affordable = canAfford(item.price);
+            const affordable = canAfford(item.price) && consumptionCriteria(item);
             const isPermanent = item.type === 'permanent-buff';
             
             // Logic for disabling button

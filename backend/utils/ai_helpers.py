@@ -16,30 +16,36 @@ GEMINI_MODEL = "gemini-2.5-flash"
 client = genai.Client(api_key=API_KEY)
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=10))
-def get_gemini_response(prompt, model=GEMINI_MODEL, schema=None):
+def get_gemini_response(prompt, model=GEMINI_MODEL, response_schema=None, json_mode=False):
     try:
-        if schema:
-            response = client.models.generate_content(
-                model=model,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    response_schema=schema,
-                    temperature=0.3
-                )
-            )
-            return response.parsed  # ✅ dict or list
-
-        else:
-            response = client.models.generate_content(
-                model=model,
-                contents=prompt
-            )
-            return response.text  # ✅ plain text
-
+        mime_type = "application/json" if (response_schema or json_mode) else "text/plain"
+        
+        config = types.GenerateContentConfig(
+            temperature=0.3, # Strict
+            top_p=0.95,
+            top_k=40,
+            response_mime_type=mime_type,
+            response_schema=response_schema
+        )
+        
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config=config
+        )
+        
+        result = response.text
+        if mime_type == "application/json":
+            try:
+                clean_result = result.replace('```json', '').replace('```', '').strip()
+                return json.loads(clean_result)
+            except json.JSONDecodeError:
+                return {}
+        
+        return result
     except Exception as e:
         print(f"Gemini API Error: {e}")
-        return None
+        raise e
 
 def generate_and_save_problem(difficulty="4", topic="Algorithms"):
     prompt = f"""

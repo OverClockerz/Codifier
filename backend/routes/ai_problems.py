@@ -92,7 +92,11 @@ def evaluate_solution():
         """
         
         # Use smarter model for evaluation
-        evaluation_raw = get_gemini_response(prompt, model=GEMINI_MODEL, json_mode=True)
+        evaluation_raw = get_gemini_response(
+            prompt,
+            model=GEMINI_MODEL,
+            json_mode=True
+            )
         results_from_ai = evaluation_raw.get("results", [])
         
         # 2. MERGE AI RESULTS WITH ORIGINAL TEST CASE DATA

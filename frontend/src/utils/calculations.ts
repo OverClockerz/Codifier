@@ -327,7 +327,7 @@ export function applyConsumableItem(
   }
 
   if (effect.moodIncrease) {
-    data.mood = Math.min(100, data.mood + effect.moodIncrease);
+    data.mood = Math.max(Math.min(100, data.mood + effect.moodIncrease),0);
   }
 
   if (effect.paidLeaves) {
