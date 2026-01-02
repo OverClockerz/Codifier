@@ -10,6 +10,8 @@ import requests
 
 load_dotenv()
 
+githublogin_bp = Blueprint('githublogin', __name__)
+
 @githublogin_bp.route('/github/callback', methods=['GET'])
 def github_callback():
     print("\n[DEBUG] Headers:", dict(request.headers))
