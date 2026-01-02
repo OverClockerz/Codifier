@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion } from 'motion/react';
 import { useRef } from 'react';
 
 const galleryItems = [
@@ -21,17 +21,13 @@ const galleryItems = [
 ];
 
 export function Gallery() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  const x = useTransform(scrollYProgress, [0, 1], [0, -1000]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section id="gallery" ref={containerRef} className="relative py-32 bg-black overflow-hidden">
-      <div className="mb-20 px-6">
+    <section className="relative py-32 bg-black overflow-hidden">
+      
+      {/* Header */}
+      <div className="mb-12 px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -39,65 +35,73 @@ export function Gallery() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <h2 className="text-5xl md:text-7xl mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="text-5xl md:text-7xl mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Explore the Universe
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Discover breathtaking gaming experiences across infinite worlds
+            Swipe to discover breathtaking worlds
           </p>
         </motion.div>
       </div>
 
-      {/* Horizontal Scroll Gallery */}
-      <div className="relative">
-        <motion.div 
-          style={{ x }}
-          className="flex gap-8 px-6"
-        >
-          {galleryItems.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.05 }}
-              className="relative shrink-0 w-125 h-150 rounded-3xl overflow-hidden border border-gray-800 group cursor-pointer"
-            >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-              
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <motion.h3 
-                  className="text-3xl mb-2"
-                  initial={{ y: 20, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  {item.title}
-                </motion.h3>
-                <motion.div
-                  className="w-20 h-1 bg-linear-to-r from-blue-500 to-purple-500"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
+      {/* Native Horizontal Scroll Container 
+        - overflow-x-auto: Enables horizontal scrolling
+        - snap-x & snap-mandatory: Creates a nice snapping effect when scrolling stops
+        - no-scrollbar: You might need a utility class or CSS to hide the scrollbar
+      */}
+      <div 
+        ref={scrollContainerRef}
+        className="flex gap-8 px-6 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide"
+        style={{ scrollBehavior: 'smooth' }}
+      >
+        {galleryItems.map((item, index) => (
+          <motion.div
+            key={index}
+            // Standard entrance animation
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            viewport={{ once: true }}
+            
+            // Layout classes
+            className="relative flex-shrink-0 w-[85vw] md:w-[500px] h-[600px] rounded-3xl overflow-hidden border border-gray-800 group cursor-pointer snap-center"
+          >
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+            
+            <div className="absolute bottom-0 left-0 right-0 p-8">
+              <h3 className="text-3xl mb-2 text-white font-bold">{item.title}</h3>
+              <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+            </div>
 
-              {/* Glow Border Effect */}
-              <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500/50 rounded-3xl transition-all duration-300" />
-            </motion.div>
-          ))}
-        </motion.div>
+            {/* Glow Border Effect */}
+            <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500/50 rounded-3xl transition-all duration-300" />
+          </motion.div>
+        ))}
+        
+        {/* Spacer to ensure the last item isn't flush against the viewport edge */}
+        <div className="w-6 flex-shrink-0" />
       </div>
 
-      {/* Gradient Fade on Edges */}
-      <div className="absolute top-0 left-0 bottom-0 w-32 bg-linear-to-r from-black to-transparent pointer-events-none z-10" />
-      <div className="absolute top-0 right-0 bottom-0 w-32 bg-linear-to-l from-black to-transparent pointer-events-none z-10" />
+      {/* Optional: Add custom CSS to hide scrollbar if Tailwind 'scrollbar-hide' plugin isn't installed */}
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+      `}</style>
+
+      {/* Gradient Fades on Edges */}
+      <div className="absolute top-0 left-0 bottom-0 w-12 md:w-32 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute top-0 right-0 bottom-0 w-12 md:w-32 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </section>
   );
 }

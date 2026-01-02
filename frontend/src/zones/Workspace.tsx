@@ -1,58 +1,229 @@
+// import { useState } from 'react';
+// import { motion } from 'motion/react';
+// import { Code, Terminal, Lightbulb, TrendingUp, Zap } from 'lucide-react';
+// import { useGame } from '../contexts/GameContext';
+// import { QuestCard } from '../components/quests/QuestCard';
+// import { QuestPage } from '../pages/QuestPage';
+
+// export function Workspace() {
+//   // ============================================================
+//   // STATE & DATA FETCHING
+//   // ============================================================
+//   // TODO: Replace with API call in production
+//   const { activeQuests, startQuest, player } = useGame();
+//   const [selectedQuest, setSelectedQuest] = useState<string | null>(null);
+  
+//   // Filter quests for Workspace zone
+//   const workspaceQuests = activeQuests.filter(q => q.zone === 'workspace');
+
+//   // ============================================================
+//   // EVENT HANDLERS
+//   // ============================================================
+//   const handleStartQuest = (questId: string) => {
+//     // Block if stress is 100
+//     if (player.stress >= 100) {
+//       alert('Your stress is too high! Visit the Game Lounge or Cafeteria to reduce stress before continuing workspace tasks.');
+//       return;
+//     }
+
+//     // TODO: In production, make API call to start quest
+//     // await fetch(`/api/quests/${questId}/start`, { method: 'POST' });
+//     startQuest(questId);
+//     setSelectedQuest(questId);
+//   };
+
+//   // Find the selected quest
+//   const questToShow = selectedQuest ? activeQuests.find(q => q.id === selectedQuest) : null;
+
+//   // Performance tips based on player stats
+//   const getPerformanceTips = () => {
+//     const tips = [];
+    
+//     if (player.stress > 70) {
+//       tips.push({
+//         icon: <Zap className="w-5 h-5 text-red-400" />,
+//         title: "High Stress Detected",
+//         description: "Consider taking a break or visiting the Cafeteria to reduce stress before starting new tasks.",
+//         color: "red"
+//       });
+//     }
+    
+//     if (player.mood < 30) {
+//       tips.push({
+//         icon: <TrendingUp className="w-5 h-5 text-yellow-400" />,
+//         title: "Low Mood Alert",
+//         description: "Your performance may be affected. Try completing easier quests first or use mood-boosting items.",
+//         color: "yellow"
+//       });
+//     }
+    
+//     if (player.stress < 30 && player.mood > 70) {
+//       tips.push({
+//         icon: <Lightbulb className="w-5 h-5 text-green-400" />,
+//         title: "Peak Performance",
+//         description: "You're in great shape! This is the perfect time to tackle difficult challenges for maximum rewards.",
+//         color: "green"
+//       });
+//     }
+
+//     // Always show at least one tip
+//     if (tips.length === 0) {
+//       tips.push({
+//         icon: <Lightbulb className="w-5 h-5 text-blue-400" />,
+//         title: "Work Smart",
+//         description: "Balance your workload. Complete daily quests first, then focus on weekly and monthly objectives.",
+//         color: "blue"
+//       });
+//     }
+
+//     return tips;
+//   };
+
+//   const performanceTips = getPerformanceTips();
+
+//   return (
+//     <div className="space-y-6">
+//       {/* ============================================================ */}
+//       {/* ZONE HEADER */}
+//       {/* ============================================================ */}
+//       <motion.div
+//         initial={{ opacity: 0, y: -20 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         className="bg-gradient-to-r from-blue-900/50 to-blue-800/50 border border-blue-700 rounded-2xl p-6"
+//       >
+//         <div className="flex items-center gap-3">
+//           <Code className="w-8 h-8 text-blue-400" />
+//           <div>
+//             <h2 className="text-2xl text-white">Workspace - Technical Training</h2>
+//             <p className="text-sm text-blue-300">
+//               Master programming, debugging, and system design through hands-on coding challenges and technical projects.
+//             </p>
+//           </div>
+//         </div>
+//       </motion.div>
+
+//       {/* ============================================================ */}
+//       {/* PERFORMANCE TIPS */}
+//       {/* ============================================================ */}
+//       <motion.div
+//         initial={{ opacity: 0, y: 20 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ delay: 0.1 }}
+//         className="space-y-3"
+//       >
+//         {performanceTips.map((tip, index) => (
+//           <div
+//             key={index}
+//             className={`bg-${tip.color}-900/20 border border-${tip.color}-800/50 rounded-xl p-4 flex items-start gap-3`}
+//           >
+//             {tip.icon}
+//             <div className="flex-1">
+//               <h3 className={`text-${tip.color}-400 mb-1`}>{tip.title}</h3>
+//               <p className="text-sm text-gray-400">{tip.description}</p>
+//             </div>
+//           </div>
+//         ))}
+//       </motion.div>
+
+//       {/* ============================================================ */}
+//       {/* QUEST CARDS GRID */}
+//       {/* ============================================================ */}
+//       {workspaceQuests.length === 0 ? (
+//         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-8 text-center">
+//           <Terminal className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+//           <p className="text-gray-400">No active coding tasks</p>
+//           <p className="text-sm text-gray-500 mt-2">Check back later for new challenges!</p>
+//         </div>
+//       ) : (
+//         <div className="grid gap-4 md:grid-cols-2">
+//           {workspaceQuests.map((quest, index) => (
+//             <QuestCard
+//               key={quest.id}
+//               quest={quest}
+//               index={index}
+//               theme="blue"
+//               onStart={handleStartQuest}
+//             />
+//           ))}
+//         </div>
+//       )}
+
+//       {/* ============================================================ */}
+//       {/* QUEST PAGE */}
+//       {/* ============================================================ */}
+//       {questToShow && (
+//         <QuestPage
+//           quest={questToShow}
+//           onClose={() => setSelectedQuest(null)}
+//         />
+//       )}
+//     </div>
+//   );
+// }
+
+
+
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Code, Terminal, Lightbulb, TrendingUp, Zap } from 'lucide-react';
 import { useGame } from '../contexts/GameContext';
 import { QuestCard } from '../components/quests/QuestCard';
 import { QuestPage } from '../pages/QuestPage';
+import { StressAlert } from '../components/extras/StressAlert';
+import { ZoneType } from '../types/game'; // Ensure you have this type imported
 
-export function Workspace() {
+// 1. Define Props Interface
+interface WorkspaceProps {
+  onNavigate: (zone: ZoneType) => void;
+}
+
+// 2. Accept the prop in the component
+export function Workspace({ onNavigate }: WorkspaceProps) {
   // ============================================================
   // STATE & DATA FETCHING
   // ============================================================
-  // TODO: Replace with API call in production
   const { activeQuests, startQuest, player } = useGame();
   const [selectedQuest, setSelectedQuest] = useState<string | null>(null);
+  const [showStressAlert, setShowStressAlert] = useState(false);
   
-  // Filter quests for Workspace zone
   const workspaceQuests = activeQuests.filter(q => q.zone === 'workspace');
 
   // ============================================================
   // EVENT HANDLERS
   // ============================================================
   const handleStartQuest = (questId: string) => {
-    // Block if stress is 100
     if (player.stress >= 100) {
-      alert('Your stress is too high! Visit the Game Lounge or Cafeteria to reduce stress before continuing workspace tasks.');
+      setShowStressAlert(true);
       return;
     }
 
-    // TODO: In production, make API call to start quest
-    // await fetch(`/api/quests/${questId}/start`, { method: 'POST' });
     startQuest(questId);
     setSelectedQuest(questId);
   };
 
-  // Find the selected quest
+  const handleNavigateToShop = () => {
+    // 3. Use the prop to navigate to the Cafeteria (which acts as the shop)
+    onNavigate('cafeteria');
+  };
+
   const questToShow = selectedQuest ? activeQuests.find(q => q.id === selectedQuest) : null;
 
-  // Performance tips based on player stats
+  // Performance tips logic...
   const getPerformanceTips = () => {
     const tips = [];
-    
     if (player.stress > 70) {
       tips.push({
         icon: <Zap className="w-5 h-5 text-red-400" />,
         title: "High Stress Detected",
-        description: "Consider taking a break or visiting the Cafeteria to reduce stress before starting new tasks.",
+        description: "Consider taking a break or visiting the Cafeteria to reduce stress.",
         color: "red"
       });
     }
-    
     if (player.mood < 30) {
       tips.push({
         icon: <TrendingUp className="w-5 h-5 text-yellow-400" />,
         title: "Low Mood Alert",
-        description: "Your performance may be affected. Try completing easier quests first or use mood-boosting items.",
+        description: "Your performance may be affected. Try completing easier quests first.",
         color: "yellow"
       });
     }
@@ -71,11 +242,10 @@ export function Workspace() {
       tips.push({
         icon: <Lightbulb className="w-5 h-5 text-blue-400" />,
         title: "Work Smart",
-        description: "Balance your workload. Complete daily quests first, then focus on weekly and monthly objectives.",
+        description: "Balance your workload. Complete daily quests first.",
         color: "blue"
       });
     }
-
     return tips;
   };
 
@@ -83,9 +253,7 @@ export function Workspace() {
 
   return (
     <div className="space-y-6">
-      {/* ============================================================ */}
-      {/* ZONE HEADER */}
-      {/* ============================================================ */}
+      {/* HEADER */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -96,15 +264,13 @@ export function Workspace() {
           <div>
             <h2 className="text-2xl text-white">Workspace - Technical Training</h2>
             <p className="text-sm text-blue-300">
-              Master programming, debugging, and system design through hands-on coding challenges and technical projects.
+              Master programming, debugging, and system design.
             </p>
           </div>
         </div>
       </motion.div>
 
-      {/* ============================================================ */}
-      {/* PERFORMANCE TIPS */}
-      {/* ============================================================ */}
+      {/* TIPS */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -125,9 +291,7 @@ export function Workspace() {
         ))}
       </motion.div>
 
-      {/* ============================================================ */}
-      {/* QUEST CARDS GRID */}
-      {/* ============================================================ */}
+      {/* QUESTS */}
       {workspaceQuests.length === 0 ? (
         <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-8 text-center">
           <Terminal className="w-12 h-12 text-gray-600 mx-auto mb-3" />
@@ -148,9 +312,13 @@ export function Workspace() {
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* QUEST PAGE */}
-      {/* ============================================================ */}
+      {/* ALERTS & MODALS */}
+      <StressAlert 
+        isOpen={showStressAlert} 
+        onClose={() => setShowStressAlert(false)}
+        onGoToShop={handleNavigateToShop}
+      />
+
       {questToShow && (
         <QuestPage
           quest={questToShow}

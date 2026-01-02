@@ -454,7 +454,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
           </motion.div>
         </>
       ) : selectedTab === 'workspace' ? (
-        <Workspace />
+        <Workspace onNavigate={(zone) => setSelectedTab(zone)} />
       ) : selectedTab === 'game-lounge' ? (
         <GameLounge />
       ) : selectedTab === 'meeting-room' ? (

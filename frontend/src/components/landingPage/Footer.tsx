@@ -2,10 +2,28 @@ import { motion } from 'motion/react';
 import { Twitter, Github, Youtube, Twitch } from 'lucide-react';
 
 const footerLinks = {
-  Product: ['Features', 'Pricing', 'FAQ', 'Roadmap'],
-  Company: ['About', 'Blog', 'Careers', 'Press Kit'],
-  Resources: ['Documentation', 'Community', 'Support', 'API'],
-  Legal: ['Privacy', 'Terms', 'Cookie Policy', 'Licenses'],
+  Product: [
+    { label: 'About', href: '#about' },
+    { label: 'Features', href: '#features' },
+    { label: 'Gallery', href: '#gallery' },
+  ],
+  Company: [
+    { label: 'Blog', href: '#' },
+    { label: 'Careers', href: '#' },
+    { label: 'Press Kit', href: '#' },
+  ],
+  Resources: [
+    { label: 'Documentation', href: '#' },
+    { label: 'Community', href: '#' },
+    { label: 'Support', href: '#' },
+    { label: 'API', href: '#' },
+  ],
+  Legal: [
+    { label: 'Privacy', href: '#' },
+    { label: 'Terms', href: '#' },
+    { label: 'Cookie Policy', href: '#' },
+    { label: 'Licenses', href: '#' },
+  ],
 };
 
 const socialLinks = [
@@ -19,7 +37,7 @@ export function Footer() {
   return (
     <footer className="relative bg-black border-t border-gray-900 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-linear-to-t from-blue-950/10 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-blue-950/10 to-transparent" />
       
       <div className="relative max-w-7xl mx-auto px-6 py-16">
         {/* Main Footer Content */}
@@ -32,7 +50,7 @@ export function Footer() {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <h3 className="text-3xl mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h3 className="text-3xl mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 OFFICE
               </h3>
               <p className="text-gray-400 text-sm mb-6">
@@ -72,10 +90,10 @@ export function Footer() {
                 {links.map((link, linkIndex) => (
                   <li key={linkIndex}>
                     <a
-                      href="#"
+                      href={link.href}
                       className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
                     >
-                      {link}
+                      {link.label}
                     </a>
                   </li>
                 ))}
@@ -110,7 +128,7 @@ export function Footer() {
       </div>
 
       {/* Decorative Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-500/50 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
     </footer>
   );
 }
