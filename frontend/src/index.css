@@ -30,6 +30,15 @@ body {
   font-family: var(--font-sans);
 }
 
+button, 
+[role="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+.cursor-pointer {
+  cursor: pointer !important; /* Forces the hand icon */
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
