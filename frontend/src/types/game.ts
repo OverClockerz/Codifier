@@ -116,7 +116,7 @@ export interface PlayerState {
   isBurntOut: boolean;
   baseSalary: number;
   currentMonthEarnings: number;
-  currentMonthTasksCompleted?: number; // Track completed quests this month
+  currentMonthTasksCompleted: number; // Track completed quests this month
   paidLeaves: number;
   currentDay: number; // In-game day counter
   currentMonth: number;
