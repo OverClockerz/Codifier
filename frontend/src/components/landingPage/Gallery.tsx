@@ -39,7 +39,8 @@ export function Gallery() {
   };
 
   return (
-    <section className="relative py-32 bg-black overflow-hidden group/section">
+    // ADDED id="gallery" HERE so navigation links can find this section
+    <section id="gallery" className="relative py-32 bg-black overflow-hidden group/section">
       
       {/* Header */}
       <div className="mb-12 px-6">
