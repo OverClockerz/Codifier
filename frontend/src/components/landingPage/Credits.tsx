@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Twitter, Globe, Heart, Sparkles } from 'lucide-react';
+import { Github, Instagram, Globe, Heart, Sparkles } from 'lucide-react';
 
 const CREDIT_DATA = {
- team: [
-    { role: 'Lead Architect', name: 'Pushkar Pan', social: '@myst_blazeio' },
-    { role: 'Backend Developer', name: 'Devayudh Chatterjee', social: '@_raziel_206' },
-    { role: 'Frontend Developer', name: 'Sayantan Pal', social: '@sayantanpaltheone' },
-    { role: 'Designer', name: 'Anushka Bala', social: '@02_anu_anu_28' },
+  team: [
+    { role: 'Lead Architect', name: 'Pushkar Pan', social: 'https://instagram.com/myst_blazeio', href: 'https://github.com/Myst-Blazeio' },
+    { role: 'Backend Developer', name: 'Devayudh Chatterjee', social: 'https://instagram.com/_raziel_206', href: 'https://github.com/Raziel206' },
+    { role: 'Frontend Developer', name: 'Sayantan Pal', social: 'https://instagram.com/sayantanpaltheone', href: 'https://github.com/sabkabap2006' },
+    { role: 'Designer', name: 'Anushka Bala', social: 'https://instagram.com/02_anu_anu_28', href: 'https://github.com/anushkabala0228-bot' },
   ]
 };
 
@@ -15,7 +15,7 @@ export function Credits() {
   return (
     <div id="credits" className="py-20 px-6 max-w-7xl mx-auto">
       <div className="text-center mb-20">
-        <motion.h2 
+        <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -45,20 +45,26 @@ export function Credits() {
               {member.name}
             </h3>
             <div className="flex gap-4 text-gray-500">
-              <Github size={18} className="hover:text-white cursor-pointer" />
-              <Twitter size={18} className="hover:text-white cursor-pointer" />
+              <a
+                href={member.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                <Github size={18} />
+              </a>
+              <a
+                href={member.social}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                <Instagram size={18} />
+              </a>
             </div>
+
           </motion.div>
         ))}
-      </div>
-
-
-
-      <div className="mt-32 text-center text-gray-600 font-mono text-[10px] tracking-[0.4em] uppercase">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          Made with <Heart size={12} className="text-red-900 fill-red-900 animate-pulse" /> for the future
-        </div>
-        <p>© 2025 Office Interactive // All Protocols Active</p>
       </div>
     </div>
   );

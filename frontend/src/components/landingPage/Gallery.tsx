@@ -28,9 +28,9 @@ export function Gallery() {
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       // Scroll by approximately one card width + gap (500px + 32px gap)
-      const scrollAmount = 532; 
+      const scrollAmount = 532;
       const currentScroll = scrollContainerRef.current.scrollLeft;
-      
+
       scrollContainerRef.current.scrollTo({
         left: direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount,
         behavior: 'smooth',
@@ -41,7 +41,6 @@ export function Gallery() {
   return (
     // ADDED id="gallery" HERE so navigation links can find this section
     <section id="gallery" className="relative py-32 bg-black overflow-hidden group/section">
-      
       {/* Header */}
       <div className="mb-12 px-6">
         <motion.div
@@ -61,7 +60,7 @@ export function Gallery() {
       </div>
 
       {/* --- Navigation Arrows --- */}
-      
+
       {/* Left Arrow */}
       <motion.button
         whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
@@ -86,7 +85,7 @@ export function Gallery() {
 
 
       {/* --- Scroll Container --- */}
-      <div 
+      <div
         ref={scrollContainerRef}
         className="flex gap-8 px-6 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
@@ -105,9 +104,9 @@ export function Gallery() {
               alt={item.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
-            
+
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-            
+
             <div className="absolute bottom-0 left-0 right-0 p-8">
               <h3 className="text-3xl mb-2 text-white font-bold">{item.title}</h3>
               <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
@@ -116,7 +115,7 @@ export function Gallery() {
             <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500/50 rounded-3xl transition-all duration-300" />
           </motion.div>
         ))}
-        
+
         {/* Spacer */}
         <div className="w-6 flex-shrink-0" />
       </div>

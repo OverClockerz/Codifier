@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { smoothScrollToElement } from '../../utils/smoothScroll';
 
-const navItems = ['Home', 'About', 'Features', 'Gallery', 'Credits'];
+const navItems = ['Home', 'About', 'Features', 'Credits'];
 
 interface NavigationProps {
   onSignIn?: () => void;
@@ -37,9 +37,8 @@ export function Navigation({ onSignIn }: NavigationProps) {
     <>
       <motion.nav
         style={{ backgroundColor }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'border-b border-gray-800 backdrop-blur-xl' : ''
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'border-b border-gray-800 backdrop-blur-xl' : ''
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">

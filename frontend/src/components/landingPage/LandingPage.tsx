@@ -2,7 +2,7 @@ import { Navigation } from './Navigation';
 import { Hero } from './Hero';
 import { About } from './About';
 import { Features } from './Features';
-import { Gallery } from './Gallery';
+// import { Gallery } from './Gallery';
 // import { CallToAction } from './CallToAction'; // Removed
 import { Credits } from './Credits'; // Added
 import { Footer } from './Footer';
@@ -20,7 +20,7 @@ export function LandingPage({ onStartCareer }: LandingPageProps) {
     <div className="min-h-screen bg-black text-white">
       {/* Scroll-synced video background */}
       <VideoBackground videoSrc={videoUrl} />
-      
+
       {/* Content */}
       <div className="relative z-10">
         <Navigation onSignIn={onStartCareer} />
@@ -28,8 +28,8 @@ export function LandingPage({ onStartCareer }: LandingPageProps) {
           <Hero onStartCareer={onStartCareer} />
           <About />
           <Features />
-          <Gallery />
-          
+          {/* <Gallery /> */}
+
           {/* Replaced CallToAction with Credits */}
           <Credits />
         </main>
