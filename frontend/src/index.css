@@ -7,7 +7,6 @@
 /* Tailwind v4 Import */
 @import "tailwindcss";
 
-
 /* Tailwind v4 Theme Configuration */
 @theme {
   --font-sans: "Inter", sans-serif;
