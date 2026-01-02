@@ -23,11 +23,6 @@ export function About() {
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/10 to-black" />
 
-      {/* <motion.div 
-        style={{ y }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[100px]"
-      /> */}
-
       <div className="relative max-w-7xl mx-auto">
         <motion.div
           style={{ opacity }}
@@ -82,7 +77,7 @@ export function About() {
             <div className="relative">
               <div className="relative aspect-square rounded-3xl overflow-hidden border border-blue-500/20">
                 <img
-                  src="https://images.unsplash.com/photo-1580046939256-c377c5b099f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlciUyMHdhcnJpb3IlMjBjaGFyYWN0ZXJ8ZW58MXx8fHwxNzY1ODEwMTc4fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                  src="/images/about.png"
                   alt="Gaming Character"
                   className="w-full h-full object-cover"
                 />
