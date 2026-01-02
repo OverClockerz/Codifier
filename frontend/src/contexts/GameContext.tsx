@@ -689,7 +689,7 @@ import { getExperienceForLevel, getSalaryForLevel, GAME_CONSTANTS, getRestartLev
 import { useAuth } from './AuthContext';
 import { fetchPlayerData, updatePlayerData } from '../services/api';
 import { shopItems } from '../data/shopItems';
-import AlertComponent from '../components/extras/AlertComponent'; 
+import AlertComponent from '../components/extras/AlertComponent';
 import { gameTimeSince } from '../utils/calculations';
 
 /**
@@ -705,9 +705,9 @@ interface GameContextType {
   monthlyReports: MonthlyReport[];
   notifications: Notification[];
   showLevelUp: boolean;
-  
+
   // --- Navigation State ---
-  currentView: string; 
+  currentView: string;
   setCurrentView: (view: string) => void;
 
   // Actions
@@ -787,7 +787,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     completedQuests: [],
     inventory: [],
   });
-  
+
   const [activeQuests, setActiveQuests] = useState<Quest[]>([]);
   const [completedQuests, setCompletedQuests] = useState<Quest[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -796,7 +796,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-  
+
   // Cleaned up Stress Alert State
   // We only need to know if we have ALREADY alerted for the current high stress event.
   const [hasAlertedForCurrentStress, setHasAlertedForCurrentStress] = useState(false);
@@ -847,7 +847,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           isLoadingRef.current = false;
         });
       }
-    }, 5001); 
+    }, 5001);
     return () => clearInterval(interval);
   }, [user?.id]);
 
@@ -896,10 +896,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // ===========================
   // GAME LOGIC FUNCTIONS
   // ===========================
-  
+
   // ... [Keep all your existing game logic functions: startQuest, completeQuest, etc.] ...
   // (Assuming these are unchanged for brevity, pasting the key update function to ensure context)
-  
+
   const updateMoodStress = (moodChange: number, stressChange: number) => {
     setPlayer(prev => ({
       ...prev,
@@ -909,7 +909,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   // ... [Include other functions: startQuest, completeQuest, failQuest, purchaseItem, takePaidLeave, etc.] ...
-  
+
   const startQuest = (questId: string) => {
     setActiveQuests(prev =>
       prev.map(q => q.id === questId ? { ...q, status: 'in-progress', startedAt: Math.floor(Date.now() / 1000) } : q)
@@ -1006,7 +1006,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setPlayer(prev => ({ ...prev, currency: prev.currency - item.price }));
     setInventory(prev => {
       const existing = prev.find(i => i.item.id === itemId);
-      return existing 
+      return existing
         ? prev.map(i => i.item.id === itemId ? { ...i, quantity: i.quantity + 1 } : i)
         : [...prev, { item, quantity: 1, purchasedAt: Date.now() }];
     });
@@ -1015,11 +1015,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const takePaidLeave = (): boolean => {
     if (player.paidLeaves <= 0) return false;
-    setPlayer(prev => ({ 
-      ...prev, 
-      paidLeaves: prev.paidLeaves - 1, 
-      mood: Math.min(100, prev.mood + 30), 
-      stress: Math.max(0, prev.stress - 40) 
+    setPlayer(prev => ({
+      ...prev,
+      paidLeaves: prev.paidLeaves - 1,
+      mood: Math.min(100, prev.mood + 30),
+      stress: Math.max(0, prev.stress - 40)
     }));
     return true;
   };
@@ -1043,10 +1043,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
         level: newLevel,
         experienceToNextLevel: expToNext,
         baseSalary: getSalaryForLevel(newLevel),
-        currentRun: { 
-          ...prev.currentRun, 
-          maxLevelAchieved: Math.max(newLevel, prev.currentRun.maxLevelAchieved), 
-          totalExperience: prev.currentRun.totalExperience + amount 
+        currentRun: {
+          ...prev.currentRun,
+          maxLevelAchieved: Math.max(newLevel, prev.currentRun.maxLevelAchieved),
+          totalExperience: prev.currentRun.totalExperience + amount
         },
       };
     });
@@ -1069,9 +1069,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const lastMonthQuests = completedQuests.filter(q => q.completedAt && q.completedAt > Date.now() - 30 * 24 * 60 * 60 * 1000);
     const completedCount = lastMonthQuests.filter(q => q.status === 'completed').length;
     const taskCompletionRate = lastMonthQuests.length > 0 ? (completedCount / lastMonthQuests.length) * 100 : 0;
-    
+
     // Simple logic for report
-    const reputationScore = taskCompletionRate * 0.4 + 75 * 0.35 + 75 * 0.25; 
+    const reputationScore = taskCompletionRate * 0.4 + 75 * 0.35 + 75 * 0.25;
     const salaryAdjustment = getSalaryAdjustment(reputationScore);
     const totalEarnings = currentPlayer.currentMonthEarnings + (currentPlayer.baseSalary * (1 + salaryAdjustment / 100));
 
@@ -1142,35 +1142,35 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setNotifications([]);
       setMonthlyReports([]);
       setHasAlertedForCurrentStress(false);
-      setCurrentView('dashboard'); 
-      
+      setCurrentView('dashboard');
+
       if (user?.id) {
         const resetPayload = {
-            username: freshPlayer.username,
-            level: freshPlayer.level,
-            experience: 0,
-            experienceToNextLevel: freshPlayer.experienceToNextLevel,
-            currency: freshPlayer.currency,
-            mood: freshPlayer.mood,
-            stress: freshPlayer.stress,
-            isBurntOut: false,
-            baseSalary: freshPlayer.baseSalary,
-            currentMonthEarnings: 0,
-            currentMonthTasksCompleted: 0,
-            paidLeaves: 0,
-            currentDay: 1,
-            currentMonth: 1,
-            lastLoginDate: new Date(),
-            proficiency: freshPlayer.proficiency,
-            careerHistory: freshPlayer.careerHistory,
-            currentRun: freshPlayer.currentRun,
-            reputation: 0,
-            skills: {},
-            activeBuffs: {},
-            permanentItems: [],
-            activeQuests: [],
-            completedQuests: [],
-            inventory: [],
+          username: freshPlayer.username,
+          level: freshPlayer.level,
+          experience: 0,
+          experienceToNextLevel: freshPlayer.experienceToNextLevel,
+          currency: freshPlayer.currency,
+          mood: freshPlayer.mood,
+          stress: freshPlayer.stress,
+          isBurntOut: false,
+          baseSalary: freshPlayer.baseSalary,
+          currentMonthEarnings: 0,
+          currentMonthTasksCompleted: 0,
+          paidLeaves: 0,
+          currentDay: 1,
+          currentMonth: 1,
+          lastLoginDate: new Date(),
+          proficiency: freshPlayer.proficiency,
+          careerHistory: freshPlayer.careerHistory,
+          currentRun: freshPlayer.currentRun,
+          reputation: 0,
+          skills: {},
+          activeBuffs: {},
+          permanentItems: [],
+          activeQuests: [],
+          completedQuests: [],
+          inventory: [],
         };
         await updatePlayerData(resetPayload);
       }
@@ -1187,7 +1187,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       console.error("❌ Error resetting career:", error);
-      setIsGameOver(false); 
+      setIsGameOver(false);
     }
   };
 
@@ -1197,7 +1197,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!user?.id) return;
     if (!player || !player.proficiency) {
       console.warn("⚠️ Save skipped: Player proficiency data missing.");
-      return; 
+      return;
     }
     try {
       const backendData = {
@@ -1244,7 +1244,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!user?.id) return;
     try {
       const backendData = await fetchPlayerData(user.username);
-      
+
       const safeProficiency = backendData.proficiency || {
         coding_skill: 0, soft_skill: 0, critical_thinking_skill: 0, problem_solving: 0, stress_resistance: 0
       };
@@ -1268,16 +1268,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
         currentDay: backendData.currentDay,
         currentMonth: backendData.currentMonth,
         lastLoginDate: backendData.lastLoginDate,
-        proficiency: safeProficiency, 
+        proficiency: safeProficiency,
         careerHistory: backendData.careerHistory,
         currentRun: backendData.currentRun,
         reputation: backendData.reputation,
         skills: backendData.skills,
         activeBuffs: backendData.activeBuffs,
         permanentBuffs: backendData.permanentItems,
-        activeQuests: [],
-        completedQuests: [],
-        inventory: [],
+        activeQuests: backendData.activeQuests,
+        completedQuests: backendData.completedQuests,
+        inventory: backendData.inventory,
       };
       setPlayer(transformedPlayer);
       setActiveQuests(backendData.activeQuests);
@@ -1289,7 +1289,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         purchasedAt: item.purchasedAt || Date.now(),
       }));
       setInventory(transformedInventory);
-      
+
       const permanentBuffsList = (backendData.permanentItems || []).map((itemId: string) => {
         const shopItem = shopItems.find(si => si.id === itemId);
         return shopItem ? { itemId, name: shopItem.name, effect: shopItem.effect, appliedAt: Date.now() } : null;
@@ -1315,14 +1315,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-      
+
       {/* 1. Game Over Alert */}
       {isGameOver && (
-        <AlertComponent 
-          onRestart={resetCareer} 
+        <AlertComponent
+          onRestart={resetCareer}
         />
       )}
-      
+
     </GameContext.Provider>
   );
 }

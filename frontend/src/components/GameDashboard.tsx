@@ -247,16 +247,16 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             <p className="text-xs text-gray-500">days</p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-500">Skill Proficiency</p>
+            <p className="text-xs text-gray-500">Skill</p>
             <p className="text-xl text-white">{overallSkillProficiency}%</p>
-            {/* <p className="text-xs text-gray-500">average</p> */}
+            <p className="text-xs text-gray-500">Proficiency</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500">Reputation</p>
             <p className={`text-xl ${(player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
               {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
             </p>
-            <p className="text-xs text-gray-500">This month</p>
+            <p className="text-xs text-gray-500">Acquired</p>
           </div>
         </div>
       </motion.div>

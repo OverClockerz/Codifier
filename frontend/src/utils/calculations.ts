@@ -622,6 +622,8 @@ export function gameTimeSince(player: PlayerState): { days: number; months: numb
 function salaryIncrement(player: PlayerState, months: number) {
   player.currency += player.baseSalary*months + player.currentMonthEarnings;
   player.currentMonthEarnings = 0;
+  player.completedQuests = [];
+  player.currentMonthTasksCompleted = 0;
   return;
 }
 

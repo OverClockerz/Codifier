@@ -237,7 +237,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                   >
                     {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
                   </p>
-                  <p className="text-xs text-gray-600">this month</p>
+                  <p className="text-xs text-gray-600">Acquired</p>
                 </div>
               </div>
 
@@ -302,7 +302,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Rating:</span>
-                      {/* <span className="text-yellow-400">{player.currentRating}/5.0</span> */}
+                      <span className="text-yellow-400">{Math.round(((player.currentMonthTasksCompleted) / player.completedQuests.length) * 5)}/5.0</span>
                     </div>
                   </div>
                 </div>
