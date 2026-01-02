@@ -6,7 +6,8 @@ import { useGame } from '../contexts/GameContext';
 import { QuestTasks } from '../components/quests/QuestTasks';
 import { CodingPlatform } from '../components/quests/CodingPlatform';
 import { ComprehensionQuest } from '../components/quests/ComprehensionQuest';
-import MCQQuest from '../components/quests/mcq/MCQQuest';
+import MCQQuest from '../components/quests/McqQuest/MCQQuest';
+import { TypingGame } from '../components/quests/TyingQuest/TypingGame';
 
 interface QuestPageProps {
   quest: Quest;
@@ -18,6 +19,7 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
   const [isWorking, setIsWorking] = useState(false);
   const [result, setResult] = useState<'success' | 'failure' | null>(null);
   const [performanceScore, setPerformanceScore] = useState(100);
+  const [resultsVisible, setResultsVisible] = useState(false);
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -73,9 +75,9 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
 
   const color = getZoneColor();
 
-  // When results are shown the header should be removed and browser navigation blocked
+  // When results are visible (either local results UI or final result state), hide header and block navigation
   useEffect(() => {
-    if (!result) return;
+    if (!result && !resultsVisible) return;
 
     const prevOnBeforeUnload = window.onbeforeunload;
     // Prevent refresh/close
@@ -92,12 +94,12 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
       window.onbeforeunload = prevOnBeforeUnload;
       window.removeEventListener('popstate', onPop);
     };
-  }, [result]);
+  }, [result, resultsVisible]);
 
   return (
     <div className="fixed inset-0 bg-[#0a0f1e] z-50 flex flex-col">
       {/* Header: hide when results are displayed */}
-      {!result && (
+      {!result && !resultsVisible && (
         <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
           <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -137,6 +139,27 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
           {quest.type === 'Comprehensive' && (
             <div className="h-full w-full">
               <ComprehensionQuest onComplete={handleTaskComplete} initialQuestion={quest.question_data} />
+            </div>
+          )}
+
+          {quest.type === 'Typing' && (
+            <div className="h-full w-full">
+              <TypingGame
+                question={(quest as any).question_data?.question}
+                timeLimit={(quest as any).question_data?.time}
+                onFinish={(stats) => {
+                  // Normalize score [0,1] from WPM, accuracy and correct vs incorrect chars
+                  const wpmN = Math.min(stats.wpm / 100, 1);
+                  const accN = Math.min(stats.accuracy / 100, 1);
+                  const charTotal = stats.correctChars + stats.incorrectChars;
+                  const charN = charTotal > 0 ? stats.correctChars / charTotal : 1;
+                  // weights: accuracy 0.5, wpm 0.3, char ratio 0.2
+                  const scoreNorm = Math.max(0, Math.min(1, accN * 0.5 + wpmN * 0.3 + charN * 0.2));
+                  const score100 = Math.round(scoreNorm * 100);
+                  handleTaskComplete(scoreNorm >= 0.5, score100);
+                }}
+                onResultsVisible={(v) => setResultsVisible(v)}
+              />
             </div>
           )}
 

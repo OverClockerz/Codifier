@@ -93,3 +93,20 @@ export enum Status {
 export interface MockDatabase {
   attempts: Attempt[];
 }
+
+
+export enum GameStatus {
+  IDLE = 'IDLE',
+  RUNNING = 'RUNNING',
+  FINISHED = 'FINISHED',
+  LOADING = 'LOADING',
+  ERROR = 'ERROR'
+}
+
+export interface TestStats {
+  wpm: number;
+  accuracy: number;
+  correctChars: number;
+  incorrectChars: number;
+  totalChars: number;
+}
