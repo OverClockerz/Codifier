@@ -26,12 +26,20 @@ mongo.init_app(app)
 # Vital for React + Flask Session Cookies
 CORS(
     app,
-    resources={r"/*": {"origins": "http://localhost:3000"}},
+    resources={
+        r"/*": {
+            "origins": [
+                "http://localhost:3000",
+                "https://office-07701907-eeb02.web.app"
+            ]
+        }
+    },
     supports_credentials=True,
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
     expose_headers=["Content-Type"]
 )
+
 
 
 # Register Active Blueprints
@@ -49,4 +57,5 @@ app.register_blueprint(login_bp)
 
 if __name__ == '__main__':
     print("🚀 Server running")
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Render provides PORT
+    app.run(host="0.0.0.0", port=port, debug=False)
