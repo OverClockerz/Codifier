@@ -6,7 +6,7 @@ import { useGame } from '../contexts/GameContext';
 import { ZoneType, Quest, GitHubInfo } from '../types/game';
 import { GameDashboard } from './GameDashboard';
 // import { QuestList } from './quests/QuestList';
-import { SimpleQuestModal } from './quests/SimpleQuestModal';
+// import { SimpleQuestModal } from './quests/SimpleQuestModal';
 import { ZoneTransition } from './transitions/ZoneTransition';
 import { QuestStartTransition } from './transitions/QuestStartTransition';
 import { LevelUpTransition } from './transitions/LevelUpTransition';
@@ -213,12 +213,12 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
       </main>
 
       {/* Active Quest Modal */}
-      {activeQuestModal && (
+      {/* {activeQuestModal && (
         <SimpleQuestModal
           quest={activeQuestModal}
           onClose={() => setActiveQuestModal(null)}
         />
-      )}
+      )} */}
 
       {/* Transitions */}
       <QuestStartTransition

@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { X, Code, Trophy, Zap, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { Quest } from '../types/game';
 import { useGame } from '../contexts/GameContext';
-import { QuestTasks } from '../components/quests/QuestTasks';
+// import { QuestTasks } from '../components/quests/QuestTasks';
 import { CodingPlatform } from '../components/quests/CodingPlatform';
 import { ComprehensionQuest } from '../components/quests/ComprehensionQuest';
 import MCQQuest from '../components/quests/McqQuest/MCQQuest';
@@ -170,9 +170,9 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
           )}
 
           {/* Fallback: generic task runner */}
-          {!(quest.type === 'Coding' || quest.type === 'Comprehensive' || quest.type === 'MCQ') && (
+          {/* {!(quest.type === 'Coding' || quest.type === 'Comprehensive' || quest.type === 'MCQ') && (
             <QuestTasks quest={quest} onComplete={handleTaskComplete} />
-          )}
+          )} */}
         </motion.div>
       ) : (
         <div className="flex-1 overflow-y-auto">

@@ -46,12 +46,7 @@ InitialPlayerState = {
 
     "reputation": 0,
 
-    "skills": {
-        "python": 5,
-        "git": 3,
-        "problem_solving": 5,
-        "communication": 4
-    },
+    "skills": {},
     "activeBuffs": {
         "stressReduction": 0,
         "moodIncrease": 0,
