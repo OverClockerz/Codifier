@@ -12,6 +12,9 @@ load_dotenv()
 
 githublogin_bp = Blueprint('githublogin', __name__)
 
+GITHUB_CLIENT_ID=os.getenv("GITHUB_CLIENT_ID")
+GITHUB_CLIENT_SECRET=os.getenv("GITHUB_CLIENT_SECRET")
+
 @githublogin_bp.route('/github/callback', methods=['GET'])
 def github_callback():
     print("\n[DEBUG] Headers:", dict(request.headers))
