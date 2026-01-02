@@ -2,6 +2,7 @@ import React from 'react';
 import { useCodingPlatform } from '../../hooks/useCodingPlatform';
 // import { Header } from './CodingQuest/Header';
 import { ConfirmationModal } from './CodingQuest/ConfirmationModal';
+import { SubmitModal } from './CodingQuest/SubmitModal';
 import { AiChatOverlay } from './CodingQuest/AiChatOverlay';
 import { CodeEditor } from './CodingQuest/CodeEditor';
 import { ProblemDescription } from './CodingQuest/ProblemDescription';
@@ -24,6 +25,8 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
   } = state;
 
   const [isGeneratingResults, setIsGeneratingResults] = React.useState(false);
+  const [showSubmitConfirm, setShowSubmitConfirm] = React.useState(false);
+  const [showRunRequired, setShowRunRequired] = React.useState(false);
 
   return (
     <div className={`flex flex-col bg-[#0f172a] text-slate-200 font-sans overflow-hidden relative ${className}`}>
@@ -115,24 +118,13 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
               <button
                 onClick={async () => {
                   if (!problem) return;
-                  setIsGeneratingResults(true);
-                  try {
-                    const res: any = await actions.handleRunCode(true);
-                    // derive performance score
-                    let perf = 0;
-                    if (res) {
-                      if (typeof res.score === 'number') perf = Math.round(res.score);
-                      else if (res.totalTests && res.results) {
-                        const passed = res.results.filter((r: any) => r.passed).length;
-                        perf = Math.round((passed / res.totalTests) * 100);
-                      }
-                    }
-                    const success = perf >= 60;
-                    await new Promise((r) => setTimeout(r, 600));
-                    onComplete && onComplete(success, perf);
-                  } finally {
-                    setIsGeneratingResults(false);
+                  // If user has never run tests, require them to run tests first
+                  if (!state.ranTests && !state.evaluation) {
+                    setShowRunRequired(true);
+                    return;
                   }
+                  // otherwise ask for confirmation before submitting for rewards
+                  setShowSubmitConfirm(true);
                 }}
                 disabled={isRunning || !problem || !!backendError || isGeneratingResults}
                 className="flex items-center gap-2 px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-all disabled:opacity-50"
@@ -141,6 +133,70 @@ export const CodingPlatform: React.FC<CodingPlatformProps> = ({ className = "h-s
               </button>
             </div>
           </div>
+
+          {/* Submit Confirmation Modal */}
+          <SubmitModal
+            isOpen={showSubmitConfirm}
+            message={state.evaluation ? 'Submit your latest evaluation results for reward calculation? This will use your last run results.' : 'No previous run found — submit will re-run tests for final evaluation.'}
+            onCancel={() => setShowSubmitConfirm(false)}
+            onConfirm={async () => {
+              setShowSubmitConfirm(false);
+              setIsGeneratingResults(true);
+              try {
+                // If we have a previous evaluation and ranTests, use it. Otherwise run a submission evaluation.
+                let res: any = null;
+                if (state.ranTests && state.evaluation) {
+                  res = state.evaluation;
+                } else {
+                  res = await actions.handleRunCode(true);
+                }
+
+                // derive normalized performance score (0-100) using last evaluation
+                let perf = 0;
+                if (res) {
+                  if (typeof res.score === 'number' && res.totalTests && res.totalTests > 0) {
+                    // if score is count of passed tests, normalize
+                    if (res.score <= res.totalTests) {
+                      perf = Math.round((res.score / res.totalTests) * 100);
+                    } else {
+                      // if score already a percent
+                      perf = Math.round(res.score);
+                    }
+                  } else if (res.totalTests && res.results) {
+                    const passed = res.results.filter((r: any) => r.passed).length;
+                    perf = Math.round((passed / res.totalTests) * 100);
+                  }
+                }
+
+                const success = perf >= 60;
+                await new Promise((r) => setTimeout(r, 600));
+                onComplete && onComplete(success, perf);
+              } finally {
+                setIsGeneratingResults(false);
+              }
+            }}
+          />
+
+          {/* Run-required Modal */}
+          <SubmitModal
+            isOpen={showRunRequired}
+            title="Run Tests First"
+            message="You haven't run tests for this problem yet. Please run tests at least once to verify your code before submitting for rewards."
+            primaryLabel="Run Tests"
+            secondaryLabel="Cancel"
+            onCancel={() => setShowRunRequired(false)}
+            onConfirm={async () => {
+              setShowRunRequired(false);
+              setIsGeneratingResults(true);
+              try {
+                await actions.handleRunCode(false);
+                // after running, open confirmation modal
+                setShowSubmitConfirm(true);
+              } finally {
+                setIsGeneratingResults(false);
+              }
+            }}
+          />
 
           <div className="h-[35%] min-h-50 shrink-0">
             <ConsolePanel

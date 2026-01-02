@@ -29,6 +29,7 @@ export const useCodingPlatform = (initialProblem?: Problem) => {
   // Confirmation Dialog State
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [pendingLanguage, setPendingLanguage] = useState<SupportedLanguage | null>(null);
+  const [ranTests, setRanTests] = useState<boolean>(false);
 
   // Initial Load: Check DB for existing problem
   useEffect(() => {
@@ -123,6 +124,7 @@ export const useCodingPlatform = (initialProblem?: Problem) => {
 
         const result = await evaluateSolution(problem, code, language, isSubmission);
         setEvaluation(result);
+        if (!isSubmission) setRanTests(true);
         // return result so callers can act on submission results
         return result;
       }
@@ -148,38 +150,40 @@ export const useCodingPlatform = (initialProblem?: Problem) => {
   };
 
   return {
-    state: {
-      problem,
-      code,
-      evaluation,
-      isGenerating,
-      isRunning,
-      activeTab,
-      showAiChat,
-      aiMessage,
-      backendError,
-      customInput,
-      customOutput,
+     state: {
+       problem,
+       code,
+       evaluation,
+       isGenerating,
+       isRunning,
+       activeTab,
+       showAiChat,
+       aiMessage,
+       backendError,
+       customInput,
+       customOutput,
       // difficulty,
       language,
       topic,
       showConfirmDialog,
-      pendingLanguage
-    },
-    actions: {
-      // setDifficulty,
-      setLanguage,
-      setTopic,
-      setCode,
-      setActiveTab,
-      setCustomInput,
-      setShowAiChat,
-      setShowConfirmDialog,
-      // handleGenerateProblem,
-      handleRunCode,
-      handleAiAssist,
-      initiateLanguageChange,
-      executeLanguageChange
-    }
-  };
+      pendingLanguage,
+      ranTests
+     },
+     actions: {
+       // setDifficulty,
+       setLanguage,
+       setTopic,
+       setCode,
+       setActiveTab,
+       setCustomInput,
+       setShowAiChat,
+       setShowConfirmDialog,
+       // handleGenerateProblem,
+       handleRunCode,
+       setRanTests,
+       handleAiAssist,
+       initiateLanguageChange,
+       executeLanguageChange
+     }
+   };
 };
