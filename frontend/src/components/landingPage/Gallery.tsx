@@ -4,7 +4,7 @@ import { useRef } from 'react';
 const galleryItems = [
   {
     title: 'Immersive Worlds',
-    image: 'https://images.unsplash.com/photo-1643546843357-f365789ba489?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmdXR1cmlzdGljJTIwZ2FtaW5nJTIwY2l0eXNjYXBlfGVufDF8fHx8MTc2NTgxMDE3OHww&ixlib=rb-4.1.0&q=80&w=1080',
+    image: '/images/about.png',
   },
   {
     title: 'Epic Adventures',
@@ -25,7 +25,7 @@ export function Gallery() {
 
   return (
     <section className="relative py-32 bg-black overflow-hidden">
-      
+
       {/* Header */}
       <div className="mb-12 px-6">
         <motion.div
@@ -49,7 +49,7 @@ export function Gallery() {
         - snap-x & snap-mandatory: Creates a nice snapping effect when scrolling stops
         - no-scrollbar: You might need a utility class or CSS to hide the scrollbar
       */}
-      <div 
+      <div
         ref={scrollContainerRef}
         className="flex gap-8 px-6 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide"
         style={{ scrollBehavior: 'smooth' }}
@@ -62,7 +62,7 @@ export function Gallery() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
             viewport={{ once: true }}
-            
+
             // Layout classes
             className="relative flex-shrink-0 w-[85vw] md:w-[500px] h-[600px] rounded-3xl overflow-hidden border border-gray-800 group cursor-pointer snap-center"
           >
@@ -71,9 +71,9 @@ export function Gallery() {
               alt={item.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
-            
+
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-            
+
             <div className="absolute bottom-0 left-0 right-0 p-8">
               <h3 className="text-3xl mb-2 text-white font-bold">{item.title}</h3>
               <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
@@ -83,7 +83,7 @@ export function Gallery() {
             <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500/50 rounded-3xl transition-all duration-300" />
           </motion.div>
         ))}
-        
+
         {/* Spacer to ensure the last item isn't flush against the viewport edge */}
         <div className="w-6 flex-shrink-0" />
       </div>
