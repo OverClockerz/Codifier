@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
 InitialPlayerState = {
     "username": "",
+    "companyName": "OmniTech Solutions",
     "githubinfo": {
         "github_id": "",
         "avatar_url": "",
@@ -11,7 +12,7 @@ InitialPlayerState = {
     "level": 1,
     "experience": 0,
     "experienceToNextLevel": 100,
-    "currency": 100,
+    "currency": 500,
 
     "mood": 70,
     "stress": 20,
