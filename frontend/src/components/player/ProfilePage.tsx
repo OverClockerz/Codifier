@@ -104,7 +104,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                 </div>
                 <div>
                   <h2 className="text-xl text-white">{user?.username || 'Player'}</h2>
-                  <p className="text-sm text-gray-400 mt-1">• OmniTech Solutions</p>
+                  <p className="text-sm text-gray-400 mt-1">• {player.companyName || 'OmniTech Solutions'}</p>
                 </div>
               </div>
 

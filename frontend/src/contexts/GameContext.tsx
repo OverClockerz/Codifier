@@ -5,6 +5,7 @@ import { getExperienceForLevel, getSalaryForLevel, GAME_CONSTANTS, getRestartLev
 import { useAuth } from './AuthContext';
 import { fetchPlayerData, updatePlayerData } from '../services/api';
 import { shopItems } from '../data/shopItems';
+import { getRandomCompanyName } from '../data/companyNames';
 import AlertComponent from '../components/extras/AlertComponent';
 import { gameTimeSince } from '../utils/calculations';
 
@@ -60,6 +61,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [player, setPlayer] = useState<PlayerState>({
     id: '',
     username: '',
+    companyName: 'OmniTech Solutions',
     githubinfo: {
       github_id: '',
       avatar_url: '',
@@ -406,10 +408,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
     try {
       const totalExp = player.currentRun?.totalExperience || 0;
       const newStartLevel = getRestartLevel(totalExp);
+      const newCompanyName = getRandomCompanyName();
 
       const freshPlayer: PlayerState = {
         id: player.id,
         username: player.username,
+        companyName: newCompanyName,
         githubinfo: player.githubinfo,
         gameStartDate: new Date().toISOString(),
         level: newStartLevel,
@@ -456,9 +460,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setHasAlertedForCurrentStress(false);
       setCurrentView('dashboard');
 
+      // Set local state immediately with new company name
+      setPlayer(freshPlayer);
+      setIsGameOver(false);
+      setHasAlertedForCurrentStress(false);
+
       if (user?.id) {
         const resetPayload = {
           username: freshPlayer.username,
+          companyName: newCompanyName,
           level: freshPlayer.level,
           experience: 0,
           experienceToNextLevel: freshPlayer.experienceToNextLevel,
@@ -485,12 +495,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
           inventory: [],
         };
         await updatePlayerData(resetPayload);
+        console.log("✅ Career Reset Successful");
       }
-
-      setPlayer(freshPlayer);
-      setIsGameOver(false);
-      setHasAlertedForCurrentStress(false);
-      console.log("✅ Career Reset Successful");
 
       // 4. Then sync with backend
       if (user?.username) {
@@ -564,6 +570,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const transformedPlayer: PlayerState = {
         id: backendData.githubinfo?.github_id,
         username: backendData.username,
+        companyName: backendData.companyName,
         githubinfo: backendData.githubinfo,
         gameStartDate: backendData.gameStartDate,
         level: backendData.level,

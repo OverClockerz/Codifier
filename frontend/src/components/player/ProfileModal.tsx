@@ -96,7 +96,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                   <div>
                     <h2 className="text-sm text-white">{user?.username || 'Player'}</h2>
                     {/* <p className="text-sm text-gray-400">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p> */}
-                    <p className="text-xs text-gray-500">OmniTech Solutions</p>
+                    <p className="text-xs text-gray-500">{player.companyName || 'OmniTech Solutions'}</p>
                   </div>
                   {/* <ChevronRight className="w-5 h-5 text-gray-600 hidden md:block" /> */}
                 </div>
@@ -302,7 +302,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Rating:</span>
-                      <span className="text-yellow-400">{Math.round(((player.currentMonthTasksCompleted) / player.completedQuests.length) * 5)}/5.0</span>
+                      <span className="text-yellow-400">{Math.round(((player.currentMonthTasksCompleted) / player.completedQuests.length) * 5) || 0}/5.0</span>
                     </div>
                   </div>
                 </div>

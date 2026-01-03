@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { Bell, Menu, X, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
-import { ZoneType} from '../types/game';
+import { ZoneType } from '../types/game';
 import { GameDashboard } from './GameDashboard';
 import { ZoneTransition } from './transitions/ZoneTransition';
 import { QuestStartTransition } from './transitions/QuestStartTransition';
@@ -11,6 +11,7 @@ import { LevelUpTransition } from './transitions/LevelUpTransition';
 import { ScrambleTextOnHover } from './effects/ScrambleText';
 import { ProfileModal } from './player/ProfileModal';
 import { NotificationsModal } from './extras/NotificationsModal';
+import { QuestGenerationManager } from './quests/QuestGenerationManager';
 import { DigitalClock } from './extras/DigitalClock';
 
 export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => void }) {
@@ -211,6 +212,9 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
         isOpen={showNotifications}
         onClose={() => setShowNotifications(false)}
       />
+
+      {/* Quest Generation Manager */}
+      <QuestGenerationManager />
     </div>
   );
 }
