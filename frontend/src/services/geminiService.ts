@@ -1,6 +1,6 @@
 import { Problem, SupportedLanguage, EvaluationResult,Question, Attempt, ComprehensionEvaluationResult } from "../types/types";
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://codifier-xrzs.onrender.com/api';
 
 /**
  * Fetches the current problem from the DB if it exists.

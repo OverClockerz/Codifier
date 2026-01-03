@@ -45,7 +45,7 @@ import { Quest, ShopItem, PlayerState } from "../types/game";
 // Your backend API base URL - set this in your .env file
 // Example: VITE_API_URL=http://localhost:5000
 // or VITE_API_URL=https://your-backend-api.com
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://codifier-xrzs.onrender.com';
 
 // Helper function to add auth headers
 const getAuthHeaders = (): HeadersInit => {
