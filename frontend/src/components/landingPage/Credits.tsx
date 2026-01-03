@@ -1,6 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Instagram, Globe, Heart, Sparkles } from 'lucide-react';
+import { Github, Instagram,} from 'lucide-react';
 
 const CREDIT_DATA = {
   team: [

@@ -1,5 +1,3 @@
-// game.ts
-// Core Game Types for Office - A Gamified Career Simulation
 
 // ============================================================
 // SHARED ENUMS & TYPES

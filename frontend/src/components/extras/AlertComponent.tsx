@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 type AlertProps = {
   onRestart: () => void;
@@ -15,7 +15,7 @@ const AlertComponent = ({ onRestart }: AlertProps) => {
       role="dialog" 
       aria-modal="true" 
       tabIndex={-1} 
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 font-sans"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 font-sans"
     >
       
       {/* MODAL CONTAINER: Standard pop-up box shape with shadow and animation */}

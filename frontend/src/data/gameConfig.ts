@@ -1,9 +1,3 @@
-/**
- * Game Configuration - Calculation Functions Only
- * =================================================
- * This file contains ONLY calculation/helper functions used by the frontend.
- * All game configuration data is fetched from the backend.
- */
 
 // ===========================
 // CALCULATION FUNCTIONS
@@ -114,14 +108,7 @@ export const GAME_CONFIG: GameConfig = {
 // ===========================
 // PROFESSIONAL ATTRIBUTES
 // ===========================
-/**
- * Professional attributes used across the game
- * - GameDashboard: calculates overall skill proficiency as average
- * - ProfilePage: displays detailed breakdown with radar chart
- * 
- * ⚠️ IMPORTANT: Always use getProfessionalAttributes(player.proficiency) with actual player data
- * Never use hardcoded values - this ensures database changes reflect immediately
- */
+
 export function getProfessionalAttributes(proficiency: PlayerProficiency) {
   console.log('📊 Raw Proficiency Data from Database:', proficiency);
   

@@ -1,8 +1,3 @@
-// export enum Difficulty {
-//   Easy = "Easy",
-//   Medium = "Medium",
-//   Hard = "Hard",
-// }
 
 export enum SupportedLanguage {
   Python = "python",

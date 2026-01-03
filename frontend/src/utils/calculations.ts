@@ -7,7 +7,7 @@
 
 import { PlayerState, Quest, ShopItem, Buff, ActiveBuff, ItemEffect } from '../types/game';
 import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS } from '../data/gameConfig';
-import { useGame } from '../contexts/GameContext';
+
 
 // ===========================
 // EXPERIENCE & LEVELING
@@ -319,7 +319,6 @@ export function applyConsumableItem(
 ): PlayerState {
   const data = { ...playerData };
   const effect = item.effect || {};
-  let activeBuff: ActiveBuff | null = null;
 
   // Instant effects
   if (effect.stressReduction) {
@@ -418,27 +417,12 @@ export function purchaseItem(
     data = applyPermanentBuff(data, item);
     return { success: true, playerData: data, message: 'Permanent buff acquired' };
   } else if (item.type === 'consumable') {
-    // Add to inventory
-    // if (!data.inventory) {
-    //   data.inventory = [];
-    // }
-
-    // // Check if item already in inventory
-    // const existing = data.inventory.find((inv) => inv.item.id === item.id);
-    // if (existing) {
-    //   existing.quantity += 1;
-    // } else {
-    //   data.inventory.push({
-    //     item: item,
-    //     quantity: 1,
-    //     purchasedAt: Date.now(),
-    //   });
-    // }
+   
 
     data = applyConsumableItem(data, item);
 
 
-    return { success: true, playerData: data, message: 'Item added to inventory' };
+    return { success: true, playerData: data, message: 'Item Purchased' };
   }
 
   return { success: false, playerData: data, message: 'Unknown item type' };

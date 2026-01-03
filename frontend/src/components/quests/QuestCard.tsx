@@ -78,7 +78,7 @@ export function QuestCard({ quest, index, theme = 'blue', onStart }: QuestCardPr
         {/* QUEST DESCRIPTION */}
         {/* ============================================================ */}
         {/* CHANGE 2: Added 'h-[4.5rem]' for fixed height (approx 3 lines) and 'line-clamp-3' for cleaner truncation */}
-        <p className="text-sm text-slate-400 mb-4 h-[1.5rem] line-clamp-3 text-ellipsis overflow-hidden">
+        <p className="text-sm text-slate-400 mb-4 h-6 line-clamp-3 text-ellipsis overflow-hidden">
           {quest.description.length > 100 ? quest.description.slice(0, 90) + "..." : quest.description}
         </p>
 

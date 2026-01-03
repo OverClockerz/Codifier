@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Users, MessageSquare, Calendar, Lightbulb, Zap, TrendingUp, Star } from 'lucide-react';
+import { Users, MessageSquare, Calendar, Lightbulb,TrendingUp } from 'lucide-react';
 import { useGame } from '../contexts/GameContext';
 import { QuestCard } from '../components/quests/QuestCard';
 import { QuestPage } from '../pages/QuestPage';
@@ -71,7 +71,7 @@ export function MeetingRoom() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-orange-900/50 to-orange-800/50 border border-orange-700 rounded-2xl p-6"
+        className="bg-linear-to-r from-orange-900/50 to-orange-800/50 border border-orange-700 rounded-2xl p-6"
       >
         <div className="flex items-center gap-3">
           <Users className="w-8 h-8 text-orange-400" />
@@ -129,27 +129,6 @@ export function MeetingRoom() {
           ))}
         </div>
       )}
-
-      {/* ============================================================ */}
-      {/* COLLABORATION TIPS */}
-      {/* ============================================================ */}
-      {/* <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="bg-orange-900/20 border border-orange-800 rounded-xl p-5"
-      >
-        <div className="flex items-center gap-2 mb-3">
-          <Star className="w-5 h-5 text-orange-400" />
-          <h3 className="text-lg text-white">Collaboration Tips</h3>
-        </div>
-        <ul className="space-y-2 text-sm text-gray-400">
-          <li>• Active participation in meetings boosts your reputation</li>
-          <li>• Good communication skills lead to better team performance</li>
-          <li>• Leadership opportunities unlock at higher reputation levels</li>
-          <li>• Soft skills are essential for career advancement</li>
-        </ul>
-      </motion.div> */}
 
       {/* ============================================================ */}
       {/* QUEST PAGE */}

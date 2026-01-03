@@ -64,28 +64,6 @@ export const useCodingPlatform = (initialProblem?: Problem) => {
     }
   };
 
-  // const handleGenerateProblem = async () => {
-  //   setIsGenerating(true);
-  //   setEvaluation(null);
-  //   setAiMessage('');
-  //   setCustomOutput(null);
-  //   setBackendError(null);
-  //   try {
-  //     const newProblem = await generateProblem(difficulty, topic);
-  //     setProblem(newProblem);
-  //     setCode(newProblem.boilerplates[language]);
-      
-  //     if (newProblem.examples.length > 0) {
-  //       setCustomInput(newProblem.examples[0].input);
-  //     }
-  //   } catch (error: any) {
-  //     console.error("Failed to generate", error);
-  //     setBackendError("Failed to generate new problem. Backend may be offline.");
-  //   } finally {
-  //     setIsGenerating(false);
-  //   }
-  // };
-
   const initiateLanguageChange = (newLang: SupportedLanguage) => {
     if (newLang === language) return;
     if (problem && code.trim() !== problem.boilerplates[language].trim() && code.length > 20) {

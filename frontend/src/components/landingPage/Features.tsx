@@ -89,7 +89,7 @@ export function Features() {
               <h2 className="text-5xl md:text-7xl mb-6">
                 <ScrambleText
                   text="Game Features"
-                  className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+                  className="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
                   speed={60}
                   as="span"
                 />
@@ -122,7 +122,7 @@ export function Features() {
         <div className="relative max-w-7xl mx-auto">
           <ScrollReveal direction="up">
             <div className="text-center mb-16">
-              <h3 className="text-4xl md:text-5xl mb-4 bg-gradient-to-r from-red-400 to-indigo-400 bg-clip-text text-transparent">
+              <h3 className="text-4xl md:text-5xl mb-4 bg-linear-to-r from-red-400 to-indigo-400 bg-clip-text text-transparent">
                 Core Systems
               </h3>
               <p className="text-lg text-gray-400 max-w-2xl mx-auto">
@@ -142,13 +142,13 @@ export function Features() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                   whileHover={{ y: -10, scale: 1.02 }}
-                  className="group relative p-8 bg-gradient-to-br from-gray-900/80 to-gray-900/60 border border-gray-800 rounded-3xl backdrop-blur-md hover:border-gray-700 transition-all duration-300"
+                  className="group relative p-8 bg-linear-to-br from-gray-900/80 to-gray-900/60 border border-gray-800 rounded-3xl backdrop-blur-md hover:border-gray-700 transition-all duration-300"
                 >
                   {/* Glow Effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-300`} />
+                  <div className={`absolute inset-0 bg-linear-to-r ${feature.gradient} opacity-0 group-hover:opacity-10 rounded-3xl transition-opacity duration-300`} />
 
                   {/* Icon */}
-                  <div className={`w-14 h-14 mb-6 rounded-2xl bg-gradient-to-r ${feature.gradient} p-0.5`}>
+                  <div className={`w-14 h-14 mb-6 rounded-2xl bg-linear-to-r ${feature.gradient} p-0.5`}>
                     <div className="w-full h-full bg-black rounded-2xl flex items-center justify-center">
                       <Icon className="w-7 h-7 text-white" />
                     </div>
@@ -162,7 +162,7 @@ export function Features() {
 
                   {/* Hover Indicator */}
                   <motion.div
-                    className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient} rounded-b-3xl`}
+                    className={`absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r ${feature.gradient} rounded-b-3xl`}
                     initial={{ scaleX: 0 }}
                     whileHover={{ scaleX: 1 }}
                     transition={{ duration: 0.3 }}
