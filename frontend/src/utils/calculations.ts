@@ -606,11 +606,11 @@ export function gameTimeSince(player: PlayerState): { days: number; months: numb
   // Prevent negative differences
   const diffMs = Math.max(0, now - past);
   const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const prevMonth = months;
-  months = Math.floor(totalDays / 30) + 1;
-  if (prevMonth !== months) {
-    salaryIncrement(player, months - prevMonth);
-  }
+  // const prevMonth = months;
+  // months = Math.floor(totalDays / 30) + 1;
+  // if (prevMonth !== months) {
+  //   salaryIncrement(player, months - prevMonth);
+  // }
 
   // Days cycle from 1–30
   const days = (totalDays % 30) + 1;
