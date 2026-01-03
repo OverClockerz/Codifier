@@ -3,10 +3,8 @@ import { motion } from 'motion/react';
 import { Bell, Menu, X, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
-import { ZoneType, Quest, GitHubInfo } from '../types/game';
+import { ZoneType} from '../types/game';
 import { GameDashboard } from './GameDashboard';
-// import { QuestList } from './quests/QuestList';
-// import { SimpleQuestModal } from './quests/SimpleQuestModal';
 import { ZoneTransition } from './transitions/ZoneTransition';
 import { QuestStartTransition } from './transitions/QuestStartTransition';
 import { LevelUpTransition } from './transitions/LevelUpTransition';
@@ -17,27 +15,14 @@ import { DigitalClock } from './extras/DigitalClock';
 
 export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => void }) {
   const { user, logout } = useAuth();
-  const { player, startQuest, activeQuests, showLevelUp, dismissLevelUp, getUnreadCount } = useGame();
+  const { player, showLevelUp, dismissLevelUp, getUnreadCount } = useGame();
   const [selectedZone, setSelectedZone] = useState<ZoneType | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [activeQuestModal, setActiveQuestModal] = useState<Quest | null>(null);
   const [questStarting, setQuestStarting] = useState<string | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const unreadNotifications = getUnreadCount();
-
-  const handleStartQuest = (questId: string) => {
-    const quest = activeQuests.find(q => q.id === questId);
-    if (quest) {
-      setQuestStarting(quest.title);
-      setTimeout(() => {
-        startQuest(questId);
-        setQuestStarting(null);
-        setActiveQuestModal(quest);
-      }, 1800);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -47,7 +32,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
           <div className="flex items-center justify-between">
             {/* Logo & User */}
             <div className="flex items-center gap-4">
-              <h1 className="text-xl md:text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-xl md:text-2xl bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 <ScrambleTextOnHover text="OFFICE" />
               </h1>
               <button
@@ -180,7 +165,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-12"
               >
-                <h2 className="text-4xl md:text-6xl mb-3 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <h2 className="text-4xl md:text-6xl mb-3 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                   Welcome back, {user?.username}!
                 </h2>
                 <p className="text-lg md:text-xl text-gray-400">
@@ -197,28 +182,9 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                 <GameDashboard onProfileClick={onNavigateToProfile} />
               </div>
             )}
-
-            {/* Zone Selector or Quest List */}
-            {/* <div className="mt-8">
-              {selectedZone ? (
-                <QuestList
-                  zone={selectedZone}
-                  onBack={() => setSelectedZone(null)}
-                  onStartQuest={handleStartQuest}
-                />
-              ) : null}
-            </div> */}
           </div>
         </ZoneTransition>
       </main>
-
-      {/* Active Quest Modal */}
-      {/* {activeQuestModal && (
-        <SimpleQuestModal
-          quest={activeQuestModal}
-          onClose={() => setActiveQuestModal(null)}
-        />
-      )} */}
 
       {/* Transitions */}
       <QuestStartTransition

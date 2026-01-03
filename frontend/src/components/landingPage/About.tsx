@@ -11,7 +11,7 @@ export function About() {
     offset: ["start end", "end start"]
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  // const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
 
   const handleExploreFeatures = () => {
@@ -21,7 +21,7 @@ export function About() {
   return (
     <section id="about" ref={ref} className="relative py-32 px-6 bg-black overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/10 to-black" />
+      <div className="absolute inset-0 bg-linear-to-b from-black via-blue-950/10 to-black" />
 
       <div className="relative max-w-7xl mx-auto">
         <motion.div
@@ -34,7 +34,7 @@ export function About() {
               <h2 className="text-5xl md:text-7xl mb-6">
                 <ScrambleText
                   text="About Office"
-                  className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+                  className="bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
                   speed={60}
                   as="span"
                 />
@@ -47,13 +47,13 @@ export function About() {
               </p>
               <div className="flex gap-4">
                 <ScrollReveal direction="up" delay={0.2}>
-                  <div className="flex-1 p-6 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl backdrop-blur-sm">
+                  <div className="flex-1 p-6 bg-linear-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl backdrop-blur-sm">
                     <div className="text-4xl mb-2">4</div>
                     <div className="text-gray-400">Office Zones</div>
                   </div>
                 </ScrollReveal>
                 <ScrollReveal direction="up" delay={0.4}>
-                  <div className="flex-1 p-6 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl backdrop-blur-sm">
+                  <div className="flex-1 p-6 bg-linear-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl backdrop-blur-sm">
                     <div className="text-4xl mb-2">∞</div>
                     <div className="text-gray-400">Career Progression</div>
                   </div>
@@ -63,7 +63,7 @@ export function About() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="mt-8 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full hover:from-blue-400 hover:to-purple-400 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.5)]"
+                  className="mt-8 px-6 py-3 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-full hover:from-blue-400 hover:to-purple-400 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.5)]"
                   onClick={handleExploreFeatures}
                 >
                   Explore Features →
@@ -81,7 +81,7 @@ export function About() {
                   alt="Gaming Character"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent" />
               </div>
 
               {/* Floating Badge */}
@@ -94,7 +94,7 @@ export function About() {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="absolute -top-6 -right-6 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.6)]"
+                className="absolute -top-6 -right-6 px-6 py-4 bg-linear-to-r from-blue-600 to-purple-600 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.6)]"
               >
                 <div className="text-sm">Assets by Nano Banana 🍌</div>
               </motion.div>

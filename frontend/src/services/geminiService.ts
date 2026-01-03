@@ -26,27 +26,6 @@ export const getCurrentProblem = async (username?: string): Promise<Problem> => 
   }
 };
 
-// export const generateProblem = async (topic?: string): Promise<Problem> => {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/generate-problem`, {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ topic }),
-//     });
-
-//     if (!response.ok) {
-//       const errorData = await response.json().catch(() => ({}));
-//       throw new Error(errorData.error || `Server Error: ${response.status}`);
-//     }
-
-//     const data = await response.json();
-//     return { ...data };
-//   } catch (error) {
-//     console.error("Backend API Error (Generate Problem):", error);
-//     throw error;
-//   }
-// };
-
 export const runCustomTestCase = async (problemTitle: string, userCode: string, language: SupportedLanguage, customInput: string): Promise<{ output: string; error?: string }> => {
   try {
     const response = await fetch(`${API_BASE_URL}/run-custom`, {
@@ -93,31 +72,6 @@ export const getAiAssistance = async (problem: Problem, userCode: string, query:
   }
 };
 
-// export const generateNewQuestion = async (topic: string): Promise<Question> => {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/generate?t=${Date.now()}`, {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ topic }),
-//     });
-
-//     if (!response.ok) {
-//       const errorData = await response.json().catch(() => ({}));
-//       throw new Error(errorData.error || `Backend error: ${response.statusText}`);
-//     }
-
-//     const data = await response.json();
-    
-//     if (!data.text && !data.question) {
-//       throw new Error("Received empty question from backend");
-//     }
-
-//     return data;
-//   } catch (error) {
-//     console.error("Error fetching question:", error);
-//     throw error;
-//   }
-// };
 
 export const evaluateSubmission = async (question: Question, answer: string): Promise<Attempt> => {
   try {
@@ -147,16 +101,6 @@ export const evaluateSubmission = async (question: Question, answer: string): Pr
         evaluation: evaluationData
     };
 
-    // // Step 3: Save to MongoDB
-    // const saveResponse = await fetch(`${API_BASE_URL}/attempts`, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(newAttempt)
-    // });
-
-    // if (!saveResponse.ok) {
-    //     console.warn("Warning: Failed to save attempt to history database.");
-    // }
 
     return newAttempt;
 

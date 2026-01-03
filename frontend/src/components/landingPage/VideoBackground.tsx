@@ -94,12 +94,12 @@ export function VideoBackground({ videoSrc }: VideoBackgroundProps) {
       )}
       
       {/* Fallback gradient background */}
-      <div className={`absolute inset-0 bg-gradient-to-b from-blue-900/20 via-purple-900/20 to-black transition-opacity duration-1000 ${
+      <div className={`absolute inset-0 bg-linear-to-b from-blue-900/20 via-purple-900/20 to-black transition-opacity duration-1000 ${
         videoError || !videoLoaded ? 'opacity-100' : 'opacity-0'
       }`} />
       
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/50 via-black/70 to-black" />
     </div>
   );
 }

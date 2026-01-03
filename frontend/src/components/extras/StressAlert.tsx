@@ -11,7 +11,7 @@ export function StressAlert({ isOpen, onClose, onGoToShop }: StressAlertProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
           {/* 1. Frosted Glass Backdrop */}
           <motion.div
             initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
@@ -47,7 +47,7 @@ export function StressAlert({ isOpen, onClose, onGoToShop }: StressAlertProps) {
             <motion.div 
               animate={{ top: ["0%", "100%"] }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent z-0 pointer-events-none"
+              className="absolute left-0 right-0 h-px bg-linear-to-r from-transparent via-red-500/50 to-transparent z-0 pointer-events-none"
             />
 
             {/* Window Header */}
@@ -99,12 +99,12 @@ export function StressAlert({ isOpen, onClose, onGoToShop }: StressAlertProps) {
                     initial={{ width: "0%" }}
                     animate={{ width: "100%" }}
                     transition={{ duration: 1, ease: "circOut" }}
-                    className="h-full bg-gradient-to-r from-red-900 via-red-600 to-red-500 relative"
+                    className="h-full bg-linear-to-r from-red-900 via-red-600 to-red-500 relative"
                   >
                     <motion.div 
                       animate={{ x: ["-100%", "200%"] }}
                       transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"
+                      className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent skew-x-12"
                     />
                   </motion.div>
                 </div>
@@ -138,7 +138,7 @@ export function StressAlert({ isOpen, onClose, onGoToShop }: StressAlertProps) {
                   }}
                   className="group relative flex-1 py-3 bg-red-950/80 hover:bg-red-900 border border-red-500/50 text-white rounded-lg font-bold text-[10px] uppercase tracking-wide overflow-hidden transition-all shadow-lg shadow-red-900/20"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-red-500/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
                   <span className="relative flex flex-col items-center justify-center gap-1 text-red-50 group-hover:text-white transition-colors">
                     <Coffee className="w-4 h-4 mb-0.5" />
                     <span>Get Coffee</span>

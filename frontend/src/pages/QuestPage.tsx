@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { X, Code, Trophy, Zap, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Code, Trophy, Zap, CheckCircle, AlertCircle } from 'lucide-react';
 import { Quest } from '../types/game';
 import { useGame } from '../contexts/GameContext';
 // import { QuestTasks } from '../components/quests/QuestTasks';

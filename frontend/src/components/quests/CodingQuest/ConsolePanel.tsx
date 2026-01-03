@@ -82,7 +82,7 @@ export const ConsolePanel: React.FC<Props> = ({
           <div className="absolute inset-0 z-10 bg-editor-bg/90 flex flex-col items-center justify-center text-slate-400 gap-4 backdrop-blur-sm">
             <div className="w-64">
               <div className="h-2 bg-slate-800 rounded overflow-hidden mb-2">
-                <div className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 animate-[progress_2.2s_linear_infinite]" style={{ width: '60%' }} />
+                <div className="h-full bg-linear-to-r from-blue-500 via-indigo-500 to-purple-500 animate-[progress_2.2s_linear_infinite]" style={{ width: '60%' }} />
               </div>
               <div className="flex items-center justify-between text-xs text-slate-400">
                 <span>Compiling...</span>
@@ -205,13 +205,13 @@ export const ConsolePanel: React.FC<Props> = ({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div className="relative">
                             <span className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Expected Output</span>
-                            <div className="bg-[#0f172a] p-2 rounded border border-slate-700 text-green-400/90 font-mono text-xs overflow-x-auto whitespace-pre-wrap min-h-[2rem]">
+                            <div className="bg-[#0f172a] p-2 rounded border border-slate-700 text-green-400/90 font-mono text-xs overflow-x-auto whitespace-pre-wrap min-h-8">
                               {r.expectedOutput}
                             </div>
                           </div>
                           <div className="relative">
                             <span className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Actual Output</span>
-                            <div className={`p-2 rounded border font-mono text-xs overflow-x-auto whitespace-pre-wrap min-h-[2rem]
+                            <div className={`p-2 rounded border font-mono text-xs overflow-x-auto whitespace-pre-wrap min-h-8
                                         ${r.passed
                                 ? 'bg-[#0f172a] border-slate-700 text-slate-300'
                                 : 'bg-red-950/20 border-red-500/20 text-red-300'}`}>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Trophy, Gamepad2, Brain, Lightbulb, Zap, TrendingUp } from 'lucide-react';
+import { Trophy, Gamepad2, Brain, Lightbulb, Zap } from 'lucide-react';
 import { useGame } from '../contexts/GameContext';
 import { QuestCard } from '../components/quests/QuestCard';
 import { QuestPage } from '../pages/QuestPage';
@@ -71,7 +71,7 @@ export function GameLounge() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-purple-900/50 to-purple-800/50 border border-purple-700 rounded-2xl p-6"
+        className="bg-linear-to-r from-purple-900/50 to-purple-800/50 border border-purple-700 rounded-2xl p-6"
       >
         <div className="flex items-center gap-3">
           <Gamepad2 className="w-8 h-8 text-purple-400" />

@@ -3,7 +3,6 @@ import { Hero } from './Hero';
 import { About } from './About';
 import { Features } from './Features';
 // import { Gallery } from './Gallery';
-// import { CallToAction } from './CallToAction'; // Removed
 import { Credits } from './Credits'; // Added
 import { Footer } from './Footer';
 import { VideoBackground } from './VideoBackground';
@@ -14,7 +13,7 @@ interface LandingPageProps {
 
 export function LandingPage({ onStartCareer }: LandingPageProps) {
   // Placeholder video - ensure you have a valid .mp4 URL here
-  const videoUrl = 'https://player.vimeo.com/progressive_redirect/playback/910123726/rendition/1080p/file.mp4?loc=external&signature=0c0fc9f89dd5f41fb0b0b34fa88de04b8c9f1732cfca8088bb88ba18f1b0c0f5';
+  const videoUrl = '/videos/feature-2.mp4';
 
   return (
     <div className="min-h-screen bg-black text-white">

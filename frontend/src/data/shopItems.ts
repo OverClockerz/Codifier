@@ -1,29 +1,4 @@
 import { ShopItem } from '../types/game';
-
-/**
- * SHOP ITEMS CONFIGURATION
- * =========================
- * 
- * Shop items are HARDCODED in the frontend (this file).
- * The items themselves don't need to be fetched from the backend.
- * 
- * However, when a player purchases an item:
- * 1. Frontend deducts currency from player
- * 2. Frontend adds item to player's inventory
- * 3. Frontend calls updatePlayerData() to save updated currency & inventory to backend
- * 
- * When a player uses an item:
- * 1. Frontend calculates the effect (XP boost, stress reduction, etc.)
- * 2. Frontend applies the effect to player state
- * 3. Frontend calls updatePlayerData() to save the updated state to backend
- * 
- * 📊 SHOP STRUCTURE:
- * - 5 Consumable items (single-use, provide temporary or instant effects)
- * - 5 Permanent items (one-time purchase, provide permanent passive bonuses)
- * 
- * See /services/api.ts: updatePlayerData() for backend sync
- */
-
 export const shopItems: ShopItem[] = [
   // ==========================================================
   // CONSUMABLE ITEMS (5 items)

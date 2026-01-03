@@ -1,63 +1,29 @@
 import { motion } from 'motion/react';
 import { useGame } from '../contexts/GameContext';
-// import { useAuth } from '../contexts/AuthContext';
 import {
   TrendingUp,
-  Heart,
-  Zap,
   DollarSign,
   Calendar,
-  Award,
-  AlertTriangle,
-  Shield,
-  User,
-  ChevronRight,
   Code,
   Gamepad2,
   Users,
   Coffee,
-  Clock,
   AlertCircle,
-  Landmark,
 } from 'lucide-react';
 import { useState } from 'react';
 import { ZoneType } from '../types/game';
-// import { getDifficultyLabel } from '../data/quests';
 import { getProfessionalAttributes } from '../data/gameConfig';
 import { PlayerCard } from './player/PlayerCard';
 import { Workspace } from '../zones/Workspace';
 import { GameLounge } from '../zones/GameLounge';
 import { MeetingRoom } from '../zones/MeetingRoom';
 import { Cafeteria } from '../zones/Cafeteria';
-// import { Tooltip } from './extras/Tooltip';
 import { calculateDeadline, gameTimeSince } from '../utils/calculations';
-
-// // --- New Time System Integration ---
-// type DateInput = string | { $date: string };
-
-// function normalizeDate(input: DateInput): string {
-//   return typeof input === "string" ? input : input.$date;
-// }
-
-// function gameTimeSince(input: DateInput): { days: number; months: number } {
-//   const dateString = normalizeDate(input);
-//   const past = new Date(dateString).getTime();
-//   const now = Date.now();
-
-//   const diffMs = now - past;
-//   const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-//   const months = Math.floor(totalDays / 30);
-//   const days = (totalDays % 30) + 1; // reset to 1 after each 30 days
-
-//   return { days, months };
-// }
 
 const deadlineThreshold = 2;
 
 export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void }) {
-  const { player, activeQuests, activeBuffs } = useGame();
-  // const { user } = useAuth();
+  const { player, activeQuests} = useGame();
   const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
 
   // DEBUG: Log quest counts
@@ -143,7 +109,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-6"
+        className="bg-linear-to-r from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-6"
       >
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           {/* Player Info */}
@@ -152,7 +118,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
           {/* Quick Stats */}
           <div className="flex flex-wrap gap-3">
             {/* Level */}
-            <div className="bg-black/30 rounded-lg px-4 py-2 min-w-[80px]">
+            <div className="bg-black/30 rounded-lg px-4 py-2 min-w-20">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-blue-400" />
                 <div>
@@ -163,7 +129,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             </div>
 
             {/* Currency */}
-            <div className="bg-black/30 rounded-lg px-4 py-2 min-w-[100px]">
+            <div className="bg-black/30 rounded-lg px-4 py-2 min-w-25">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-yellow-400" />
                 <div>
@@ -174,7 +140,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
             </div>
 
             {/* Day/Month - UPDATED LOGIC HERE */}
-            <div className="bg-black/30 rounded-lg px-4 py-2 min-w-[80px]">
+            <div className="bg-black/30 rounded-lg px-4 py-2 min-w-20">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-purple-400" />
                 <div>
@@ -228,7 +194,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${levelProgress}%` }}
-                className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
+                className="h-full bg-linear-to-r from-blue-500 to-cyan-500"
               />
             </div>
           </div>

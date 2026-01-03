@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGame } from '../../contexts/GameContext';
 import { useState } from 'react';
-import { ZoneType } from '../../types/game';
+// import { ZoneType } from '../../types/game';
 import { SimpleRadarChart } from '../charts/SimpleRadarChart';
 import { ScrambleTextOnHover } from '../effects/ScrambleText';
 import { getProfessionalAttributes } from '../../data/gameConfig';
@@ -21,11 +21,11 @@ import {
 export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) {
   const { user, logout } = useAuth();
   const { player } = useGame();
-  const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
+  // const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Calculate progress to next level
-  const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
+  // const levelProgress = (player.experience / player.experienceToNextLevel) * 100;
 
   // Fetch professional attributes from player proficiency data
   const attributesList = getProfessionalAttributes(player.proficiency);

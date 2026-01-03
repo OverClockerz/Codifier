@@ -49,7 +49,7 @@ export function Navigation({ onSignIn }: NavigationProps) {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+              className="text-2xl bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
             >
               OFFICE
             </motion.a>
@@ -67,7 +67,7 @@ export function Navigation({ onSignIn }: NavigationProps) {
                   className="text-gray-300 hover:text-white transition-colors relative group cursor-pointer"
                 >
                   {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300" />
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-linear-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300" />
                 </motion.a>
               ))}
               <motion.button
@@ -76,7 +76,7 @@ export function Navigation({ onSignIn }: NavigationProps) {
                 transition={{ duration: 0.5, delay: 0.5 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-500 hover:to-purple-500 transition-all duration-300"
+                className="px-6 py-2 bg-linear-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-500 hover:to-purple-500 transition-all duration-300"
                 onClick={onSignIn}
               >
                 Sign In
@@ -122,7 +122,7 @@ export function Navigation({ onSignIn }: NavigationProps) {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: isOpen ? 1 : 0, scale: isOpen ? 1 : 0.8 }}
             transition={{ duration: 0.3, delay: 0.5 }}
-            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-lg"
+            className="px-8 py-3 bg-linear-to-r from-blue-600 to-purple-600 rounded-full text-lg"
             onClick={onSignIn}
           >
             Sign In

@@ -90,7 +90,7 @@ export function Cafeteria() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-amber-900/50 to-amber-800/50 border border-amber-700 rounded-2xl p-6"
+        className="bg-linear-to-r from-amber-900/50 to-amber-800/50 border border-amber-700 rounded-2xl p-6"
       >
         <div className="flex items-center gap-3 mb-4">
           <Coffee className="w-8 h-8 text-amber-400" />
@@ -167,7 +167,7 @@ export function Cafeteria() {
 
                 {/* Item Details */}
                 <h3 className="text-white mb-2">{item.name}</h3>
-                <p className="text-sm text-gray-400 mb-4 min-h-[40px]">{item.description}</p>
+                <p className="text-sm text-gray-400 mb-4 min-h-10">{item.description}</p>
 
                 {/* Price and Purchase Button */}
                 <div className="flex items-center justify-between">
