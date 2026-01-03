@@ -7,7 +7,7 @@
 
 import { PlayerState, Quest, ShopItem, Buff, ActiveBuff, ItemEffect } from '../types/game';
 import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS } from '../data/gameConfig';
-import { use, useEffect } from 'react';
+import { use, useEffect, useRef } from 'react';
 
 
 // ===========================
@@ -591,13 +591,17 @@ export function gameTimeSince(player: PlayerState): { days: number; months: numb
   // Prevent negative differences
   const diffMs = Math.max(0, now - past);
   const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const prevMonth = player.currentMonth;
   const months = Math.floor(totalDays / 30) + 1;
+
+  const hasProcessedRef = useRef(false);
+
   useEffect(() => {
-   if (prevMonth !== months) {
-    salaryIncrement(player, months - prevMonth);
-  }
-  }, []);
+    if (!hasProcessedRef.current && months > player.currentMonth) {
+      salaryIncrement(player, months - player.currentMonth);
+      player.currentMonth = months;
+      hasProcessedRef.current = true;
+    }
+  }, [months, player]);
 
 
   // Days cycle from 1–30
@@ -615,4 +619,3 @@ function salaryIncrement(player: PlayerState, months: number) {
   player.currentMonthTasksCompleted = 0;
   return;
 }
-

@@ -73,8 +73,13 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
   const handleGitHubLogin = () => {
     setIsRedirecting(true);
     setError(null);
-    const redirectUri = 'http://localhost:3000/github/callback';
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&scope=read:user`;
+
+    const redirectUri = 'http://localhost:5000/github/callback';
+    const githubAuthUrl =
+      `https://github.com/login/oauth/authorize` +
+      `?client_id=${GITHUB_CLIENT_ID}` +
+      `&redirect_uri=${redirectUri}` +
+      `&scope=read:user`;
 
     window.location.href = githubAuthUrl;
   };
@@ -92,6 +97,8 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
 
       // Notify parent
       onAuth(username);
+
+      
 
       setIsAuthenticating(false);
       setIsRedirecting(false);
