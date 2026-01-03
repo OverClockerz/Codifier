@@ -36,7 +36,7 @@ CORS(
             "origins": [
                 "http://localhost:3000",
                 "https://office-07701907-eeb02.web.app",
-                "https://office-2fcd2--dev-0p9x0aa4.web.app"
+                "https://office-2fcd2.web.app"
             ]
         }
     },

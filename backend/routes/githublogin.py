@@ -76,5 +76,5 @@ def github_callback():
         mongo.db.players.insert_one(player)
 
     return redirect(
-        f"https://office-2fcd2--dev-0p9x0aa4.web.app/?username={username}"
+        f"https://office-2fcd2.web.app/?username={username}"
     )  
