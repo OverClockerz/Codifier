@@ -1,4 +1,4 @@
-from flask import request, jsonify,Blueprint
+from flask import redirect, request, jsonify,Blueprint
 from dotenv import load_dotenv
 from utils.paid_leaves import calculate_paid_leaves
 from extensions import mongo
@@ -75,8 +75,6 @@ def github_callback():
         player["lastLoginDate"] = datetime.utcnow()
         mongo.db.players.insert_one(player)
 
-    return jsonify({
-        'message': 'GitHub login successful',
-        'user': user_data,
-        'redirect_url': 'https://office-07701907-eeb02.web.app'
-    })
+    return redirect(
+        f"https://codifier-67782673-e903f.web.app/?username={username}"
+    )  
