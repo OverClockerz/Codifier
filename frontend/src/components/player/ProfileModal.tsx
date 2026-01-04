@@ -235,7 +235,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     className={`text-sm ${(player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'
                       }`}
                   >
-                    {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
+                    {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(3)}%
                   </p>
                   <p className="text-xs text-gray-600">Acquired</p>
                 </div>

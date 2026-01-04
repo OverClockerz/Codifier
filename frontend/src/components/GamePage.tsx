@@ -11,12 +11,13 @@ import { LevelUpTransition } from './transitions/LevelUpTransition';
 import { ScrambleTextOnHover } from './effects/ScrambleText';
 import { ProfileModal } from './player/ProfileModal';
 import { NotificationsModal } from './extras/NotificationsModal';
+import { WelcomeMail } from './extras/WelcomeMail';
 import { QuestGenerationManager } from './quests/QuestGenerationManager';
 import { DigitalClock } from './extras/DigitalClock';
 
 export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => void }) {
   const { user, logout } = useAuth();
-  const { player, showLevelUp, dismissLevelUp, getUnreadCount } = useGame();
+  const { player, showLevelUp, dismissLevelUp, getUnreadCount, showWelcomeMail, setShowWelcomeMail } = useGame();
   const [selectedZone, setSelectedZone] = useState<ZoneType | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [questStarting, setQuestStarting] = useState<string | null>(null);
@@ -211,6 +212,15 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
       <NotificationsModal
         isOpen={showNotifications}
         onClose={() => setShowNotifications(false)}
+      />
+
+      {/* Welcome Mail - Shown once per company */}
+      <WelcomeMail
+        isOpen={showWelcomeMail}
+        onClose={() => setShowWelcomeMail(false)}
+        playerName={player.username}
+        companyName={player.companyName}
+        isFirstCompany={!player.careerHistory || player.careerHistory.length === 0}
       />
 
       {/* Quest Generation Manager */}

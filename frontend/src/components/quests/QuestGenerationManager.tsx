@@ -1,46 +1,29 @@
 /**
  * QuestGenerationManager Component
  * ================================
- * Manages HR mail notifications and quest generation
- * Listens to player state changes and triggers appropriate mail/generation flow
+ * Manages automatic quest generation based on game events
+ * IMPORTANT: Backend now handles initial quests for new players
+ * Frontend only auto-generates quests when a zone has ≤10 active quests (on day change)
+ * No manual quest generation prompts/popups
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGame } from '../../contexts/GameContext';
-import { HRMailModal } from '../extras/HRMailModal';
 import { generateQuests } from '../../services/api';
 import {
     getQuestGenerationTrigger,
-    getZonesForQuestGeneration,
-    QuestGenerationTrigger,
+    getZonesNeedingQuests,
     saveQuestGenerationState,
     getQuestGenerationState,
 } from '../../utils/questGenerationUtils';
 
 export function QuestGenerationManager() {
     const { player, addNotification, setPlayer } = useGame();
-    const [showHRMail, setShowHRMail] = useState(false);
-    const [currentMailType, setCurrentMailType] = useState<'new-player' | 'new-day' | 'fired' | 'low-quests'>('new-player');
-    const [isGenerating, setIsGenerating] = useState(false);
-
     const lastCheckedDayRef = useRef<number>(player.currentDay);
-    const generatedQuestsRef = useRef<Set<QuestGenerationTrigger>>(new Set());
-    const pageLoadedRef = useRef(false);
-
-    // Initialize from sessionStorage on mount
-    useEffect(() => {
-        if (!pageLoadedRef.current) {
-            pageLoadedRef.current = true;
-            const savedState = getQuestGenerationState();
-            if (savedState) {
-                generatedQuestsRef.current.add(savedState.lastGeneratedTrigger);
-                lastCheckedDayRef.current = savedState.lastGeneratedDay;
-            }
-        }
-    }, []);
+    const generationInProgressRef = useRef(false);
 
     useEffect(() => {
-        if (!player.username) return;
+        if (!player.username || generationInProgressRef.current) return;
 
         const trigger = getQuestGenerationTrigger(
             player,
@@ -48,38 +31,43 @@ export function QuestGenerationManager() {
             getQuestGenerationState()?.lastGeneratedTrigger,
         );
 
-        if (trigger !== 'none' && !generatedQuestsRef.current.has(trigger)) {
-            setCurrentMailType(trigger);
-            setShowHRMail(true);
-            generatedQuestsRef.current.add(trigger);
+        if (trigger === 'none') {
+            lastCheckedDayRef.current = player.currentDay;
+            return;
         }
 
+        // Day changed, perform auto-generation for zones with low quests
+        performAutoQuestGeneration(trigger);
+
         lastCheckedDayRef.current = player.currentDay;
-    }, [player.currentDay, player.username, player.reputation]);
+    }, [player.currentDay, player.username, player.activeQuests]);
 
-    const handleQuestGeneration = async () => {
-        if (isGenerating) return;
-
-        setIsGenerating(true);
+    const performAutoQuestGeneration = async (triggerType: string) => {
+        if (generationInProgressRef.current) return;
+        generationInProgressRef.current = true;
 
         try {
-            const zones = getZonesForQuestGeneration(currentMailType);
-            let allGeneratedQuests: any[] = [];
+            // Get only zones that need quests (≤10 active)
+            const zonesToGenerate = getZonesNeedingQuests(player);
 
-            // Process zones sequentially: workspace → game-lounge → meeting-room → cafeteria
-            for (const zone of zones) {
+            if (zonesToGenerate.length === 0) {
+                generationInProgressRef.current = false;
+                return;
+            }
+
+            const allGeneratedQuests: any[] = [];
+            const generatedZoneNames: string[] = [];
+
+            // Process zones that need quests
+            for (const zone of zonesToGenerate) {
                 try {
                     const quests = await generateQuests(player.username, zone, 20);
                     allGeneratedQuests.push(...quests);
-                    console.log(`✅ Generated ${quests.length} quests for ${zone}`);
+                    generatedZoneNames.push(zone);
+                    console.log(`✅ Auto-generated ${quests.length} quests for ${zone}`);
                 } catch (error) {
-                    console.error(`Failed to generate quests for zone ${zone}:`, error);
-                    // Send fallback error notification
-                    addNotification({
-                        type: 'warning',
-                        title: 'Quest Generation Failed',
-                        message: `Could not generate quests for ${zone}. Please try again later.`,
-                    });
+                    console.error(`Failed to auto-generate quests for zone ${zone}:`, error);
+                    // Silent failure - don't show error notifications
                 }
             }
 
@@ -91,38 +79,32 @@ export function QuestGenerationManager() {
                 };
                 setPlayer(updatedPlayer);
 
-                saveQuestGenerationState(player.currentDay, currentMailType);
+                saveQuestGenerationState(player.currentDay, triggerType as any, generatedZoneNames);
 
-                // Send success notification
+                // Send success notification with zone names
+                const zoneDisplayNames = generatedZoneNames.map(z => {
+                    const zoneNames: Record<string, string> = {
+                        'workspace': 'Workspace',
+                        'game-lounge': 'Game Lounge',
+                        'meeting-room': 'Meeting Room',
+                    };
+                    return zoneNames[z] || z;
+                }).join(', ');
+
                 addNotification({
                     type: 'quest',
-                    title: '✅ Quests Generated',
-                    message: `${allGeneratedQuests.length} new quests have been added across all zones!`,
+                    title: 'New Quests Added',
+                    message: `New quests have been added to ${zoneDisplayNames}!`,
                 });
             }
         } catch (error: any) {
-            console.error('Quest generation error:', error);
-
-            // Fallback error notification
-            addNotification({
-                type: 'warning',
-                title: '❌ Quest Generation Failed',
-                message: 'Failed to generate quests. Please try again later.',
-            });
+            console.error('Quest auto-generation error:', error);
+            // Silent failure - no error notifications
         } finally {
-            setIsGenerating(false);
+            generationInProgressRef.current = false;
         }
     };
 
-    return (
-        <HRMailModal
-            isOpen={showHRMail}
-            onClose={() => setShowHRMail(false)}
-            mailType={currentMailType}
-            playerName={player.username}
-            companyName={player.companyName || 'OmniTech Solutions'}
-            onConfirm={handleQuestGeneration}
-            isGenerating={isGenerating}
-        />
-    );
+    // This component doesn't render anything - it just manages background quest generation
+    return null;
 }

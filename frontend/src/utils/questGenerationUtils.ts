@@ -7,18 +7,7 @@
 
 import { PlayerState } from '../types/game';
 
-export type QuestGenerationTrigger = 'new-player' | 'new-day' | 'fired' | 'low-quests' | 'none';
-
-/**
- * Check if player is a new player (first login)
- * A new player will have no career history and just started the game
- */
-export function isNewPlayer(player: PlayerState): boolean {
-  return (
-    !player.careerHistory || 
-    player.careerHistory.length === 0
-  );
-}
+export type QuestGenerationTrigger = 'new-day' | 'low-quests' | 'none';
 
 /**
  * Check if it's a new game day (based on currentDay changing)
@@ -30,33 +19,18 @@ export function isNewDay(player: PlayerState, lastCheckedDay?: number): boolean 
 }
 
 /**
- * Check if player just restarted after being fired
- * Will have a new run with reasonForEnd as 'fired' in previous career
+ * Check if a specific zone has low quests (≤10 active quests)
+ * Returns the zones that need quest generation
  */
-export function isPlayerFiredRestart(player: PlayerState): boolean {
-  if (!player.careerHistory || player.careerHistory.length === 0) {
-    return false;
-  }
-  
-  const lastRun = player.careerHistory[player.careerHistory.length - 1];
-  return lastRun.reasonForEnd === 'fired';
-}
-
-/**
- * Check if quest count is low - per zone check
- * Returns true if ANY zone has less than 10 quests
- */
-export function isQuestCountLow(player: PlayerState): boolean {
+export function getZonesNeedingQuests(player: PlayerState): ('workspace' | 'game-lounge' | 'meeting-room')[] {
   const activeQuests = player.activeQuests || [];
-  const QUESTS_PER_ZONE = 20; // Target quests per zone
-  const LOW_THRESHOLD = 10;  // Show popup if any zone has less than this
+  const LOW_THRESHOLD = 10;
   
-  // Count quests by zone
+  // Count quests by zone (only considering workspace, meeting-room, game-lounge)
   const questsByZone = {
     'workspace': 0,
     'game-lounge': 0,
     'meeting-room': 0,
-    'cafeteria': 0,
   };
   
   activeQuests.forEach(quest => {
@@ -66,58 +40,35 @@ export function isQuestCountLow(player: PlayerState): boolean {
     }
   });
   
-  // Check if any zone has less than the threshold
-  return Object.values(questsByZone).some(count => count < LOW_THRESHOLD);
+  // Return zones that have less than or equal to threshold
+  const zonesNeedingQuests: ('workspace' | 'game-lounge' | 'meeting-room')[] = [];
+  if (questsByZone['workspace'] <= LOW_THRESHOLD) zonesNeedingQuests.push('workspace');
+  if (questsByZone['game-lounge'] <= LOW_THRESHOLD) zonesNeedingQuests.push('game-lounge');
+  if (questsByZone['meeting-room'] <= LOW_THRESHOLD) zonesNeedingQuests.push('meeting-room');
+  
+  return zonesNeedingQuests;
 }
 
 /**
  * Determine the quest generation trigger
  * Returns the type of trigger or 'none' if no generation needed
+ * IMPORTANT: No generation for new players - backend handles initial quests
  */
 export function getQuestGenerationTrigger(
   player: PlayerState,
   lastCheckedDay?: number,
   lastGeneratedTrigger?: QuestGenerationTrigger,
 ): QuestGenerationTrigger {
-  // Check new player (only once at the very beginning)
-  if (isNewPlayer(player) && lastGeneratedTrigger !== 'new-player') {
-    return 'new-player';
-  }
-
-  // Check if player just restarted after being fired
-  if (isPlayerFiredRestart(player) && lastGeneratedTrigger !== 'fired') {
-    return 'fired';
-  }
-
-  // Check for new day (only after player has been created)
-  if (!isNewPlayer(player) && isNewDay(player, lastCheckedDay) && lastGeneratedTrigger !== 'new-day') {
-    return 'new-day';
-  }
-
-  // Check if quests are low (can trigger multiple times)
-  if (!isNewPlayer(player) && isQuestCountLow(player) && lastCheckedDay === player.currentDay) {
-    return 'low-quests';
+  // Check for new day (to auto-generate low quests)
+  if (isNewDay(player, lastCheckedDay)) {
+    // Check if any zone needs quests
+    const zonesNeedingQuests = getZonesNeedingQuests(player);
+    if (zonesNeedingQuests.length > 0) {
+      return 'new-day';
+    }
   }
 
   return 'none';
-}
-
-/**
- * Get zones for quest generation based on trigger type
- * Returns array of zones to generate quests for
- */
-export function getZonesForQuestGeneration(trigger: QuestGenerationTrigger): ('workspace' | 'game-lounge' | 'meeting-room' | 'cafeteria')[] {
-  if (trigger === 'new-player' || trigger === 'fired') {
-    // Generate for all zones on new player or fired restart
-    return ['workspace', 'game-lounge', 'meeting-room', 'cafeteria'];
-  }
-
-  if (trigger === 'new-day' || trigger === 'low-quests') {
-    // Generate for all zones daily
-    return ['workspace', 'game-lounge', 'meeting-room', 'cafeteria'];
-  }
-
-  return [];
 }
 
 /**
@@ -128,6 +79,7 @@ interface QuestGenerationState {
   lastGeneratedDay: number;
   lastGeneratedTrigger: QuestGenerationTrigger;
   lastGeneratedTimestamp: number;
+  generatedZones: string[]; // Track which zones were generated
 }
 
 const STORAGE_KEY = 'quest_generation_state';
@@ -135,11 +87,13 @@ const STORAGE_KEY = 'quest_generation_state';
 export function saveQuestGenerationState(
   day: number,
   trigger: QuestGenerationTrigger,
+  generatedZones: string[] = [],
 ): void {
   const state: QuestGenerationState = {
     lastGeneratedDay: day,
     lastGeneratedTrigger: trigger,
     lastGeneratedTimestamp: Date.now(),
+    generatedZones,
   };
 
   try {

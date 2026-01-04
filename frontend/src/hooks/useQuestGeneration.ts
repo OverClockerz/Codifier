@@ -2,6 +2,8 @@
  * useQuestGeneration Hook
  * =======================
  * Handles automatic quest generation based on game events
+ * IMPORTANT: Backend now handles initial quests for new players
+ * Frontend only generates quests when a zone has ≤10 active quests
  */
 
 import { useEffect, useRef } from 'react';
@@ -9,11 +11,10 @@ import { PlayerState, Notification } from '../types/game';
 import { generateQuests } from '../services/api';
 import {
   getQuestGenerationTrigger,
-  getZonesForQuestGeneration,
+  getZonesNeedingQuests,
   QuestGenerationTrigger,
   saveQuestGenerationState,
   getQuestGenerationState,
-  isNewPlayer,
 } from '../utils/questGenerationUtils';
 
 interface UseQuestGenerationProps {
@@ -46,16 +47,13 @@ export function useQuestGeneration({
       return;
     }
 
-    // Trigger HR mail notification
-    triggerHRMailNotification(trigger, player);
-
-    // Perform quest generation
-    performQuestGeneration(trigger, player);
+    // Day changed, perform auto-generation for zones with low quests
+    performAutoQuestGeneration(trigger, player);
 
     lastCheckedDayRef.current = player.currentDay;
-  }, [player.currentDay, player.username]);
+  }, [player.currentDay, player.username, player.activeQuests]);
 
-  async function performQuestGeneration(
+  async function performAutoQuestGeneration(
     trigger: QuestGenerationTrigger,
     player: PlayerState,
   ) {
@@ -63,69 +61,53 @@ export function useQuestGeneration({
     generationInProgressRef.current = true;
 
     try {
-      const zones = getZonesForQuestGeneration(trigger);
-      const allGeneratedQuests: any[] = [];
+      // Get only zones that need quests (≤10 active)
+      const zonesToGenerate = getZonesNeedingQuests(player);
+      
+      if (zonesToGenerate.length === 0) {
+        generationInProgressRef.current = false;
+        return;
+      }
 
-      for (const zone of zones) {
+      const allGeneratedQuests: any[] = [];
+      const generatedZoneNames: string[] = [];
+
+      for (const zone of zonesToGenerate) {
         try {
           const quests = await generateQuests(player.username, zone, 20);
           allGeneratedQuests.push(...quests);
+          generatedZoneNames.push(zone);
         } catch (error) {
           console.error(`Failed to generate quests for zone ${zone}:`, error);
-          // Send fallback error notification
-          onAddNotification({
-            type: 'warning',
-            title: 'Quest Generation Failed',
-            message: `Could not generate quests for ${zone}. Please try again later.`,
-          });
+          // Don't show error notifications - silent failure as per requirements
         }
       }
 
       if (allGeneratedQuests.length > 0) {
-        saveQuestGenerationState(player.currentDay, trigger);
+        saveQuestGenerationState(player.currentDay, trigger, generatedZoneNames);
         onGenerateComplete(allGeneratedQuests);
 
-        // Send success notification
+        // Send success notification only for successful generation
+        const zoneDisplayNames = generatedZoneNames.map(z => {
+          const zoneNames: Record<string, string> = {
+            'workspace': 'Workspace',
+            'game-lounge': 'Game Lounge',
+            'meeting-room': 'Meeting Room',
+          };
+          return zoneNames[z] || z;
+        }).join(', ');
+
         onAddNotification({
           type: 'quest',
-          title: 'New Quests Available',
-          message: `${allGeneratedQuests.length} new quests have been generated across your zones!`,
+          title: 'New Quests Added',
+          message: `New quests have been added to ${zoneDisplayNames}!`,
         });
       }
     } catch (error: any) {
       console.error('Quest generation error:', error);
-      onGenerateError(error.message || 'Failed to generate quests');
+      // Silent failure - no error notifications
     } finally {
       generationInProgressRef.current = false;
-    }
-  }
-
-  function triggerHRMailNotification(
-    trigger: QuestGenerationTrigger,
-    player: PlayerState,
-  ) {
-    const mailTitles = {
-      'new-player': '📧 Welcome to the Team!',
-      'new-day': '📧 Daily Tasks Available',
-      'fired': '📧 Welcome to Your New Company',
-      'low-quests': '📧 More Opportunities Available',
-    };
-
-    const mailMessages = {
-      'new-player': 'HR has prepared initial tasks for you. Click to review.',
-      'new-day': 'New tasks are available for today.',
-      'fired': 'Welcome to your new workplace! New tasks are ready.',
-      'low-quests': 'Additional tasks available to keep you challenged.',
-    };
-
-    if (trigger !== 'none') {
-      onAddNotification({
-        type: 'quest',
-        title: mailTitles[trigger],
-        message: mailMessages[trigger],
-        // Store trigger type in a custom field if needed
-        metadata: { hrMailType: trigger },
-      } as any);
     }
   }
 

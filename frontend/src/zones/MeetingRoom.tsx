@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Users, MessageSquare, Calendar, Lightbulb,TrendingUp } from 'lucide-react';
+import { Users, MessageSquare, Calendar, Lightbulb, TrendingUp } from 'lucide-react';
 import { useGame } from '../contexts/GameContext';
 import { QuestCard } from '../components/quests/QuestCard';
 import { QuestPage } from '../pages/QuestPage';
+import { MoodAlert } from '../components/extras/MoodAlert';
+import { ZoneType } from '../types/game';
 
-export function MeetingRoom() {
+interface MeetingRoomProps {
+  onNavigate: (zone: ZoneType) => void;
+}
+
+export function MeetingRoom({ onNavigate }: MeetingRoomProps) {
   // ============================================================
   // STATE & DATA FETCHING
   // ============================================================
   const { activeQuests, startQuest, player } = useGame();
   const [selectedQuest, setSelectedQuest] = useState<string | null>(null);
-  
+  const [showMoodAlert, setShowMoodAlert] = useState(false);
+
   // Filter quests for Meeting Room zone
   const meetingRoomQuests = activeQuests.filter(q => q.zone === 'meeting-room');
 
@@ -19,8 +26,17 @@ export function MeetingRoom() {
   // EVENT HANDLERS
   // ============================================================
   const handleStartQuest = (questId: string) => {
+    if (player.mood <= 0) {
+      setShowMoodAlert(true);
+      return;
+    }
+
     startQuest(questId);
     setSelectedQuest(questId);
+  };
+
+  const handleNavigateToShop = () => {
+    onNavigate('cafeteria');
   };
 
   // Find the selected quest
@@ -29,7 +45,7 @@ export function MeetingRoom() {
   // Performance tips based on player stats
   const getPerformanceTips = () => {
     const tips = [];
-    
+
     if (player.mood > 70) {
       tips.push({
         icon: <MessageSquare className="w-5 h-5 text-green-400" />,
@@ -38,7 +54,7 @@ export function MeetingRoom() {
         color: "green"
       });
     }
-    
+
     if (player.level >= 5) {
       tips.push({
         icon: <TrendingUp className="w-5 h-5 text-blue-400" />,
@@ -139,6 +155,15 @@ export function MeetingRoom() {
           onClose={() => setSelectedQuest(null)}
         />
       )}
+
+      {/* ============================================================ */}
+      {/* MOOD ALERT */}
+      {/* ============================================================ */}
+      <MoodAlert
+        isOpen={showMoodAlert}
+        onClose={() => setShowMoodAlert(false)}
+        onGoToShop={handleNavigateToShop}
+      />
     </div>
   );
 }

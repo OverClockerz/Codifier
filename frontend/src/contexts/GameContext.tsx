@@ -46,6 +46,8 @@ interface GameContextType {
   markNotificationAsRead: (notificationId: string) => void;
   clearAllNotifications: () => void;
   getUnreadCount: () => number;
+  showWelcomeMail: boolean;
+  setShowWelcomeMail: (val: boolean) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -119,6 +121,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // We only need to know if we have ALREADY alerted for the current high stress event.
   const [hasAlertedForCurrentStress, setHasAlertedForCurrentStress] = useState(false);
 
+  // Welcome Mail State - Track shown companies to avoid repeated popups
+  const [showWelcomeMail, setShowWelcomeMail] = useState(false);
+  const [lastWelcomeCompany, setLastWelcomeCompany] = useState<string>('');
+
   // Load game on mount
   useEffect(() => {
     if (user?.id && user?.username) {
@@ -146,6 +152,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [player.reputation, isGameOver]);
 
   // ==========================================
+  // WELCOME MAIL LOGIC
+  // ==========================================
+  // Show welcome mail when player joins a new company for the first time
+  useEffect(() => {
+    if (player.companyName && player.companyName !== lastWelcomeCompany && player.id) {
+      setShowWelcomeMail(true);
+      setLastWelcomeCompany(player.companyName);
+    }
+  }, [player.companyName, player.id, lastWelcomeCompany]);
+
+  // ==========================================
   // STRESS RESET LOGIC (Simplified)
   // ==========================================
   // Only resets the flag when stress drops. The 'opening' logic is now in the JSX.
@@ -157,6 +174,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Game loop
   useEffect(() => {
+    console.log(new Date().toISOString(), 'Game Loop Tick');
     if (!user?.id) return;
     const interval = setInterval(() => {
       if (!isLoadingRef.current) {
@@ -268,11 +286,53 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     updateMoodStress(moodChange, stressChange);
 
-    // Reputation Logic
+    // NEW REPUTATION LOGIC - Based on quest difficulty
+    // Difficulty: 1=Basic, 2=Easy, 3=Medium, 4=Hard
+    const difficultyLevel = quest.difficulty || 1;
     let reputationChange = 0;
-    if (performanceScore < 50) reputationChange = -3;
-    else if (performanceScore < 70) reputationChange = 0.1 * multiplier;
-    else reputationChange = 0.2 * multiplier;
+
+    const reputationTable: Record<number, { success: number; failure: number }> = {
+      1: { success: 0.001, failure: -0.01 },      // Basic
+      2: { success: 0.05, failure: -0.05 },        // Easy
+      3: { success: 0.2, failure: -2 },            // Medium
+      4: { success: 0.5, failure: -1.5 },          // Hard
+    };
+
+    const difficultyRates = reputationTable[difficultyLevel] || reputationTable[1];
+
+    // Determine success or failure based on performance
+    if (performanceScore >= 50) {
+      reputationChange = difficultyRates.success;
+    } else {
+      reputationChange = difficultyRates.failure;
+    }
+
+    // Apply proficiency gains from quest
+    const newProficiency = {
+      coding_skill: player.proficiency.coding_skill || 0,
+      soft_skill: player.proficiency.soft_skill || 0,
+      critical_thinking_skill: player.proficiency.critical_thinking_skill || 0,
+      problem_solving: player.proficiency.problem_solving || 0,
+      stress_resistance: player.proficiency.stress_resistance || 0,
+    };
+
+    if (quest.proficiency) {
+      if (quest.proficiency.coding_skill) {
+        newProficiency.coding_skill = Math.min(100, newProficiency.coding_skill + quest.proficiency.coding_skill);
+      }
+      if (quest.proficiency.soft_skill) {
+        newProficiency.soft_skill = Math.min(100, newProficiency.soft_skill + quest.proficiency.soft_skill);
+      }
+      if (quest.proficiency.critical_thinking_skill) {
+        newProficiency.critical_thinking_skill = Math.min(100, newProficiency.critical_thinking_skill + quest.proficiency.critical_thinking_skill);
+      }
+      if (quest.proficiency.problem_solving) {
+        newProficiency.problem_solving = Math.min(100, newProficiency.problem_solving + quest.proficiency.problem_solving);
+      }
+      if (quest.proficiency.stress_resistance) {
+        newProficiency.stress_resistance = Math.min(100, newProficiency.stress_resistance + quest.proficiency.stress_resistance);
+      }
+    }
 
     const skillsGained: Record<string, number> = {};
     if (quest.skills) {
@@ -290,8 +350,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
         ...prev,
         currentMonthTasksCompleted: (prev.currentMonthTasksCompleted || 0) + 1,
         reputation: prev.reputation + reputationChange,
+        proficiency: newProficiency,
         skills: newSkills,
       };
+    });
+
+    // Add notification showing reputation change
+    addNotification({
+      type: 'achievement',
+      title: 'Quest Completed',
+      message: `Reputation ${reputationChange >= 0 ? '+' : ''}${reputationChange.toFixed(2)}%`,
     });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
@@ -303,10 +371,37 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!quest) return;
     updateMoodStress(quest.moodImpact, quest.stressImpact);
 
-    let reputationLoss = -0.5;
-    if (quest.deadline && Date.now() > quest.deadline) reputationLoss = -2;
+    // NEW REPUTATION LOGIC - Based on quest difficulty
+    // Difficulty: 1=Basic, 2=Easy, 3=Medium, 4=Hard
+    const difficultyLevel = quest.difficulty || 1;
+    let reputationLoss = 0;
 
-    setPlayer(prev => ({ ...prev, reputation: prev.reputation + reputationLoss }));
+    const reputationTable: Record<number, number> = {
+      1: -0.01,      // Basic failure
+      2: -0.05,      // Easy failure
+      3: -2,         // Medium failure
+      4: -1.5,       // Hard failure
+    };
+
+    reputationLoss = reputationTable[difficultyLevel] || -0.01;
+
+    // Check if quest was failed due to deadline
+    const isDeadlineMissed = quest.deadline && Math.floor(Date.now() / 1000) > quest.deadline;
+    if (isDeadlineMissed) {
+      reputationLoss -= 1.5; // Additional -1.5% for missing deadline
+    }
+
+    setPlayer(prev => ({
+      ...prev,
+      reputation: prev.reputation + reputationLoss
+    }));
+
+    // Add notification showing reputation loss
+    addNotification({
+      type: 'alert',
+      title: 'Quest Failed',
+      message: `"${quest.title}" - Reputation ${reputationLoss.toFixed(2)}%${isDeadlineMissed ? ' (Deadline missed)' : ''}`,
+    });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
     setCompletedQuests(prev => [...prev, { ...quest, status: 'failed', completedAt: Math.floor(Date.now() / 1000) }]);
@@ -650,6 +745,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications, showLevelUp,
         currentView, setCurrentView,
         setPlayer, startQuest, completeQuest, failQuest, purchaseItem, takePaidLeave, updateMoodStress, addExperience, addCurrency, advanceDay, resetCareer, saveGame, loadGame, dismissLevelUp, addNotification, markNotificationAsRead, clearAllNotifications, getUnreadCount,
+        showWelcomeMail, setShowWelcomeMail,
       }}
     >
       {children}
