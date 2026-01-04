@@ -124,7 +124,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Welcome Mail State - Track shown companies to avoid repeated popups
   const [showWelcomeMail, setShowWelcomeMail] = useState(false);
-  const [lastWelcomeCompany, setLastWelcomeCompany] = useState<string>('');
 
   // Load game on mount
   useEffect(() => {
@@ -156,12 +155,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // WELCOME MAIL LOGIC
   // ==========================================
   // Show welcome mail when player joins a new company for the first time
+  // Persist shown company in localStorage to avoid showing again on refresh
   useEffect(() => {
-    if (player.companyName && player.companyName !== lastWelcomeCompany && player.id) {
-      setShowWelcomeMail(true);
-      setLastWelcomeCompany(player.companyName);
+    try {
+      if (!player.username || !player.companyName) return;
+      const storageKey = `welcome_mail_shown_${player.username}`;
+      const shownCompany = localStorage.getItem(storageKey) || '';
+      if (shownCompany !== player.companyName) {
+        setShowWelcomeMail(true);
+      }
+    } catch (e) {
+      // ignore localStorage errors
     }
-  }, [player.companyName, player.id, lastWelcomeCompany]);
+  }, [player.companyName, player.username]);
 
   // ==========================================
   // STRESS RESET LOGIC (Simplified)

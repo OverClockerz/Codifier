@@ -217,7 +217,15 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
       {/* Welcome Mail - Shown once per company */}
       <WelcomeMail
         isOpen={showWelcomeMail}
-        onClose={() => setShowWelcomeMail(false)}
+        onClose={() => {
+          // mark as shown for this company so it doesn't reappear on refresh
+          try {
+            if (player.username && player.companyName) {
+              localStorage.setItem(`welcome_mail_shown_${player.username}`, player.companyName);
+            }
+          } catch (e) { }
+          setShowWelcomeMail(false);
+        }}
         playerName={player.username}
         companyName={player.companyName}
         isFirstCompany={!player.careerHistory || player.careerHistory.length === 0}
