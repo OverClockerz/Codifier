@@ -52,6 +52,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const isLoadingRef = useRef(false);
+  const gameLoopRef = useRef<(() => Promise<void>) | null>(null);
 
   // --- View State ---
   const [currentView, setCurrentView] = useState<string>('dashboard');
@@ -157,13 +158,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user?.id) return;
     const interval = setInterval(() => {
-      if (!isLoadingRef.current) {
-        isLoadingRef.current = true;
-        loadGame().finally(() => {
-          isLoadingRef.current = false;
-        });
+      if (gameLoopRef.current) {
+        gameLoopRef.current();
       }
-    }, 5001);
+    }, 30000);
     return () => clearInterval(interval);
   }, [user?.id]);
 
@@ -611,6 +609,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
       console.error('❌ Load failed:', error);
     }
   };
+
+  // Update game loop ref to ensure fresh state access
+  useEffect(() => {
+    gameLoopRef.current = async () => {
+      if (!isLoadingRef.current) {
+        isLoadingRef.current = true;
+        try {
+          await saveGame();
+          await loadGame();
+        } finally {
+          isLoadingRef.current = false;
+        }
+      }
+    };
+  });
 
   const dismissLevelUp = () => setShowLevelUp(false);
   const addNotification = (n: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => setNotifications(prev => [...prev, { ...n, id: Date.now().toString(), timestamp: Date.now(), isRead: false }]);
