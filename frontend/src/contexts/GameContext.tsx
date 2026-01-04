@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 // REMOVED: import { useNavigate } from 'react-router-dom'; 
-import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, Notification } from '../types/game';
+import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, Notification, Buff } from '../types/game';
 import { getExperienceForLevel, getSalaryForLevel, GAME_CONSTANTS, getRestartLevel, getSalaryAdjustment } from '../data/gameConfig';
 import { useAuth } from './AuthContext';
 import { fetchPlayerData, updatePlayerData } from '../services/api';
@@ -110,11 +110,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [completedQuests, setCompletedQuests] = useState<Quest[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [activeBuffs, setActiveBuffs] = useState<ActiveBuff[]>([]);
+  const [permanentBuffs, setPermanentBuffs] = useState<Buff[]>([]);
   const [monthlyReports, setMonthlyReports] = useState<MonthlyReport[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-
   // Cleaned up Stress Alert State
   // We only need to know if we have ALREADY alerted for the current high stress event.
   const [hasAlertedForCurrentStress, setHasAlertedForCurrentStress] = useState(false);
@@ -452,16 +452,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
         },
         reputation: 0,
         skills: player.skills,
-        activeBuffs: {},
-        permanentBuffs: player.permanentBuffs,
+        activeBuffs: {
+          stressReduction: 0,
+          moodIncrease: 0,
+          expBoost: 0,
+          currencyBoost: 0
+        },
+        permanentBuffs: [],
         activeQuests: player.activeQuests || [],
         completedQuests: [],
         inventory: [],
       };
 
-      setActiveQuests([]);
-      setCompletedQuests([]);
+      // setActiveQuests([]);
+      // setCompletedQuests([]);
       setInventory([]);
+      setPermanentBuffs([]);
       setActiveBuffs([]);
       setNotifications([]);
       setMonthlyReports([]);
@@ -495,11 +501,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
           careerHistory: freshPlayer.careerHistory,
           currentRun: freshPlayer.currentRun,
           reputation: 0,
-          skills: {},
-          activeBuffs: {},
+          skills: freshPlayer.skills,
+          activeBuffs: {
+            stressReduction: 0,
+            moodIncrease: 0,
+            expBoost: 0,
+            currencyBoost: 0
+          },
           permanentItems: [],
-          activeQuests: [],
-          completedQuests: [],
+          activeQuests: freshPlayer.activeQuests || [],
+          completedQuests: freshPlayer.completedQuests || [],
           inventory: [],
         };
         await updatePlayerData(resetPayload);
