@@ -2883,10 +2883,10 @@ InitialPlayerState = {
     "currentMonthTasksCompleted": 0,
     "paidLeaves": 5,
 
-    "gameStartDate": datetime.now(),
+    "gameStartDate": datetime.utcnow(),
     "currentDay": 1,
     "currentMonth": 1,
-    "lastLoginDate": datetime.now(),
+    "lastLoginDate": datetime.utcnow(),
     "proficiency": {
         "coding_skill": 0,
         "soft_skill": 0,

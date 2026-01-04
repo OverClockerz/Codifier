@@ -59,11 +59,9 @@ def github_callback():
     existing_player = mongo.db.players.find_one({"username": username})
 
     if existing_player:
-        calculate_paid_leaves(existing_player)
-        mongo.db.players.update_one(
-            {"username": username},
-            {"$set": {"lastLoginDate": datetime.utcnow()}}
-        )
+        existing_player=calculate_paid_leaves(existing_player)
+        existing_player["lastLoginDate"] = datetime.utcnow()
+        mongo.db.players.replace_one({"username": username}, existing_player)
     else:
         player = copy.deepcopy(InitialPlayerState)
         player["username"] = username
