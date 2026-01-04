@@ -55,6 +55,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const isLoadingRef = useRef(false);
+  const isSavingRef = useRef(false);
   const gameLoopRef = useRef<(() => Promise<void>) | null>(null);
 
   // --- View State ---
@@ -187,7 +188,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       if (gameLoopRef.current) {
         gameLoopRef.current();
       }
-    }, 30000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [user?.id]);
 
@@ -631,10 +632,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const saveGame = async () => {
     if (!user?.id) return;
+    if (isSavingRef.current) {
+      // Avoid concurrent saves
+      return;
+    }
     if (!player || !player.proficiency) {
       console.warn("⚠️ Save skipped: Player proficiency data missing.");
       return;
     }
+    isSavingRef.current = true;
     try {
       const backendData = {
         username: player.username,
@@ -672,7 +678,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
       console.log('✅ Game saved');
     } catch (error) {
       console.error('❌ Save failed:', error);
-      localStorage.setItem(`office_game_${user.id}`, JSON.stringify({ player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications }));
+      try {
+        localStorage.setItem(`office_game_${user.id}`, JSON.stringify({ player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications }));
+      } catch (e) {
+        console.error('❌ Failed to persist local backup:', e);
+      }
+    } finally {
+      isSavingRef.current = false;
     }
   };
 
@@ -739,14 +751,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Update game loop ref to ensure fresh state access
   useEffect(() => {
+    // Only perform an auto-save in the game loop. Loading from backend here
+    // can clobber local, in-memory actions (e.g. purchases) while a save
+    // is still in-flight; that was causing reverts. Keep loadGame() for
+    // explicit reloads only.
     gameLoopRef.current = async () => {
       if (!isLoadingRef.current) {
-        isLoadingRef.current = true;
         try {
           await saveGame();
-          await loadGame();
-        } finally {
-          isLoadingRef.current = false;
+        } catch (e) {
+          console.error('Game loop auto-save failed:', e);
         }
       }
     };

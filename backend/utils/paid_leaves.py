@@ -1,12 +1,16 @@
 from datetime import datetime
 
 def calculate_paid_leaves(player: dict) -> dict:
+    print("Calculating paid leaves for player:", player.get("username"))
     last_login = player.get("lastLoginDate")
+    print("Last login date:", last_login)
+
     if not last_login:
         return player  # no login date, nothing to update
 
     current_date = datetime.now(last_login.tzinfo)
     delta_days = (current_date - last_login).days
+    print(f"Days since last login: {delta_days}")
 
     paid_leaves = player.get("paidLeaves", 0)
 
@@ -15,6 +19,7 @@ def calculate_paid_leaves(player: dict) -> dict:
         excess_days = delta_days - paid_leaves
         player["currentMonthEarnings"] = player.get("currentMonthEarnings", 0) - (20 * excess_days)
         player["reputation"] = player.get("reputation", 0) - (1.5 * excess_days)
+        print("Paid leaves exceeded. Applying penalties.")
         player["paidLeaves"] = 0  # all consumed
     else:
         # Within paid leaves → consume them and adjust mood/stress

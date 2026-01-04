@@ -358,10 +358,8 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
                           <span>Reputation:</span>
                           <span className={performanceScore >= 50 ? 'text-green-400' : 'text-red-400'}>
                             {performanceScore < 50
-                              ? quest.difficulty <= 2 ? '-0.5%' : quest.difficulty <= 3 ? '-1.5%' : '-3%'
-                              : performanceScore < 70
-                                ? '+' + (quest.difficulty <= 2 ? '0.005%' : quest.difficulty <= 3 ? '0.02%' : '0.1%')
-                                : '+' + (quest.difficulty <= 2 ? '0.01%' : quest.difficulty <= 3 ? '0.05%' : '0.2%')}
+                              ? quest.difficulty === 1 ? '-0.01%' : quest.difficulty === 2 ? '-0.05%' : quest.difficulty === 3 ? '-2%' : '-1.5%'
+                              : quest.difficulty === 1 ? '+0.001%' : quest.difficulty === 2 ? '+0.05%' : quest.difficulty === 3 ? '+0.2%' : '+0.5%'}
                           </span>
                         </div>
                       </div>
@@ -420,7 +418,7 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
                           <div className="flex justify-between">
                             <span className="text-gray-500">Reputation:</span>
                             <span className="text-red-400">
-                              {quest.difficulty <= 2 ? '-0.5%' : quest.difficulty <= 3 ? '-1.5%' : '-3%'}
+                              {quest.difficulty === 1 ? '-0.01%' : quest.difficulty === 2 ? '-0.05%' : quest.difficulty === 3 ? '-2%' : '-1.5%'}
                             </span>
                           </div>
                         </div>
