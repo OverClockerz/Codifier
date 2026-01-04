@@ -174,12 +174,12 @@ export const failQuest = async (
  */
 export const generateQuests = async (
   username: string,
-  zone: 'workspace' | 'game-lounge' | 'meeting-room' | 'cafeteria',
+  zone: 'workspace' | 'game-lounge' | 'meeting-room',
   questAmount: number = 20,
 ): Promise<Quest[]> => {
   try {
     const queryParams = new URLSearchParams();
-    queryParams.append("username", encodeURIComponent(username));
+    queryParams.append("username", username);
     queryParams.append("zone", zone);
     queryParams.append("quest_amount", questAmount.toString());
 
