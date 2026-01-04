@@ -165,7 +165,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           isLoadingRef.current = false;
         });
       }
-    }, 5001);
+    }, 30000);
     return () => clearInterval(interval);
   }, [user?.id]);
 
@@ -402,13 +402,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     setPlayer(prev => ({ ...prev, currency: prev.currency + totalEarnings, currentMonthEarnings: 0 }));
   };
+  const totalExpCalculation = (player: PlayerState) => {
+    let totalExp = 0;
+    for (let i = 1; i <= player.level; i++) {
+      totalExp += getExperienceForLevel(i);
+    }
+    return totalExp;
+  };
 
   const resetCareer = async () => {
     console.log("🔄 Reset Career Initiated");
     try {
-      const totalExp = player.currentRun?.totalExperience || 0;
+      const totalExp = totalExpCalculation(player) || 0;
       const newStartLevel = getRestartLevel(totalExp);
       const newCompanyName = getRandomCompanyName();
+
 
       const freshPlayer: PlayerState = {
         id: player.id,

@@ -279,12 +279,12 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                       <span className="text-white">#{player.currentRun.runNumber}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Paid Leaves:</span>
-                      <span className="text-green-400">{player.paidLeaves}</span>
+                      <span className="text-gray-500">Current Level:</span>
+                      <span className="text-green-400">{player.currentRun?.maxLevelAchieved}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Max Level:</span>
-                      <span className="text-purple-400">{player.currentRun.maxLevelAchieved}</span>
+                      <span className="text-gray-500">Max Level Achieved:</span>
+                      <span className="text-purple-400">{Math.max(...player.careerHistory?.map(c => c.maxLevelAchieved) || [])}</span>
                     </div>
                   </div>
                 </div>
