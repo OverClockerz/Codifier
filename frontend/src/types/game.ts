@@ -103,6 +103,7 @@ export type Quest = MCQQuest | ComprehensiveQuest | CodingQuest | TypingQuest;
 export interface PlayerState {
   id: string;
   username: string;
+  companyName: string; // Current employer name
   githubinfo: GitHubInfo;
   gameStartDate: string;
   level: number;

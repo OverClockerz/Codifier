@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 // REMOVED: import { useNavigate } from 'react-router-dom'; 
-import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, Notification } from '../types/game';
+import { PlayerState, Quest, InventoryItem, ActiveBuff, MonthlyReport, Notification, Buff } from '../types/game';
 import { getExperienceForLevel, getSalaryForLevel, GAME_CONSTANTS, getRestartLevel, getSalaryAdjustment } from '../data/gameConfig';
 import { useAuth } from './AuthContext';
 import { fetchPlayerData, updatePlayerData } from '../services/api';
 import { shopItems } from '../data/shopItems';
+import { getRandomCompanyName } from '../data/companyNames';
 import AlertComponent from '../components/extras/AlertComponent';
 import { gameTimeSince } from '../utils/calculations';
 
@@ -45,6 +46,8 @@ interface GameContextType {
   markNotificationAsRead: (notificationId: string) => void;
   clearAllNotifications: () => void;
   getUnreadCount: () => number;
+  showWelcomeMail: boolean;
+  setShowWelcomeMail: (val: boolean) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -61,6 +64,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [player, setPlayer] = useState<PlayerState>({
     id: '',
     username: '',
+    companyName: 'OmniTech Solutions',
     githubinfo: {
       github_id: '',
       avatar_url: '',
@@ -109,14 +113,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [completedQuests, setCompletedQuests] = useState<Quest[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [activeBuffs, setActiveBuffs] = useState<ActiveBuff[]>([]);
+  const [permanentBuffs, setPermanentBuffs] = useState<Buff[]>([]);
   const [monthlyReports, setMonthlyReports] = useState<MonthlyReport[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-
   // Cleaned up Stress Alert State
   // We only need to know if we have ALREADY alerted for the current high stress event.
   const [hasAlertedForCurrentStress, setHasAlertedForCurrentStress] = useState(false);
+
+  // Welcome Mail State - Track shown companies to avoid repeated popups
+  const [showWelcomeMail, setShowWelcomeMail] = useState(false);
+  const [lastWelcomeCompany, setLastWelcomeCompany] = useState<string>('');
 
   // Load game on mount
   useEffect(() => {
@@ -145,6 +153,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [player.reputation, isGameOver]);
 
   // ==========================================
+  // WELCOME MAIL LOGIC
+  // ==========================================
+  // Show welcome mail when player joins a new company for the first time
+  useEffect(() => {
+    if (player.companyName && player.companyName !== lastWelcomeCompany && player.id) {
+      setShowWelcomeMail(true);
+      setLastWelcomeCompany(player.companyName);
+    }
+  }, [player.companyName, player.id, lastWelcomeCompany]);
+
+  // ==========================================
   // STRESS RESET LOGIC (Simplified)
   // ==========================================
   // Only resets the flag when stress drops. The 'opening' logic is now in the JSX.
@@ -156,6 +175,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Game loop
   useEffect(() => {
+    console.log(new Date().toISOString(), 'Game Loop Tick');
     if (!user?.id) return;
     const interval = setInterval(() => {
       if (gameLoopRef.current) {
@@ -264,11 +284,53 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     updateMoodStress(moodChange, stressChange);
 
-    // Reputation Logic
+    // NEW REPUTATION LOGIC - Based on quest difficulty
+    // Difficulty: 1=Basic, 2=Easy, 3=Medium, 4=Hard
+    const difficultyLevel = quest.difficulty || 1;
     let reputationChange = 0;
-    if (performanceScore < 50) reputationChange = -3;
-    else if (performanceScore < 70) reputationChange = 0.1 * multiplier;
-    else reputationChange = 0.2 * multiplier;
+
+    const reputationTable: Record<number, { success: number; failure: number }> = {
+      1: { success: 0.001, failure: -0.01 },      // Basic
+      2: { success: 0.05, failure: -0.05 },        // Easy
+      3: { success: 0.2, failure: -2 },            // Medium
+      4: { success: 0.5, failure: -1.5 },          // Hard
+    };
+
+    const difficultyRates = reputationTable[difficultyLevel] || reputationTable[1];
+
+    // Determine success or failure based on performance
+    if (performanceScore >= 50) {
+      reputationChange = difficultyRates.success;
+    } else {
+      reputationChange = difficultyRates.failure;
+    }
+
+    // Apply proficiency gains from quest
+    const newProficiency = {
+      coding_skill: player.proficiency.coding_skill || 0,
+      soft_skill: player.proficiency.soft_skill || 0,
+      critical_thinking_skill: player.proficiency.critical_thinking_skill || 0,
+      problem_solving: player.proficiency.problem_solving || 0,
+      stress_resistance: player.proficiency.stress_resistance || 0,
+    };
+
+    if (quest.proficiency) {
+      if (quest.proficiency.coding_skill) {
+        newProficiency.coding_skill = Math.min(100, newProficiency.coding_skill + quest.proficiency.coding_skill);
+      }
+      if (quest.proficiency.soft_skill) {
+        newProficiency.soft_skill = Math.min(100, newProficiency.soft_skill + quest.proficiency.soft_skill);
+      }
+      if (quest.proficiency.critical_thinking_skill) {
+        newProficiency.critical_thinking_skill = Math.min(100, newProficiency.critical_thinking_skill + quest.proficiency.critical_thinking_skill);
+      }
+      if (quest.proficiency.problem_solving) {
+        newProficiency.problem_solving = Math.min(100, newProficiency.problem_solving + quest.proficiency.problem_solving);
+      }
+      if (quest.proficiency.stress_resistance) {
+        newProficiency.stress_resistance = Math.min(100, newProficiency.stress_resistance + quest.proficiency.stress_resistance);
+      }
+    }
 
     const skillsGained: Record<string, number> = {};
     if (quest.skills) {
@@ -286,8 +348,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
         ...prev,
         currentMonthTasksCompleted: (prev.currentMonthTasksCompleted || 0) + 1,
         reputation: prev.reputation + reputationChange,
+        proficiency: newProficiency,
         skills: newSkills,
       };
+    });
+
+    // Add notification showing reputation change
+    addNotification({
+      type: 'achievement',
+      title: 'Quest Completed',
+      message: `Reputation ${reputationChange >= 0 ? '+' : ''}${reputationChange.toFixed(2)}%`,
     });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
@@ -299,10 +369,37 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!quest) return;
     updateMoodStress(quest.moodImpact, quest.stressImpact);
 
-    let reputationLoss = -0.5;
-    if (quest.deadline && Date.now() > quest.deadline) reputationLoss = -2;
+    // NEW REPUTATION LOGIC - Based on quest difficulty
+    // Difficulty: 1=Basic, 2=Easy, 3=Medium, 4=Hard
+    const difficultyLevel = quest.difficulty || 1;
+    let reputationLoss = 0;
 
-    setPlayer(prev => ({ ...prev, reputation: prev.reputation + reputationLoss }));
+    const reputationTable: Record<number, number> = {
+      1: -0.01,      // Basic failure
+      2: -0.05,      // Easy failure
+      3: -2,         // Medium failure
+      4: -1.5,       // Hard failure
+    };
+
+    reputationLoss = reputationTable[difficultyLevel] || -0.01;
+
+    // Check if quest was failed due to deadline
+    const isDeadlineMissed = quest.deadline && Math.floor(Date.now() / 1000) > quest.deadline;
+    if (isDeadlineMissed) {
+      reputationLoss -= 1.5; // Additional -1.5% for missing deadline
+    }
+
+    setPlayer(prev => ({
+      ...prev,
+      reputation: prev.reputation + reputationLoss
+    }));
+
+    // Add notification showing reputation loss
+    addNotification({
+      type: 'alert',
+      title: 'Quest Failed',
+      message: `"${quest.title}" - Reputation ${reputationLoss.toFixed(2)}%${isDeadlineMissed ? ' (Deadline missed)' : ''}`,
+    });
 
     setActiveQuests(prev => prev.filter(q => q.id !== questId));
     setCompletedQuests(prev => [...prev, { ...quest, status: 'failed', completedAt: Math.floor(Date.now() / 1000) }]);
@@ -398,16 +495,26 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     setPlayer(prev => ({ ...prev, currency: prev.currency + totalEarnings, currentMonthEarnings: 0 }));
   };
+  const totalExpCalculation = (player: PlayerState) => {
+    let totalExp = 0;
+    for (let i = 1; i <= player.level; i++) {
+      totalExp += getExperienceForLevel(i);
+    }
+    return totalExp;
+  };
 
   const resetCareer = async () => {
     console.log("🔄 Reset Career Initiated");
     try {
-      const totalExp = player.currentRun?.totalExperience || 0;
+      const totalExp = totalExpCalculation(player) || 0;
       const newStartLevel = getRestartLevel(totalExp);
+      const newCompanyName = getRandomCompanyName();
+
 
       const freshPlayer: PlayerState = {
         id: player.id,
         username: player.username,
+        companyName: newCompanyName,
         githubinfo: player.githubinfo,
         gameStartDate: new Date().toISOString(),
         level: newStartLevel,
@@ -438,25 +545,37 @@ export function GameProvider({ children }: { children: ReactNode }) {
         },
         reputation: 0,
         skills: player.skills,
-        activeBuffs: {},
-        permanentBuffs: player.permanentBuffs,
+        activeBuffs: {
+          stressReduction: 0,
+          moodIncrease: 0,
+          expBoost: 0,
+          currencyBoost: 0
+        },
+        permanentBuffs: [],
         activeQuests: player.activeQuests || [],
         completedQuests: [],
         inventory: [],
       };
 
-      setActiveQuests([]);
-      setCompletedQuests([]);
+      // setActiveQuests([]);
+      // setCompletedQuests([]);
       setInventory([]);
+      setPermanentBuffs([]);
       setActiveBuffs([]);
       setNotifications([]);
       setMonthlyReports([]);
       setHasAlertedForCurrentStress(false);
       setCurrentView('dashboard');
 
+      // Set local state immediately with new company name
+      setPlayer(freshPlayer);
+      setIsGameOver(false);
+      setHasAlertedForCurrentStress(false);
+
       if (user?.id) {
         const resetPayload = {
           username: freshPlayer.username,
+          companyName: newCompanyName,
           level: freshPlayer.level,
           experience: 0,
           experienceToNextLevel: freshPlayer.experienceToNextLevel,
@@ -475,20 +594,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
           careerHistory: freshPlayer.careerHistory,
           currentRun: freshPlayer.currentRun,
           reputation: 0,
-          skills: {},
-          activeBuffs: {},
+          skills: freshPlayer.skills,
+          activeBuffs: {
+            stressReduction: 0,
+            moodIncrease: 0,
+            expBoost: 0,
+            currencyBoost: 0
+          },
           permanentItems: [],
-          activeQuests: [],
-          completedQuests: [],
+          activeQuests: freshPlayer.activeQuests || [],
+          completedQuests: freshPlayer.completedQuests || [],
           inventory: [],
         };
         await updatePlayerData(resetPayload);
+        console.log("✅ Career Reset Successful");
       }
-
-      setPlayer(freshPlayer);
-      setIsGameOver(false);
-      setHasAlertedForCurrentStress(false);
-      console.log("✅ Career Reset Successful");
 
       // 4. Then sync with backend
       if (user?.username) {
@@ -562,6 +682,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const transformedPlayer: PlayerState = {
         id: backendData.githubinfo?.github_id,
         username: backendData.username,
+        companyName: backendData.companyName,
         githubinfo: backendData.githubinfo,
         gameStartDate: backendData.gameStartDate,
         level: backendData.level,
@@ -637,6 +758,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications, showLevelUp,
         currentView, setCurrentView,
         setPlayer, startQuest, completeQuest, failQuest, purchaseItem, takePaidLeave, updateMoodStress, addExperience, addCurrency, advanceDay, resetCareer, saveGame, loadGame, dismissLevelUp, addNotification, markNotificationAsRead, clearAllNotifications, getUnreadCount,
+        showWelcomeMail, setShowWelcomeMail,
       }}
     >
       {children}

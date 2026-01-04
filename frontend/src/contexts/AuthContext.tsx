@@ -22,8 +22,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in (from localStorage)
-    const savedUser = localStorage.getItem('office_user');
+    // Check if user is already logged in (from sessionStorage)
+    // sessionStorage persists across page refreshes but clears when tab closes
+    const savedUser = sessionStorage.getItem('office_user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
@@ -38,14 +39,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
       email: `${username}@github.com`,
     };
-    
+
     setUser(mockUser);
-    localStorage.setItem('office_user', JSON.stringify(mockUser));
+    sessionStorage.setItem('office_user', JSON.stringify(mockUser));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('office_user');
+    sessionStorage.removeItem('office_user');
   };
 
   return (

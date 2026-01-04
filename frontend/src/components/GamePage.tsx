@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { Bell, Menu, X, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext';
-import { ZoneType} from '../types/game';
+import { ZoneType } from '../types/game';
 import { GameDashboard } from './GameDashboard';
 import { ZoneTransition } from './transitions/ZoneTransition';
 import { QuestStartTransition } from './transitions/QuestStartTransition';
@@ -11,11 +11,13 @@ import { LevelUpTransition } from './transitions/LevelUpTransition';
 import { ScrambleTextOnHover } from './effects/ScrambleText';
 import { ProfileModal } from './player/ProfileModal';
 import { NotificationsModal } from './extras/NotificationsModal';
+import { WelcomeMail } from './extras/WelcomeMail';
+import { QuestGenerationManager } from './quests/QuestGenerationManager';
 import { DigitalClock } from './extras/DigitalClock';
 
 export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => void }) {
   const { user, logout } = useAuth();
-  const { player, showLevelUp, dismissLevelUp, getUnreadCount } = useGame();
+  const { player, showLevelUp, dismissLevelUp, getUnreadCount, showWelcomeMail, setShowWelcomeMail } = useGame();
   const [selectedZone, setSelectedZone] = useState<ZoneType | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [questStarting, setQuestStarting] = useState<string | null>(null);
@@ -211,6 +213,18 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
         isOpen={showNotifications}
         onClose={() => setShowNotifications(false)}
       />
+
+      {/* Welcome Mail - Shown once per company */}
+      <WelcomeMail
+        isOpen={showWelcomeMail}
+        onClose={() => setShowWelcomeMail(false)}
+        playerName={player.username}
+        companyName={player.companyName}
+        isFirstCompany={!player.careerHistory || player.careerHistory.length === 0}
+      />
+
+      {/* Quest Generation Manager */}
+      <QuestGenerationManager />
     </div>
   );
 }

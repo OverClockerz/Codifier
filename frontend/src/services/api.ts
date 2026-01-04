@@ -168,6 +168,41 @@ export const failQuest = async (
   });
 };
 
+/**
+ * Generate quests from backend
+ * Called on: new player, new day, or career restart
+ */
+export const generateQuests = async (
+  username: string,
+  zone: 'workspace' | 'game-lounge' | 'meeting-room' | 'cafeteria',
+  questAmount: number = 20,
+): Promise<Quest[]> => {
+  try {
+    const queryParams = new URLSearchParams();
+    queryParams.append("username", encodeURIComponent(username));
+    queryParams.append("zone", zone);
+    queryParams.append("quest_amount", questAmount.toString());
+
+    const url = `${API_BASE_URL}/api/quests/generate?${queryParams.toString()}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to generate quests: ${response.statusText}`,
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error generating quests:", error);
+    throw error;
+  }
+};
+
 // ============================================================
 // AUTHENTICATION (For GitHub OAuth)
 // ============================================================

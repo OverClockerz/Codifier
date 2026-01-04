@@ -23,7 +23,7 @@ import { calculateDeadline, gameTimeSince } from '../utils/calculations';
 const deadlineThreshold = 2;
 
 export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void }) {
-  const { player, activeQuests} = useGame();
+  const { player, activeQuests } = useGame();
   const [selectedTab, setSelectedTab] = useState<'overview' | ZoneType>('overview');
 
   // DEBUG: Log quest counts
@@ -220,7 +220,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
           <div className="text-center">
             <p className="text-xs text-gray-500">Reputation</p>
             <p className={`text-xl ${(player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-              {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
+              {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(3)}%
             </p>
             <p className="text-xs text-gray-500">Acquired</p>
           </div>
@@ -424,7 +424,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
       ) : selectedTab === 'game-lounge' ? (
         <GameLounge />
       ) : selectedTab === 'meeting-room' ? (
-        <MeetingRoom />
+        <MeetingRoom onNavigate={(zone) => setSelectedTab(zone)} />
       ) : selectedTab === 'cafeteria' ? (
         <Cafeteria />
       ) : null}

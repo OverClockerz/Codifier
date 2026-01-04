@@ -6,7 +6,7 @@ const CREDIT_DATA = {
     { role: 'Lead Architect', name: 'Pushkar Pan', social: 'https://instagram.com/myst_blazeio', href: 'https://github.com/Myst-Blazeio' },
     { role: 'Backend Developer', name: 'Devayudh Chatterjee', social: 'https://instagram.com/_raziel_206', href: 'https://github.com/Raziel206' },
     { role: 'Frontend Developer', name: 'Sayantan Pal', social: 'https://instagram.com/sayantanpaltheone', href: 'https://github.com/sabkabap2006' },
-    { role: 'Designer', name: 'Anushka Bala', social: 'https://instagram.com/02_anu_anu_28', href: 'https://github.com/anushkabala0228-bot' },
+    { role: 'Designer', name: 'Mahima Banerjee', social: 'https://instagram.com/_mahima.banerjee_', href: 'https://github.com/mahimaBanerjee' },
   ]
 };
 

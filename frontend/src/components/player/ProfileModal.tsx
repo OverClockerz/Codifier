@@ -96,7 +96,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                   <div>
                     <h2 className="text-sm text-white">{user?.username || 'Player'}</h2>
                     {/* <p className="text-sm text-gray-400">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p> */}
-                    <p className="text-xs text-gray-500">OmniTech Solutions</p>
+                    <p className="text-xs text-gray-500">{player.companyName || 'OmniTech Solutions'}</p>
                   </div>
                   {/* <ChevronRight className="w-5 h-5 text-gray-600 hidden md:block" /> */}
                 </div>
@@ -235,7 +235,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     className={`text-sm ${(player.reputation ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'
                       }`}
                   >
-                    {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(2)}%
+                    {(player.reputation ?? 0) >= 0 ? '+' : ''}{(player.reputation ?? 0).toFixed(3)}%
                   </p>
                   <p className="text-xs text-gray-600">Acquired</p>
                 </div>
@@ -279,12 +279,12 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                       <span className="text-white">#{player.currentRun.runNumber}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Paid Leaves:</span>
-                      <span className="text-green-400">{player.paidLeaves}</span>
+                      <span className="text-gray-500">Current Level:</span>
+                      <span className="text-green-400">{player.currentRun?.maxLevelAchieved}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Max Level:</span>
-                      <span className="text-purple-400">{player.currentRun.maxLevelAchieved}</span>
+                      <span className="text-gray-500">Max Level Achieved:</span>
+                      <span className="text-purple-400">{Math.max(...player.careerHistory?.map(c => c.maxLevelAchieved) || [])}</span>
                     </div>
                   </div>
                 </div>
@@ -302,7 +302,7 @@ export function ProfileModal({ isOpen, onClose, onViewFullProfile }: ProfileModa
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Rating:</span>
-                      <span className="text-yellow-400">{Math.round(((player.currentMonthTasksCompleted) / player.completedQuests.length) * 5)}/5.0</span>
+                      <span className="text-yellow-400">{Math.round(((player.currentMonthTasksCompleted) / player.completedQuests.length) * 5) || 0}/5.0</span>
                     </div>
                   </div>
                 </div>
