@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 from extensions import mongo
+from keep_alive import start_keep_alive
 import certifi
 import os
 
@@ -17,6 +18,7 @@ from routes.login import login_bp
 from routes.register import register_bp
 from routes.dashboard import dashboard_bp
 from routes.auth import auth_bp
+from routes.health import health_bp
 
 load_dotenv()
 
@@ -55,6 +57,7 @@ app.register_blueprint(githublogin_bp)
 app.register_blueprint(api_player_bp)
 app.register_blueprint(api_quests_bp)
 app.register_blueprint(index_bp)
+app.register_blueprint(health_bp)
 app.register_blueprint(ai_problems_bp)
 app.register_blueprint(ai_runner_bp)
 app.register_blueprint(ai_comprehensive_bp)
@@ -62,6 +65,9 @@ app.register_blueprint(register_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(login_bp)
+
+if os.getenv("ENABLE_KEEP_ALIVE") == "true":
+    start_keep_alive()
 
 # --- DEV ONLY ---
 if __name__ == "__main__":
