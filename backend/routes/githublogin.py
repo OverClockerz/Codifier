@@ -74,5 +74,5 @@ def github_callback():
         mongo.db.players.insert_one(player)
 
     return redirect(
-        f"http://localhost:3000/?username={username}"
+        f"https://codifier-xrzs.onrender.com/?username={username}"
     )  
