@@ -55,6 +55,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const isLoadingRef = useRef(false);
+  const isSavingRef = useRef(false);
   const gameLoopRef = useRef<(() => Promise<void>) | null>(null);
 
   // --- View State ---
@@ -124,7 +125,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Welcome Mail State - Track shown companies to avoid repeated popups
   const [showWelcomeMail, setShowWelcomeMail] = useState(false);
-  const [lastWelcomeCompany, setLastWelcomeCompany] = useState<string>('');
 
   // Load game on mount
   useEffect(() => {
@@ -156,12 +156,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // WELCOME MAIL LOGIC
   // ==========================================
   // Show welcome mail when player joins a new company for the first time
+  // Persist shown company in localStorage to avoid showing again on refresh
   useEffect(() => {
-    if (player.companyName && player.companyName !== lastWelcomeCompany && player.id) {
-      setShowWelcomeMail(true);
-      setLastWelcomeCompany(player.companyName);
+    try {
+      if (!player.username || !player.companyName) return;
+      const storageKey = `welcome_mail_shown_${player.username}`;
+      const shownCompany = localStorage.getItem(storageKey) || '';
+      if (shownCompany !== player.companyName) {
+        setShowWelcomeMail(true);
+      }
+    } catch (e) {
+      // ignore localStorage errors
     }
-  }, [player.companyName, player.id, lastWelcomeCompany]);
+  }, [player.companyName, player.username]);
 
   // ==========================================
   // STRESS RESET LOGIC (Simplified)
@@ -625,10 +632,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const saveGame = async () => {
     if (!user?.id) return;
+    if (isSavingRef.current) {
+      // Avoid concurrent saves
+      return;
+    }
     if (!player || !player.proficiency) {
       console.warn("⚠️ Save skipped: Player proficiency data missing.");
       return;
     }
+    isSavingRef.current = true;
     try {
       const backendData = {
         username: player.username,
@@ -666,7 +678,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
       console.log('✅ Game saved');
     } catch (error) {
       console.error('❌ Save failed:', error);
-      localStorage.setItem(`office_game_${user.id}`, JSON.stringify({ player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications }));
+      try {
+        localStorage.setItem(`office_game_${user.id}`, JSON.stringify({ player, activeQuests, completedQuests, inventory, activeBuffs, monthlyReports, notifications }));
+      } catch (e) {
+        console.error('❌ Failed to persist local backup:', e);
+      }
+    } finally {
+      isSavingRef.current = false;
     }
   };
 
@@ -733,14 +751,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Update game loop ref to ensure fresh state access
   useEffect(() => {
+    // Only perform an auto-save in the game loop. Loading from backend here
+    // can clobber local, in-memory actions (e.g. purchases) while a save
+    // is still in-flight; that was causing reverts. Keep loadGame() for
+    // explicit reloads only.
     gameLoopRef.current = async () => {
       if (!isLoadingRef.current) {
-        isLoadingRef.current = true;
         try {
           await saveGame();
-          await loadGame();
-        } finally {
-          isLoadingRef.current = false;
+        } catch (e) {
+          console.error('Game loop auto-save failed:', e);
         }
       }
     };
