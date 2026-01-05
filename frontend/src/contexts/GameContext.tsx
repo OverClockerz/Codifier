@@ -181,7 +181,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       if (gameLoopRef.current) {
         gameLoopRef.current();
       }
-    }, 30000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [user?.id]);
 

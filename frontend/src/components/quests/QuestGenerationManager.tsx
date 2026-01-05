@@ -61,7 +61,11 @@ export function QuestGenerationManager() {
             // Process zones that need quests
             for (const zone of zonesToGenerate) {
                 try {
-                    const quests = await generateQuests(player.username, zone, 20);
+                    const response = await generateQuests(player.username, zone, 20);
+                    console.log(response);
+                    const quests = Array.isArray(response)? response: [];
+                    if (quests.length === 0) return;
+
                     allGeneratedQuests.push(...quests);
                     generatedZoneNames.push(zone);
                     console.log(`✅ Auto-generated ${quests.length} quests for ${zone}`);
