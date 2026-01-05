@@ -42,6 +42,22 @@ export function QuestGenerationManager() {
         lastCheckedDayRef.current = player.currentDay;
     }, [player.currentDay, player.username, player.activeQuests?.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Check for pending notifications after a sync reload
+    useEffect(() => {
+        const wasReloadedForSync = localStorage.getItem('quest_sync_reload');
+        if (wasReloadedForSync) {
+            localStorage.removeItem('quest_sync_reload');
+            const pendingNotification = localStorage.getItem('latest_generated_quests_notification');
+            if (pendingNotification) {
+                try {
+                    const parsed = JSON.parse(pendingNotification);
+                    addNotification(parsed);
+                    localStorage.removeItem('latest_generated_quests_notification');
+                } catch (e) { console.error("Failed to parse pending notification", e); }
+            }
+        }
+    }, []);
+
     const performAutoQuestGeneration = async (triggerType: string) => {
         if (generationInProgressRef.current) return;
         generationInProgressRef.current = true;
@@ -76,12 +92,15 @@ export function QuestGenerationManager() {
 
             // Update player with new quests
             if (allGeneratedQuests.length > 0) {
+                const updatedActiveQuests = [...(player.activeQuests || []), ...allGeneratedQuests];
                 const updatedPlayer = {
                     ...player,
-                    activeQuests: [...(player.activeQuests || []), ...allGeneratedQuests],
+                    activeQuests: updatedActiveQuests,
                 };
+                console.log("Updated Player", updatedPlayer);
+                console.log("All Generated Quests", allGeneratedQuests);
                 setPlayer(updatedPlayer);
-
+                localStorage.setItem(`office_game_active_quests_${player.username}`, JSON.stringify(updatedActiveQuests));
                 saveQuestGenerationState(player.currentDay, triggerType as any, generatedZoneNames);
 
                 // Send success notification with zone names
@@ -94,12 +113,15 @@ export function QuestGenerationManager() {
                     return zoneNames[z] || z;
                 }).join(', ');
 
-                addNotification({
+                const notificationData = {
                     type: 'quest',
                     title: 'New Quests Added',
                     message: `New quests have been added to ${zoneDisplayNames}!`,
                     metadata: { questIds: allGeneratedQuests.map(q => q.id) } // Include generated quest IDs for tracking
-                });
+                };
+
+                localStorage.setItem('latest_generated_quests_notification', JSON.stringify(notificationData));
+                addNotification(notificationData as any);
             }
         } catch (error: any) {
             console.error('Quest auto-generation error:', error);

@@ -193,18 +193,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [user?.id]);
 
   // Persist currency
-  useEffect(() => {
-    if (!user?.id) return;
-    const key = `office_game_currency_${user.id}`;
-    const saveCurrencyToLocal = () => {
-      try {
-        const val = Number(player.currency);
-        if (isFinite(val)) localStorage.setItem(key, String(val));
-      } catch (e) { }
-    };
-    window.addEventListener('beforeunload', saveCurrencyToLocal);
-    return () => window.removeEventListener('beforeunload', saveCurrencyToLocal);
-  }, [user?.id, player.currency]);
+  // useEffect(() => {
+  //   if (!user?.id) return;
+  //   const key = `office_game_currency_${user.id}`;
+  //   const saveCurrencyToLocal = () => {
+  //     try {
+  //       const val = Number(player.currency);
+  //       if (isFinite(val)) localStorage.setItem(key, String(val));
+  //     } catch (e) { }
+  //   };
+  //   window.addEventListener('beforeunload', saveCurrencyToLocal);
+  //   return () => window.removeEventListener('beforeunload', saveCurrencyToLocal);
+  // }, [user?.id, player.currency]);
 
   // Check for expired quests / burnout
   useEffect(() => {
@@ -647,7 +647,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         level: player.level,
         experience: player.experience,
         experienceToNextLevel: player.experienceToNextLevel,
-        currency: player.currency ?? Number(localStorage.getItem(`office_game_currency_${user.id}`)),
+        currency: player.currency ?? 0,
         mood: player.mood,
         stress: player.stress,
         isBurntOut: player.isBurntOut,
@@ -692,7 +692,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!user?.id) return;
     try {
       const backendData = await fetchPlayerData(user.username);
-      localStorage.setItem(`office_game_currency_${user.id}`, String(backendData.currency));
+      // localStorage.setItem(`office_game_currency_${user.id}`, String(backendData.currency));
+
+      // Check for active quests sync mismatch
+      let activeQuestsToUse = backendData.activeQuests || [];
+      try {
+        const localQuestsStr = localStorage.getItem(`office_game_active_quests_${user.username}`);
+        if (localQuestsStr) {
+
+          const localQuests = JSON.parse(localQuestsStr);
+          if (Array.isArray(localQuests) && localQuests.length !== activeQuestsToUse.length) {
+            console.log("⚠️ Active quests mismatch detected. Overwriting backend with local storage.");
+            activeQuestsToUse = localQuests;
+            // Update database immediately with the correct quests
+            await updatePlayerData({ ...backendData, activeQuests: activeQuestsToUse });
+            localStorage.setItem('quest_sync_reload', 'true');
+            window.location.reload();
+          }
+
+        }
+      } catch (e) { console.error("Error syncing local quests:", e); }
+
       const safeProficiency = backendData.proficiency || {
         coding_skill: 0, soft_skill: 0, critical_thinking_skill: 0, problem_solving: 0, stress_resistance: 0
       };
@@ -706,7 +726,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         level: backendData.level,
         experience: backendData.experience,
         experienceToNextLevel: backendData.experienceToNextLevel,
-        currency: backendData.currency ?? Number(localStorage.getItem(`office_game_currency_${user.id}`)),
+        currency: backendData.currency ?? 0,
         mood: Number(backendData.mood) || 0,
         stress: Number(backendData.stress) || 0,
         isBurntOut: backendData.isBurntOut,
@@ -724,12 +744,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         skills: backendData.skills,
         activeBuffs: backendData.activeBuffs,
         permanentBuffs: backendData.permanentItems,
-        activeQuests: backendData.activeQuests,
+        activeQuests: activeQuestsToUse,
         completedQuests: backendData.completedQuests,
         inventory: backendData.inventory,
       };
       setPlayer(transformedPlayer);
-      setActiveQuests(backendData.activeQuests);
+      setActiveQuests(activeQuestsToUse);
       setCompletedQuests(backendData.completedQuests);
 
       const transformedInventory = backendData.inventory.map((item: any) => ({
@@ -758,6 +778,24 @@ export function GameProvider({ children }: { children: ReactNode }) {
     gameLoopRef.current = async () => {
       if (!isLoadingRef.current) {
         try {
+          if (user?.username) {
+            try {
+              const backendData = await fetchPlayerData(user.username);
+              const localQuestsStr = localStorage.getItem(`office_game_active_quests_${user.username}`);
+              if (localQuestsStr) {
+                const localQuests = JSON.parse(localQuestsStr);
+                const backendQuests = backendData.activeQuests || [];
+                if (Array.isArray(localQuests) && localQuests.length !== backendQuests.length) {
+                  console.log("⚠️ Active quests mismatch detected in loop. Overwriting backend with local storage.");
+                  await updatePlayerData({ ...backendData, activeQuests: localQuests });
+                  localStorage.setItem('quest_sync_reload', 'true');
+                  window.location.reload();
+                }
+              }
+            } catch (e) {
+              console.error("Error syncing local quests in loop:", e);
+            }
+          }
           await saveGame();
         } catch (e) {
           console.error('Game loop auto-save failed:', e);
