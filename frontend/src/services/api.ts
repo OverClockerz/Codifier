@@ -196,7 +196,11 @@ export const generateQuests = async (
       );
     }
 
-    return await response.json();
+    const data = await response.json();
+    // backend returns either an array or an object { activeQuests: [...] }
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.activeQuests)) return data.activeQuests;
+    return [];
   } catch (error) {
     console.error("Error generating quests:", error);
     throw error;

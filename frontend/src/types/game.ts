@@ -261,4 +261,5 @@ export interface Notification {
   timestamp: number;
   isRead: boolean;
   icon?: string;
+  metadata?: Record<string, any>
 }

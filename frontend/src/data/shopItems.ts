@@ -82,77 +82,77 @@ export const shopItems: ShopItem[] = [
   // PERMANENT ITEMS (5 items)
   // ==========================================================
   {
-    id: 'meditation-app',
-    name: 'Meditation App Subscription',
-    item_type: 'regular',
-    description: 'Permanent 5% stress reduction on all tasks.',
-    type: 'permanent-buff',
-    effect: {
-      stressReduction: 5,
-    },
-    price: 500,
-    icon: '🧘',
+  id: 'meditation-app',
+  name: 'Meditation App Subscription',
+  item_type: 'regular',
+  description: 'Permanent 10% stress reduction on all tasks.',
+  type: 'permanent-buff',
+  effect: {
+    stressReduction: 10,
   },
-  {
-    id: 'standing-desk',
-    name: 'Standing Desk',
-    item_type: 'regular',
-    description: 'Permanent 10% mood increase from work tasks.',
-    type: 'permanent-buff',
-    effect: {
-      moodIncrease: 10,
-    },
-    price: 800,
-    icon: '🪑',
+  price: 2200,
+  icon: '🧘',
+},
+{
+  id: 'standing-desk',
+  name: 'Standing Desk',
+  item_type: 'regular',
+  description: 'Permanent 35% mood increase from work tasks.',
+  type: 'permanent-buff',
+  effect: {
+    moodIncrease: 35,
   },
-  {
-    id: 'headphones',
-    name: 'Noise-Canceling Headphones',
-    item_type: 'regular',
-    description: 'Permanent 8% stress reduction on all tasks.',
-    type: 'permanent-buff',
-    effect: {
-      stressReduction: 8,
-    },
-    price: 600,
-    icon: '🎧',
+  price: 2500,
+  icon: '🪑',
+},
+{
+  id: 'headphones',
+  name: 'Noise-Canceling Headphones',
+  item_type: 'regular',
+  description: 'Permanent 20% stress reduction on all tasks.',
+  type: 'permanent-buff',
+  effect: {
+    stressReduction: 20,
   },
-  {
-    id: 'smart-desk-lamp',
-    name: 'Smart Desk Lamp',
-    item_type: 'regular',
-    description: 'Permanent 20% productivity boost with adaptive lighting for optimal concentration.',
-    type: 'permanent-buff',
-    effect: {
-      expBoost: 20,
-    },
-    price: 1200,
-    icon: '💡',
+  price: 1800,
+  icon: '🎧',
+},
+{
+  id: 'smart-desk-lamp',
+  name: 'Smart Desk Lamp',
+  item_type: 'regular',
+  description: 'Permanent 120% productivity (EXP) boost with adaptive lighting for optimal concentration.',
+  type: 'permanent-buff',
+  effect: {
+    expBoost: 120,
   },
-  {
-    id: 'ergonomic-chair',
-    name: 'Ergonomic Chair',
-    item_type: 'regular',
-    description: 'Permanent buff: Reduces stress from long tasks by 12%.',
-    type: 'permanent-buff',
-    effect: {
-      stressReduction: 12,
-    },
-    price: 1000,
-    icon: '💺',
+  price: 6000, // EXP items scaled to 5000–8000
+  icon: '💡',
+},
+{
+  id: 'ergonomic-chair',
+  name: 'Ergonomic Chair',
+  item_type: 'regular',
+  description: 'Permanent 40% stress reduction from long tasks.',
+  type: 'permanent-buff',
+  effect: {
+    stressReduction: 40,
   },
-  {
-    id: 'monitor-upgrade',
-    name: 'Ultra-Wide Monitor',
-    item_type: 'regular',
-    description: 'Permanent 7% productivity boost on all workspace tasks.',
-    type: 'permanent-buff',
-    effect: {
-      expBoost: 15,
-    },
-    price: 750,
-    icon: '🖥️',
-  }
+  price: 2300,
+  icon: '💺',
+},
+{
+  id: 'monitor-upgrade',
+  name: 'Ultra-Wide Monitor',
+  item_type: 'regular',
+  description: 'Permanent 80% productivity (EXP) boost on all workspace tasks.',
+  type: 'permanent-buff',
+  effect: {
+    expBoost: 80,
+  },
+  price: 5000, // EXP items scaled to 5000–8000
+  icon: '🖥️',
+}
 ];
 
 // Legacy export for backward compatibility

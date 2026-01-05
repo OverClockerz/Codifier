@@ -537,7 +537,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         paidLeaves: 0,
         currentDay: 1,
         currentMonth: 1,
-        lastLoginDate: new Date(),
+        lastLoginDate: player.lastLoginDate,
         proficiency: player.proficiency,
         careerHistory: [
           ...(player.careerHistory || []),
@@ -596,7 +596,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           paidLeaves: 0,
           currentDay: 1,
           currentMonth: 1,
-          lastLoginDate: new Date(),
+          lastLoginDate: freshPlayer.lastLoginDate,
           proficiency: freshPlayer.proficiency,
           careerHistory: freshPlayer.careerHistory,
           currentRun: freshPlayer.currentRun,

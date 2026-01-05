@@ -40,7 +40,7 @@ export function QuestGenerationManager() {
         performAutoQuestGeneration(trigger);
 
         lastCheckedDayRef.current = player.currentDay;
-    }, [player.currentDay, player.username, player.activeQuests]);
+    }, [player.currentDay, player.username, player.activeQuests?.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const performAutoQuestGeneration = async (triggerType: string) => {
         if (generationInProgressRef.current) return;
@@ -62,9 +62,12 @@ export function QuestGenerationManager() {
             for (const zone of zonesToGenerate) {
                 try {
                     const quests = await generateQuests(player.username, zone, 20);
-                    allGeneratedQuests.push(...quests);
-                    generatedZoneNames.push(zone);
-                    console.log(`✅ Auto-generated ${quests.length} quests for ${zone}`);
+                    const zoneQuests = Array.isArray(quests) ? quests : (quests as any)?.activeQuests || [];
+                    if (zoneQuests.length > 0) {
+                        allGeneratedQuests.push(...zoneQuests);
+                        generatedZoneNames.push(zone);
+                    }
+                    console.log(`✅ Auto-generated ${zoneQuests.length} quests for ${zone}`);
                 } catch (error) {
                     console.error(`Failed to auto-generate quests for zone ${zone}:`, error);
                     // Silent failure - don't show error notifications
@@ -95,6 +98,7 @@ export function QuestGenerationManager() {
                     type: 'quest',
                     title: 'New Quests Added',
                     message: `New quests have been added to ${zoneDisplayNames}!`,
+                    metadata: { questIds: allGeneratedQuests.map(q => q.id) } // Include generated quest IDs for tracking
                 });
             }
         } catch (error: any) {

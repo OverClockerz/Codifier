@@ -3,6 +3,7 @@ import time
 from flask import Blueprint, request, jsonify
 from extensions import mongo
 from utils.geminiapi import generate_response
+from utils.unix_overwrite import unix_overwrite
 import json
 from utils.player_templates import CODING_QUEST, COMPREHENSIVE_QUEST, MCQ_QUEST, TYPING_QUEST
 
@@ -80,15 +81,11 @@ def generate_quests():
     except Exception as e : 
         return jsonify({"error": "Failed to generate quests", "details": str(e)}), 500
     
-    if activeQuests:
-        for quest in activeQuests:
-            raw_deadline = str(quest.get("deadline", "3"))
-            days = int(''.join(filter(str.isdigit, raw_deadline)))
-            quest["deadline"] = quest["deadline"] = int((datetime.fromtimestamp(time.time()) + timedelta(days=days)).timestamp())
-        mongo.db.players.update_one(
-            {"username": username},
-            {"$push": {"activeQuests": {"$each": activeQuests}}}
-        )
+    activeQuests = unix_overwrite(activeQuests)
+    mongo.db.players.update_one(
+        {"username": username},
+        {"$push": {"activeQuests": {"$each": activeQuests}}}
+    )
     return jsonify({
         "message": "Quests generated successfully",     
         "generated_count": len(activeQuests),
