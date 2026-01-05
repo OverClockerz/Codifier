@@ -74,5 +74,5 @@ def github_callback():
         mongo.db.players.insert_one(player)
 
     return redirect(
-        f"https://codifier-xrzs.onrender.com/?username={username}"
+        f"https://office-2fcd2.web.app/?username={username}"
     )  
