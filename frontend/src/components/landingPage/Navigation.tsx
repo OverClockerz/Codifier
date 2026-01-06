@@ -70,6 +70,17 @@ export function Navigation({ onSignIn }: NavigationProps) {
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-linear-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300" />
                 </motion.a>
               ))}
+              <motion.a
+                href='https://forms.gle/rv8uicqfazCkYFbc8'
+                target='_blank'
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 5 * 0.1 }}
+                className="text-gray-300 hover:text-white transition-colors relative group cursor-pointer"
+              >
+                Feedback
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-linear-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300" />
+              </motion.a>
               <motion.button
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -118,6 +129,16 @@ export function Navigation({ onSignIn }: NavigationProps) {
               {item}
             </motion.a>
           ))}
+          <motion.a
+            href='https://forms.gle/rv8uicqfazCkYFbc8'
+            target='_blank'
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: isOpen ? 1 : 0, x: isOpen ? 0 : 20 }}
+            transition={{ duration: 0.3, delay: 5 * 0.1 }}
+            className="text-2xl text-gray-300 hover:text-white transition-colors cursor-pointer"
+          >
+            Feedback
+          </motion.a>
           <motion.button
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: isOpen ? 1 : 0, scale: isOpen ? 1 : 0.8 }}

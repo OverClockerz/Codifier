@@ -107,6 +107,7 @@ export const COMPANY_NAMES = [
   'Vertex Solutions',
   'Quantum Ventures',
   'Horizon Innovations',
+  'OmniTech Solutions',
 ];
 
 /**

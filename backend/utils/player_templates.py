@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from utils.unix_overwrite import unix_overwrite
+
 
 activeQuests = [
   {
@@ -19,7 +21,7 @@ activeQuests = [
     "currencyReward": 55,
     "stressImpact": 11,
     "moodImpact": -5,
-    "deadline": 1767796265,
+    "deadline": "2",
     "skills": [
       "Python Syntax",
       "Basic Programming Concepts"
@@ -75,7 +77,7 @@ activeQuests = [
     "currencyReward": 60,
     "stressImpact": 12,
     "moodImpact": -6,
-    "deadline": 1767796265,
+    "deadline": "2",
     "skills": [
       "Version Control",
       "Git Commands",
@@ -132,7 +134,7 @@ activeQuests = [
     "currencyReward": 75,
     "stressImpact": 15,
     "moodImpact": -7,
-    "deadline": 1767882665,
+    "deadline": "3",
     "skills": [
       "Data Structures",
       "Algorithm Analysis"
@@ -188,7 +190,7 @@ activeQuests = [
     "currencyReward": 70,
     "stressImpact": 14,
     "moodImpact": -6,
-    "deadline": 1767796265,
+    "deadline": "2",
     "skills": [
       "Database Querying",
       "SQL",
@@ -245,7 +247,7 @@ activeQuests = [
     "currencyReward": 165,
     "stressImpact": 27,
     "moodImpact": -16,
-    "deadline": 1768141865,
+    "deadline": "6",
     "skills": [
       "System Design",
       "Microservices",
@@ -288,7 +290,7 @@ activeQuests = [
     "currencyReward": 230,
     "stressImpact": 33,
     "moodImpact": -23,
-    "deadline": 1768141865,
+    "deadline": "6",
     "skills": [
       "String Manipulation",
       "Algorithm Implementation",
@@ -365,7 +367,7 @@ activeQuests = [
     "currencyReward": 240,
     "stressImpact": 34,
     "moodImpact": -24,
-    "deadline": 1768228265,
+    "deadline": "7",
     "skills": [
       "Array Manipulation",
       "Looping",
@@ -445,7 +447,7 @@ activeQuests = [
     "currencyReward": 260,
     "stressImpact": 36,
     "moodImpact": -26,
-    "deadline": 1768228265,
+    "deadline": "7",
     "skills": [
       "Hash Tables",
       "Array Traversal",
@@ -523,7 +525,7 @@ activeQuests = [
     "currencyReward": 270,
     "stressImpact": 37,
     "moodImpact": -27,
-    "deadline": 1768314665,
+    "deadline": "8",
     "skills": [
       "Sorting Algorithms",
       "Array Manipulation",
@@ -587,7 +589,7 @@ activeQuests = [
     "currencyReward": 85,
     "stressImpact": 15,
     "moodImpact": -8,
-    "deadline": 1767882687,
+    "deadline": "3",
     "skills": [
       "Data Structures",
       "Algorithms",
@@ -644,7 +646,7 @@ activeQuests = [
     "currencyReward": 95,
     "stressImpact": 18,
     "moodImpact": -9,
-    "deadline": 1767969087,
+    "deadline": "4",
     "skills": [
       "OOP",
       "Design Patterns",
@@ -701,7 +703,7 @@ activeQuests = [
     "currencyReward": 85,
     "stressImpact": 14,
     "moodImpact": -7,
-    "deadline": 1767882687,
+    "deadline": "3",
     "skills": [
       "Git",
       "Version Control",
@@ -758,7 +760,7 @@ activeQuests = [
     "currencyReward": 92,
     "stressImpact": 17,
     "moodImpact": -9,
-    "deadline": 1767969087,
+    "deadline": "4",
     "skills": [
       "Cloud Computing",
       "AWS",
@@ -816,7 +818,7 @@ activeQuests = [
     "currencyReward": 190,
     "stressImpact": 28,
     "moodImpact": -18,
-    "deadline": 1768141887,
+    "deadline": "6",
     "skills": [
       "System Design",
       "Microservices",
@@ -847,7 +849,7 @@ activeQuests = [
     "currencyReward": 180,
     "stressImpact": 29,
     "moodImpact": -19,
-    "deadline": 1768141887,
+    "deadline": "6",
     "skills": [
       "Debugging",
       "Problem Solving",
@@ -878,7 +880,7 @@ activeQuests = [
     "currencyReward": 140,
     "stressImpact": 23,
     "moodImpact": -14,
-    "deadline": 1768055487,
+    "deadline": "5",
     "skills": [
       "Cloud Architecture",
       "AWS",
@@ -908,7 +910,7 @@ activeQuests = [
     "currencyReward": 200,
     "stressImpact": 30,
     "moodImpact": -20,
-    "deadline": 1768141887,
+    "deadline": "6",
     "skills": [
       "Refactoring",
       "Code Quality",
@@ -952,7 +954,7 @@ activeQuests = [
     "currencyReward": 220,
     "stressImpact": 33,
     "moodImpact": -22,
-    "deadline": 1768141887,
+    "deadline": "6",
     "skills": [
       "Data Structures",
       "Algorithms",
@@ -1029,7 +1031,7 @@ activeQuests = [
     "currencyReward": 250,
     "stressImpact": 36,
     "moodImpact": -26,
-    "deadline": 1768228287,
+    "deadline": "7",
     "skills": [
       "Algorithms",
       "Dynamic Programming",
@@ -1106,7 +1108,7 @@ activeQuests = [
     "currencyReward": 270,
     "stressImpact": 38,
     "moodImpact": -28,
-    "deadline": 1768314687,
+    "deadline": "8",
     "skills": [
       "Data Structures",
       "Tree Traversal",
@@ -1168,9 +1170,9 @@ activeQuests = [
       "stress_resistance": 0.2
     },
     "currencyReward": 75,
-    "stressImpact": 15,
-    "moodImpact": -7,
-    "deadline": 1767882747,
+    "stressImpact": -15,
+    "moodImpact": 7,
+    "deadline": "3",
     "skills": [
       "Logical Reasoning",
       "Problem Solving",
@@ -1223,9 +1225,9 @@ activeQuests = [
       "stress_resistance": 0.2
     },
     "currencyReward": 70,
-    "stressImpact": 14,
-    "moodImpact": -6,
-    "deadline": 1767882747,
+    "stressImpact": -14,
+    "moodImpact": 6,
+    "deadline": "3",
     "skills": [
       "Mathematical Aptitude",
       "Logical Reasoning",
@@ -1280,9 +1282,9 @@ activeQuests = [
       "stress_resistance": 0.1
     },
     "currencyReward": 60,
-    "stressImpact": 12,
-    "moodImpact": -5,
-    "deadline": 1767796347,
+    "stressImpact": -12,
+    "moodImpact": 5,
+    "deadline": "2",
     "skills": [
       "Critical Thinking",
       "Logical Reasoning"
@@ -1336,9 +1338,9 @@ activeQuests = [
       "stress_resistance": 0.3
     },
     "currencyReward": 85,
-    "stressImpact": 18,
-    "moodImpact": -9,
-    "deadline": 1767969147,
+    "stressImpact": -18,
+    "moodImpact": 9,
+    "deadline": "4",
     "skills": [
       "Logical Reasoning",
       "Mathematical Aptitude",
@@ -1394,9 +1396,9 @@ activeQuests = [
       "stress_resistance": 0.2
     },
     "currencyReward": 70,
-    "stressImpact": 15,
-    "moodImpact": -7,
-    "deadline": 1767882747,
+    "stressImpact": -15,
+    "moodImpact": 7,
+    "deadline": "3",
     "skills": [
       "Mathematical Aptitude",
       "Problem Solving"
@@ -1450,9 +1452,9 @@ activeQuests = [
       "stress_resistance": 0.3
     },
     "currencyReward": 90,
-    "stressImpact": 18,
-    "moodImpact": -9,
-    "deadline": 1767969147,
+    "stressImpact": -18,
+    "moodImpact": 9,
+    "deadline": "4",
     "skills": [
       "Logical Reasoning",
       "Critical Thinking",
@@ -1505,9 +1507,9 @@ activeQuests = [
       "stress_resistance": 0.2
     },
     "currencyReward": 75,
-    "stressImpact": 15,
-    "moodImpact": -7,
-    "deadline": 1767882747,
+    "stressImpact": -15,
+    "moodImpact": 7,
+    "deadline": "3",
     "skills": [
       "Mathematical Aptitude",
       "Logical Reasoning"
@@ -1561,9 +1563,9 @@ activeQuests = [
       "stress_resistance": 0.3
     },
     "currencyReward": 95,
-    "stressImpact": 19,
-    "moodImpact": -9,
-    "deadline": 1767969147,
+    "stressImpact": -19,
+    "moodImpact": 9,
+    "deadline": "4",
     "skills": [
       "Mathematical Aptitude",
       "Logical Reasoning",
@@ -1618,9 +1620,9 @@ activeQuests = [
       "stress_resistance": 0.3
     },
     "currencyReward": 90,
-    "stressImpact": 19,
-    "moodImpact": -9,
-    "deadline": 1767969147,
+    "stressImpact": -19,
+    "moodImpact": 9,
+    "deadline": "4",
     "skills": [
       "Critical Thinking",
       "Logical Reasoning"
@@ -1673,9 +1675,9 @@ activeQuests = [
       "stress_resistance": 0.25
     },
     "currencyReward": 80,
-    "stressImpact": 16,
-    "moodImpact": -8,
-    "deadline": 1767882747,
+    "stressImpact": -16,
+    "moodImpact": 8,
+    "deadline": "3",
     "skills": [
       "Logical Reasoning",
       "Problem Solving",
@@ -1730,9 +1732,9 @@ activeQuests = [
       "stress_resistance": 0.3
     },
     "currencyReward": 88,
-    "stressImpact": 18,
-    "moodImpact": -8,
-    "deadline": 1767969147,
+    "stressImpact": -18,
+    "moodImpact": 8,
+    "deadline": "4",
     "skills": [
       "Mathematical Aptitude",
       "Logical Reasoning",
@@ -1787,9 +1789,9 @@ activeQuests = [
       "stress_resistance": 0.25
     },
     "currencyReward": 82,
-    "stressImpact": 17,
-    "moodImpact": -8,
-    "deadline": 1767882747,
+    "stressImpact": -17,
+    "moodImpact": 8,
+    "deadline": "3",
     "skills": [
       "Logical Reasoning",
       "Critical Thinking"
@@ -1843,9 +1845,9 @@ activeQuests = [
       "stress_resistance": 0.3
     },
     "currencyReward": 150,
-    "stressImpact": 25,
-    "moodImpact": -15,
-    "deadline": 1768055547,
+    "stressImpact": -25,
+    "moodImpact": 15,
+    "deadline": "5",
     "skills": [
       "Critical Thinking",
       "Logical Reasoning",
@@ -1873,9 +1875,9 @@ activeQuests = [
       "stress_resistance": 0.4
     },
     "currencyReward": 180,
-    "stressImpact": 28,
-    "moodImpact": -18,
-    "deadline": 1768141947,
+    "stressImpact": -28,
+    "moodImpact": 18,
+    "deadline": "6",
     "skills": [
       "Critical Thinking",
       "Logical Reasoning",
@@ -1902,9 +1904,9 @@ activeQuests = [
       "stress_resistance": 0.45
     },
     "currencyReward": 190,
-    "stressImpact": 29,
-    "moodImpact": -19,
-    "deadline": 1768141947,
+    "stressImpact": -29,
+    "moodImpact": 19,
+    "deadline": "6",
     "skills": [
       "Critical Thinking",
       "Problem Solving",
@@ -1932,9 +1934,9 @@ activeQuests = [
       "stress_resistance": 0.35
     },
     "currencyReward": 160,
-    "stressImpact": 26,
-    "moodImpact": -16,
-    "deadline": 1768055547,
+    "stressImpact": -26,
+    "moodImpact": 16,
+    "deadline": "5",
     "skills": [
       "Mathematical Aptitude",
       "Logical Reasoning",
@@ -1962,9 +1964,9 @@ activeQuests = [
       "stress_resistance": 0.4
     },
     "currencyReward": 170,
-    "stressImpact": 27,
-    "moodImpact": -17,
-    "deadline": 1768141947,
+    "stressImpact": -27,
+    "moodImpact": 17,
+    "deadline": "6",
     "skills": [
       "Critical Thinking",
       "Ethical Reasoning",
@@ -1992,9 +1994,9 @@ activeQuests = [
       "stress_resistance": 0.3
     },
     "currencyReward": 140,
-    "stressImpact": 24,
-    "moodImpact": -14,
-    "deadline": 1768055547,
+    "stressImpact": -24,
+    "moodImpact": 14,
+    "deadline": "5",
     "skills": [
       "Mathematical Aptitude",
       "Problem Solving",
@@ -2022,9 +2024,9 @@ activeQuests = [
       "stress_resistance": 0.3
     },
     "currencyReward": 155,
-    "stressImpact": 25,
-    "moodImpact": -15,
-    "deadline": 1768055547,
+    "stressImpact": -25,
+    "moodImpact": 15,
+    "deadline": "5",
     "skills": [
       "Logical Reasoning",
       "Critical Thinking",
@@ -2052,9 +2054,9 @@ activeQuests = [
       "stress_resistance": 0.4
     },
     "currencyReward": 185,
-    "stressImpact": 28,
-    "moodImpact": -18,
-    "deadline": 1768141947,
+    "stressImpact": -28,
+    "moodImpact": 18,
+    "deadline": "6",
     "skills": [
       "Mathematical Aptitude",
       "Critical Thinking",
@@ -2084,7 +2086,7 @@ activeQuests = [
     "currencyReward": 60,
     "stressImpact": 12,
     "moodImpact": -6,
-    "deadline": 1767796395,
+    "deadline": "2",
     "skills": [
       "Communication",
       "Meeting Management",
@@ -2141,7 +2143,7 @@ activeQuests = [
     "currencyReward": 160,
     "stressImpact": 25,
     "moodImpact": -15,
-    "deadline": 1768055595,
+    "deadline": "5",
     "skills": [
       "Feedback Delivery",
       "Empathy",
@@ -2171,7 +2173,7 @@ activeQuests = [
     "currencyReward": 120,
     "stressImpact": 20,
     "moodImpact": -10,
-    "deadline": 1767969195,
+    "deadline": "4",
     "skills": [
       "Written Communication",
       "Summarization",
@@ -2201,7 +2203,7 @@ activeQuests = [
     "currencyReward": 65,
     "stressImpact": 13,
     "moodImpact": -7,
-    "deadline": 1767882795,
+    "deadline": "3",
     "skills": [
       "Collaboration",
       "Teamwork",
@@ -2258,7 +2260,7 @@ activeQuests = [
     "currencyReward": 190,
     "stressImpact": 29,
     "moodImpact": -19,
-    "deadline": 1768141995,
+    "deadline": "6",
     "skills": [
       "Negotiation",
       "Client Management",
@@ -2288,7 +2290,7 @@ activeQuests = [
     "currencyReward": 140,
     "stressImpact": 24,
     "moodImpact": -14,
-    "deadline": 1768055595,
+    "deadline": "5",
     "skills": [
       "Written Communication",
       "Professionalism",
@@ -2318,7 +2320,7 @@ activeQuests = [
     "currencyReward": 85,
     "stressImpact": 18,
     "moodImpact": -9,
-    "deadline": 1767969195,
+    "deadline": "4",
     "skills": [
       "Leadership",
       "Team Management",
@@ -2375,7 +2377,7 @@ activeQuests = [
     "currencyReward": 180,
     "stressImpact": 28,
     "moodImpact": -18,
-    "deadline": 1768141995,
+    "deadline": "6",
     "skills": [
       "Conflict Resolution",
       "Mediation",
@@ -2405,7 +2407,7 @@ activeQuests = [
     "currencyReward": 130,
     "stressImpact": 22,
     "moodImpact": -12,
-    "deadline": 1767969195,
+    "deadline": "4",
     "skills": [
       "Business Writing",
       "Persuasion",
@@ -2435,7 +2437,7 @@ activeQuests = [
     "currencyReward": 50,
     "stressImpact": 10,
     "moodImpact": -5,
-    "deadline": 1767796395,
+    "deadline": "2",
     "skills": [
       "Written Communication",
       "Professionalism",
@@ -2492,7 +2494,7 @@ activeQuests = [
     "currencyReward": 170,
     "stressImpact": 26,
     "moodImpact": -16,
-    "deadline": 1768055595,
+    "deadline": "5",
     "skills": [
       "Remote Leadership",
       "Communication",
@@ -2522,7 +2524,7 @@ activeQuests = [
     "currencyReward": 150,
     "stressImpact": 26,
     "moodImpact": -16,
-    "deadline": 1768141995,
+    "deadline": "6",
     "skills": [
       "Professional Writing",
       "Performance Management",
@@ -2552,7 +2554,7 @@ activeQuests = [
     "currencyReward": 70,
     "stressImpact": 14,
     "moodImpact": -7,
-    "deadline": 1767882795,
+    "deadline": "3",
     "skills": [
       "Facilitation",
       "Engagement",
@@ -2609,7 +2611,7 @@ activeQuests = [
     "currencyReward": 200,
     "stressImpact": 30,
     "moodImpact": -20,
-    "deadline": 1768141995,
+    "deadline": "6",
     "skills": [
       "Crisis Management",
       "Public Relations",
@@ -2639,7 +2641,7 @@ activeQuests = [
     "currencyReward": 135,
     "stressImpact": 23,
     "moodImpact": -13,
-    "deadline": 1768055595,
+    "deadline": "5",
     "skills": [
       "Business Reporting",
       "Analytical Writing",
@@ -2669,7 +2671,7 @@ activeQuests = [
     "currencyReward": 75,
     "stressImpact": 15,
     "moodImpact": -8,
-    "deadline": 1767882795,
+    "deadline": "3",
     "skills": [
       "Presentation Skills",
       "Public Speaking",
@@ -2727,7 +2729,7 @@ activeQuests = [
     "currencyReward": 190,
     "stressImpact": 29,
     "moodImpact": -19,
-    "deadline": 1768141995,
+    "deadline": "6",
     "skills": [
       "Change Management",
       "Leadership",
@@ -2758,7 +2760,7 @@ activeQuests = [
     "currencyReward": 120,
     "stressImpact": 21,
     "moodImpact": -11,
-    "deadline": 1767969195,
+    "deadline": "4",
     "skills": [
       "Formal Communication",
       "Policy Articulation",
@@ -2788,7 +2790,7 @@ activeQuests = [
     "currencyReward": 80,
     "stressImpact": 16,
     "moodImpact": -8,
-    "deadline": 1767969195,
+    "deadline": "4",
     "skills": [
       "Negotiation",
       "Persuasion",
@@ -2845,7 +2847,7 @@ activeQuests = [
     "currencyReward": 110,
     "stressImpact": 18,
     "moodImpact": -9,
-    "deadline": 1767882795,
+    "deadline": "3",
     "skills": [
       "Note Taking",
       "Accuracy",
@@ -2862,7 +2864,7 @@ activeQuests = [
 
 InitialPlayerState = {
     "username": "",
-    "companyName": "OmniTech Solutions",
+    "companyName": "OverClockers Inc.",
     "githubinfo": {
         "github_id": "",
         "avatar_url": "",
@@ -2915,7 +2917,7 @@ InitialPlayerState = {
         "currencyBoost": 0, 
     },
     "permanentItems": [],
-    "activeQuests": activeQuests,
+    "activeQuests": unix_overwrite(activeQuests),
     "completedQuests": [],
     "inventory": []
 }
@@ -2935,8 +2937,8 @@ MCQ_QUEST = {
         "stress_resistance": "float  value of 0-0.5 depending on the problem"
       },
       "currencyReward": "within 50-100",
-      "stressImpact": "within 10 to 20",
-      "moodImpact": "within -5 to -10",
+      "stressImpact": "within 10 to 20 (This value is positive for workspace zone and meeting-room and negative for game-lounge zones)",
+      "moodImpact": "within -5 to -10  (This value is negative for workspace zone and meeting-room and positive for game-lounge zones)",
       "deadline": "deadline in no. of days within 3-5 days, depending on the difficulty",
       "skills": ["put the skills improved by completing this quest in a list format"],
       "type": "MCQ",
@@ -2963,8 +2965,8 @@ COMPREHENSIVE_QUEST = {
             "stress_resistance": "float  value of 0-0.5 depending on the problem"
       },
       "currencyReward": "within 100-200",
-      "stressImpact": "within 20 to 30",
-      "moodImpact": "within -10 to -20",
+      "stressImpact": "within 20 to 30 (This value is positive for workspace zone and meeting-room and negative for game-lounge zones)",
+      "moodImpact": "within -10 to -20 (This value is negative for workspace zone and meeting-room and positive for game-lounge zones)",
       "deadline": "deadline in no. of days within 5-7 days, depending on the difficulty",
       "skills": ["put the skills improved by completing this quest in a list format"],
       "type": "Comprehensive",
@@ -3045,7 +3047,7 @@ TYPING_QUEST = {
       "id": "unique quest id hash",
       "title": "Put the quest title here",
       "description": "Put the quest description here",
-      "zone": "has to be one of the predefined zones: workspace,meeting-room,game-lounge",
+      "zone": "meeting-room",
       "difficulty": "on a scale of 1-4",
       "expReward": "within 50-100 depending on the difficulty",    
       "proficiency": {

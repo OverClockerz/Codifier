@@ -216,7 +216,7 @@ export function QuestPage({ quest, onClose }: QuestPageProps) {
                         <div className="w-4 h-4 rounded-full bg-red-500"></div>
                         <span className="text-sm text-gray-400">Stress</span>
                       </div>
-                      <p className="text-2xl text-white">+{quest.stressImpact}</p>
+                        <p className="text-2xl text-white">{quest.stressImpact > 0 ? '+' : ''}{quest.stressImpact}</p>
                     </div>
                   </div>
                 </div>

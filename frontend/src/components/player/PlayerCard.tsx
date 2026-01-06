@@ -33,7 +33,7 @@ export function PlayerCard({ onClick }: PlayerCardProps) {
           {/* <p className="text-sm text-gray-400">
             #EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}
           </p> */}
-          <p className="text-sm text-gray-500">{player.companyName || 'OmniTech Solutions'}</p>
+          <p className="text-sm text-gray-500">{player.companyName || 'OverClockers Inc.'}</p>
         </div>
         <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-gray-400 group-hover:translate-x-1 transition-all" />
       </motion.button>
