@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, make_response
 
-auth_logout_bp = Blueprint("auth", __name__)
+auth_logout_bp = Blueprint("auth_logout", __name__)
 
 @auth_logout_bp.route("/api/auth/logout", methods=["POST"])
 def logout():
