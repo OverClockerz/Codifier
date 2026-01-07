@@ -74,7 +74,7 @@ export function useQuestGeneration({
 
       for (const zone of zonesToGenerate) {
         try {
-          const quests = await generateQuests(player.username, zone, 20);
+          const quests = await generateQuests(zone, 20);
           allGeneratedQuests.push(...quests);
           generatedZoneNames.push(zone);
         } catch (error) {

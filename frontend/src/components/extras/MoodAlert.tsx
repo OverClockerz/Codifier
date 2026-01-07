@@ -46,7 +46,7 @@ export function MoodAlert({ isOpen, onClose, onGoToShop }: MoodAlertProps) {
                         <motion.div
                             animate={{ top: ["0%", "100%"] }}
                             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                            className="absolute left-0 right-0 h-px bg-linear-to-r from-transparent via-pink-500/50 to-transparent z-0 pointer-events-none"
+                            className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-pink-500/50 to-transparent z-0 pointer-events-none"
                         />
 
                         {/* Window Header */}
@@ -98,12 +98,12 @@ export function MoodAlert({ isOpen, onClose, onGoToShop }: MoodAlertProps) {
                                         initial={{ width: "100%" }}
                                         animate={{ width: "0%" }}
                                         transition={{ duration: 1, ease: "circOut" }}
-                                        className="h-full bg-linear-to-r from-pink-900 via-pink-600 to-pink-500 relative"
+                                    className="h-full bg-gradient-to-r from-pink-900 via-pink-600 to-pink-500 relative"
                                     >
                                         <motion.div
                                             animate={{ x: ["-100%", "200%"] }}
                                             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                                            className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent skew-x-12"
+                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"
                                         />
                                     </motion.div>
                                 </div>
@@ -121,7 +121,7 @@ export function MoodAlert({ isOpen, onClose, onGoToShop }: MoodAlertProps) {
                                     }}
                                     className="group relative flex-1 py-3 bg-pink-950/80 hover:bg-pink-900 border border-pink-500/50 text-white rounded-lg font-bold text-[10px] uppercase tracking-wide overflow-hidden transition-all shadow-lg shadow-pink-900/20"
                                 >
-                                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-pink-500/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-500/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
                                     <span className="relative flex flex-col items-center justify-center gap-1 text-pink-50 group-hover:text-white transition-colors">
                                         <Heart className="w-4 h-4 mb-0.5" />
                                         <span>Visit Cafeteria</span>

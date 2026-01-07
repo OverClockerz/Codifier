@@ -54,7 +54,7 @@ export function Hero({ onStartCareer }: HeroProps) {
 
         {/* Dynamic Mouse Movement Gradient Layer */}
         <div
-          className="absolute inset-0 bg-linear-to-br from-blue-900/40 via-purple-900/40 to-pink-900/40 mix-blend-overlay"
+          className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-purple-900/40 to-pink-900/40 mix-blend-overlay"
           style={{
             transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
             transition: 'transform 0.3s ease-out',
@@ -89,7 +89,7 @@ export function Hero({ onStartCareer }: HeroProps) {
         >
           <ScrambleText
             text="OFFICE"
-            className="block bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-2xl"
+            className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-2xl"
             speed={80}
             delay={400}
             as="span"
@@ -111,7 +111,7 @@ export function Hero({ onStartCareer }: HeroProps) {
           transition={{ duration: 1, delay: 0.8 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 rounded-full text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.5)] border border-white/10"
+          className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.5)] border border-white/10"
           onClick={onStartCareer}
         >
           Start Your Career
@@ -157,7 +157,7 @@ export function Hero({ onStartCareer }: HeroProps) {
           />
         ))}
       </div>
-      <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
     </section>
   );
 }

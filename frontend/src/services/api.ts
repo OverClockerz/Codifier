@@ -1,34 +1,27 @@
 // frontend/src/services/api.ts
 import { Quest, PlayerState } from "../types/game";
-const API_BASE_URL = 'http://localhost:5000';
 
-// Helper function to add auth headers
-const getAuthHeaders = (): HeadersInit => {
-  const token = localStorage.getItem("auth_token");
-  return {
-    "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
-  };
-};
+const API_BASE_URL = "http://localhost:5000";
 
-// ============================================================
-// PLAYER ENDPOINTS
-// ============================================================
+/* ============================================================
+   PLAYER ENDPOINTS (JWT AUTH)
+============================================================ */
 
-export const fetchPlayerData = async (username: string): Promise<any> => {
+export const fetchPlayerData = async (): Promise<any> => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/player/get?username=${encodeURIComponent(username)}`,
+      `${API_BASE_URL}/api/player/get`,
       {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
-      },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch player data: ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch player data`);
     }
 
     return await response.json();
@@ -46,15 +39,16 @@ export const updatePlayerData = async (
       `${API_BASE_URL}/api/player/update`,
       {
         method: "POST",
-        headers: getAuthHeaders(),
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(playerData),
-      },
+      }
     );
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to update player data: ${response.statusText}`,
-      );
+      throw new Error(`Failed to update player data`);
     }
 
     return await response.json();
@@ -64,20 +58,17 @@ export const updatePlayerData = async (
   }
 };
 
-// ============================================================
-// QUEST ENDPOINTS
-// ============================================================
+/* ============================================================
+   QUEST ENDPOINTS (JWT AUTH)
+============================================================ */
 
-export const fetchQuestsData = async (
-  username: string,
-  params?: {
-    zone?: string;
-    status?: string;
-  }
+export const fetchQuestsData = async (params?: {
+  zone?: string;
+  status?: string;
+}
 ): Promise<Quest[]> => {
   try {
     const queryParams = new URLSearchParams();
-    queryParams.append("username", username);
     if (params?.zone) queryParams.append("zone", params.zone);
     if (params?.status) queryParams.append("status", params.status);
 
@@ -85,13 +76,14 @@ export const fetchQuestsData = async (
 
     const response = await fetch(url, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch quests data: ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch quests data`);
     }
 
     return await response.json();
@@ -112,15 +104,16 @@ export const updateQuestData = async (questData: {
       `${API_BASE_URL}/api/quests/update`,
       {
         method: "POST",
-        headers: getAuthHeaders(),
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(questData),
-      },
+      }
     );
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to update quest data: ${response.statusText}`,
-      );
+      throw new Error(`Failed to update quest data`);
     }
 
     return await response.json();
@@ -129,6 +122,14 @@ export const updateQuestData = async (questData: {
     throw error;
   }
 };
+
+export async function getLoggedInUser() {
+  const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
+    credentials: "include", // include HTTP-only cookie
+  });
+  if (!res.ok) throw new Error("Not authenticated");
+  return res.json();
+}
 
 // ============================================================
 // HELPER FUNCTIONS (For future use)
@@ -168,18 +169,27 @@ export const failQuest = async (
   });
 };
 
+export async function apilogout() {
+  const res = await fetch("http://localhost:5000/auth/logout", {
+    method: "POST",
+    credentials: "include", // IMPORTANT
+  });
+
+  if (!res.ok) {
+    throw new Error("Logout failed");
+  }
+}
+
 /**
  * Generate quests from backend
  * Called on: new player, new day, or career restart
  */
 export const generateQuests = async (
-  username: string,
   zone: 'workspace' | 'game-lounge' | 'meeting-room',
   questAmount: number = 20,
 ): Promise<Quest[]> => {
   try {
     const queryParams = new URLSearchParams();
-    queryParams.append("username", username);
     queryParams.append("zone", zone);
     queryParams.append("quest_amount", questAmount.toString());
 
@@ -187,7 +197,10 @@ export const generateQuests = async (
 
     const response = await fetch(url, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      }
     });
 
     if (!response.ok) {

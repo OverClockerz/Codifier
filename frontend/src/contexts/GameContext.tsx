@@ -691,7 +691,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const loadGame = async () => {
     if (!user?.id) return;
     try {
-      const backendData = await fetchPlayerData(user.username);
+      const backendData = await fetchPlayerData();
       // localStorage.setItem(`office_game_currency_${user.id}`, String(backendData.currency));
 
       // Check for active quests sync mismatch
@@ -780,7 +780,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         try {
           if (user?.username) {
             try {
-              const backendData = await fetchPlayerData(user.username);
+              const backendData = await fetchPlayerData();
               const localQuestsStr = localStorage.getItem(`office_game_active_quests_${user.username}`);
               if (localQuestsStr) {
                 const localQuests = JSON.parse(localQuestsStr);

@@ -49,7 +49,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                 <ArrowLeft className="w-5 h-5" />
               </motion.button>
 
-              <h1 className="text-xl md:text-2xl bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-xl md:text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 <ScrambleTextOnHover text="OFFICE" />
               </h1>
               {/* <div className="hidden md:flex items-center gap-2 px-2 py-2 bg-gray-900/50 hover:bg-gray-800/50 rounded-full border border-gray-800 hover:border-gray-700 transition-all cursor-pointer">
@@ -90,12 +90,12 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-linear-to-br from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-6"
+            className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-6"
           >
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               {/* Avatar & Info */}
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
                   <img
                     src={player.githubinfo?.avatar_url || user?.avatar || ''}
                     alt={player.username}
@@ -103,7 +103,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                   />
                 </div>
                 <div>
-                  <h2 className="text-xl text-white">{user?.username || 'Player'}</h2>
+                  <h2 className="text-xl text-white">{player.username ?? 'Player'}</h2>
                   <p className="text-sm text-gray-400 mt-1">• {player.companyName || 'OverClockers Inc.'}</p>
                 </div>
               </div>
@@ -163,8 +163,8 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
             <div className="h-3 bg-gray-800 rounded-full overflow-hidden">
               <div
                 className={`h-full ${(player.reputation ?? 0) >= 0
-                  ? 'bg-linear-to-r from-green-500 to-emerald-500'
-                  : 'bg-linear-to-r from-red-500 to-orange-500'
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500'
+                  : 'bg-gradient-to-r from-red-500 to-orange-500'
                   }`}
                 style={{ width: `${Math.min(100, Math.abs((player.reputation ?? 0) / 20) * 100)}%` }}
               ></div>
@@ -261,7 +261,7 @@ export function ProfilePage({ onNavigateBack }: { onNavigateBack: () => void }) 
                         initial={{ width: 0 }}
                         animate={{ width: `${level}%` }}
                         transition={{ delay: 0.3 + idx * 0.05 }}
-                        className="h-full bg-linear-to-r from-purple-500 to-pink-500"
+                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
                       />
                     </div>
                   </div>

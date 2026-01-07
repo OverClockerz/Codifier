@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
 from utils.ai_helpers import GEMINI_MODEL, generate_and_save_problem, get_gemini_response
-
+from utils.auth_helper import require_auth
 ai_runner_bp = Blueprint("ai_runner", __name__)
 
 @ai_runner_bp.route("/api/run-custom", methods=["POST"])
+@require_auth
 def run_custom():
     try:
         data = request.json
@@ -28,6 +29,7 @@ def run_custom():
 
 
 @ai_runner_bp.route('/api/generate-problem', methods=["POST"])
+@require_auth
 def generate_problem():
     try:
         data = request.json or {}
@@ -41,6 +43,7 @@ def generate_problem():
         return jsonify({"error": str(e)}), 500
 
 @ai_runner_bp.route('/api/hint', methods=["POST"])
+@require_auth
 def get_hint():
     try:
         data = request.json

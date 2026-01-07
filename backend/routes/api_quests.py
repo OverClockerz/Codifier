@@ -1,52 +1,54 @@
 from datetime import datetime, timedelta
 import time
+from utils.get_playload import get_payload
 from flask import Blueprint, request, jsonify
 from extensions import mongo
 from utils.geminiapi import generate_response
 from utils.unix_overwrite import unix_overwrite
+from utils.auth_helper import require_auth
 import json
 from utils.player_templates import CODING_QUEST, COMPREHENSIVE_QUEST, MCQ_QUEST, TYPING_QUEST
 
 api_quests_bp = Blueprint('api_quests', __name__)
 
 #purelly for debugging purposes
-@api_quests_bp.route("/api/quests/update", methods=["POST"])
-def update_user_quests():
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
+# @api_quests_bp.route("/api/quests/update", methods=["POST"])
+# def update_user_quests():
+#     data = request.get_json()
+#     if not data:
+#         return jsonify({"error": "No data provided"}), 400
 
-    username = data.get("username")
-    quests = data.get("activeQuests")
+#     username = data.get("username")
+#     quests = data.get("activeQuests")
 
-    if not username:
-        return jsonify({"error": "Username required"}), 401
+#     if not username:
+#         return jsonify({"error": "Username required"}), 401
 
-    if not isinstance(quests, list):
-        return jsonify({"error": "quests must be a list"}), 400
+#     if not isinstance(quests, list):
+#         return jsonify({"error": "quests must be a list"}), 400
 
-    result = mongo.db.players.update_one(
-        {"username": username},
-        {
-            "$set": {
-                "activeQuests": quests
-            }
-        },
-        upsert=True
-    )
+#     result = mongo.db.players.update_one(
+#         {"username": username},
+#         {
+#             "$set": {
+#                 "activeQuests": quests
+#             }
+#         },
+#         upsert=True
+#     )
 
-    return jsonify({
-        "message": "Quests updated successfully",
-        "username": username,
-        "count": len(quests),
-        "created": bool(result.upserted_id)
-    }), 200
+#     return jsonify({
+#         "message": "Quests updated successfully",
+#         "username": username,
+#         "count": len(quests),
+#         "created": bool(result.upserted_id)
+#     }), 200
 
 @api_quests_bp.route("/api/quests/generate", methods=["GET"])
-
+@require_auth
 def generate_quests():
     
-    username = request.args.get("username")
+    username = get_payload().get("sub")
 
     zone = request.args.get("zone")
 

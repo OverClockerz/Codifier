@@ -50,7 +50,7 @@ export function Gallery() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <h2 className="text-5xl md:text-7xl mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="text-5xl md:text-7xl mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Explore the Universe
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
@@ -105,11 +105,11 @@ export function Gallery() {
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
 
-            <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
             <div className="absolute bottom-0 left-0 right-0 p-8">
               <h3 className="text-3xl mb-2 text-white font-bold">{item.title}</h3>
-              <div className="w-20 h-1 bg-linear-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </div>
 
             <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500/50 rounded-3xl transition-all duration-300" />
@@ -132,8 +132,8 @@ export function Gallery() {
       `}</style>
 
       {/* Gradient Fades (z-index adjusted to sit below buttons) */}
-      <div className="absolute top-0 left-0 bottom-0 w-12 md:w-32 bg-linear-to-r from-black to-transparent pointer-events-none z-10" />
-      <div className="absolute top-0 right-0 bottom-0 w-12 md:w-32 bg-linear-to-l from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute top-0 left-0 bottom-0 w-12 md:w-32 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute top-0 right-0 bottom-0 w-12 md:w-32 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </section>
   );
 }

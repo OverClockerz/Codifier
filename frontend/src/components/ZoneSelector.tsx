@@ -64,7 +64,7 @@ export function ZoneSelector({ onSelectZone }: ZoneSelectorProps) {
             whileTap={zone.disabled ? {} : { scale: 0.98 }}
             onClick={() => !zone.disabled && onSelectZone(zone.type)}
             disabled={zone.disabled}
-            className={`group relative p-8 bg-linear-to-br from-gray-900/80 to-gray-900/50 border border-gray-800 rounded-3xl text-left transition-all duration-300 overflow-hidden ${
+            className={`group relative p-8 bg-gradient-to-br from-gray-900/80 to-gray-900/50 border border-gray-800 rounded-3xl text-left transition-all duration-300 overflow-hidden ${
               zone.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-gray-700 hover:shadow-2xl'
             }`}
           >
@@ -73,7 +73,7 @@ export function ZoneSelector({ onSelectZone }: ZoneSelectorProps) {
               initial={{ opacity: 0, scale: 0.8 }}
               whileHover={{ opacity: 0.15, scale: 1.2 }}
               transition={{ duration: 0.4 }}
-              className={`absolute inset-0 bg-linear-to-r ${zone.gradient} blur-2xl`}
+              className={`absolute inset-0 bg-gradient-to-r ${zone.gradient} blur-2xl`}
             />
 
             {/* Shimmer Effect on Hover */}
@@ -81,7 +81,7 @@ export function ZoneSelector({ onSelectZone }: ZoneSelectorProps) {
               initial={{ x: '-100%' }}
               whileHover={{ x: '200%' }}
               transition={{ duration: 0.8, ease: 'easeInOut' }}
-              className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent skew-x-12"
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12"
             />
 
             {/* Disabled Overlay */}
@@ -131,7 +131,7 @@ export function ZoneSelector({ onSelectZone }: ZoneSelectorProps) {
             <motion.div
               whileHover={{ y: -5, rotate: 5 }}
               transition={{ type: 'spring', stiffness: 300 }}
-              className={`w-16 h-16 mb-6 rounded-2xl bg-linear-to-r ${zone.gradient} p-0.5 relative`}
+              className={`w-16 h-16 mb-6 rounded-2xl bg-gradient-to-r ${zone.gradient} p-0.5 relative`}
             >
               <div className="w-full h-full bg-black rounded-2xl flex items-center justify-center">
                 <motion.div
@@ -147,7 +147,7 @@ export function ZoneSelector({ onSelectZone }: ZoneSelectorProps) {
                 <motion.div
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 0.6 }}
-                  className={`absolute inset-0 rounded-2xl bg-linear-to-r ${zone.gradient} blur-xl -z-10`}
+                  className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${zone.gradient} blur-xl -z-10`}
                 />
               )}
             </motion.div>
@@ -167,7 +167,7 @@ export function ZoneSelector({ onSelectZone }: ZoneSelectorProps) {
             {/* Hover Indicator */}
             {!zone.disabled && (
               <motion.div
-                className={`absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r ${zone.gradient} rounded-b-3xl`}
+                className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${zone.gradient} rounded-b-3xl`}
                 initial={{ scaleX: 0, originX: 0 }}
                 whileHover={{ scaleX: 1 }}
                 transition={{ duration: 0.3 }}

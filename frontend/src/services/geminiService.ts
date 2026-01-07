@@ -5,12 +5,12 @@ const API_BASE_URL = 'http://localhost:5000/api';
 /**
  * Fetches the current problem from the DB if it exists.
  */
-export const getCurrentProblem = async (username?: string): Promise<Problem> => {
+export const getCurrentProblem = async (): Promise<Problem> => {
   try {
-    const url = username ? `${API_BASE_URL}/problem?username=${encodeURIComponent(username)}` : `${API_BASE_URL}/problem`;
+    const url = `${API_BASE_URL}/problem`;
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -30,6 +30,7 @@ export const runCustomTestCase = async (problemTitle: string, userCode: string, 
   try {
     const response = await fetch(`${API_BASE_URL}/run-custom`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ problemTitle, userCode, language, customInput })
     });
@@ -44,6 +45,7 @@ export const evaluateSolution = async (problem: Problem, userCode: string, langu
   try {
     const response = await fetch(`${API_BASE_URL}/evaluate`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ problem, userCode, language, isSubmission })
     });
@@ -61,6 +63,7 @@ export const getAiAssistance = async (problem: Problem, userCode: string, query:
   try {
     const response = await fetch(`${API_BASE_URL}/hint`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ problem, userCode, query })
     });
@@ -78,6 +81,7 @@ export const evaluateSubmission = async (question: Question, answer: string): Pr
     // Step 1: Get AI Evaluation
     const evalResponse = await fetch(`${API_BASE_URL}/evaluate_comprehensive`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         question: question, 

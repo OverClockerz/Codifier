@@ -57,7 +57,7 @@ export const GameOverAlert: React.FC<GameOverAlertProps> = ({ isOpen, onRestart 
               console.log("🔴 Restart Button Clicked"); // Debug log
               onRestart();
             }}
-            className="w-full cursor-pointer relative z-50 bg-linear-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 hover:scale-[1.02] shadow-lg shadow-red-900/40 uppercase tracking-widest border border-red-500 active:scale-95"
+            className="w-full cursor-pointer relative z-50 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 hover:scale-[1.02] shadow-lg shadow-red-900/40 uppercase tracking-widest border border-red-500 active:scale-95"
           >
             Start New Career
           </button>

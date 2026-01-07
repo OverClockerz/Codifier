@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Github, X, AlertCircle, ArrowLeft } from 'lucide-react';
-import { GITHUB_CLIENT_ID } from '../../../config.json';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Github, X, AlertCircle, ArrowLeft } from "lucide-react";
+import { getLoggedInUser } from "../../services/api";
+import { GITHUB_CLIENT_ID } from "../../../config.json";
 
 interface GitHubAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAuth: (username: string) => void;
+  onAuth: (user: any) => void;
 }
 
 /* -------------------- Loading Animation -------------------- */
@@ -15,7 +16,9 @@ const LoadingWave = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setText(prev => prev === "Authenticating" ? "Please Wait" : "Authenticating");
+      setText((prev) =>
+        prev === "Authenticating" ? "Please Wait" : "Authenticating"
+      );
     }, 2000);
     return () => clearInterval(interval);
   }, []);
@@ -23,13 +26,13 @@ const LoadingWave = () => {
   const dotTransition = {
     duration: 0.6,
     repeat: Infinity,
-    ease: "easeInOut"
+    ease: "easeInOut",
   } as const;
 
   return (
     <div className="flex flex-col items-center justify-center h-40 w-full">
       <div className="relative min-w-40 text-center h-8">
-        <div className="flex items-center justify-center text-2xl font-bold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <div className="flex items-center justify-center text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
           <AnimatePresence mode="wait">
             <motion.div
               key={text}
@@ -45,7 +48,7 @@ const LoadingWave = () => {
         </div>
 
         <div className="flex justify-center items-center gap-1.5 h-5 mt-6">
-          {[0, 1, 2, 3, 4].map(i => (
+          {[0, 1, 2, 3, 4].map((i) => (
             <motion.span
               key={i}
               className="w-1.5 h-1.5 rounded-full bg-blue-400"
@@ -64,19 +67,26 @@ const LoadingWave = () => {
 };
 
 /* -------------------- Main Modal -------------------- */
-export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProps) {
+export function GitHubAuthModal({
+  isOpen,
+  onClose,
+  onAuth,
+}: GitHubAuthModalProps) {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isOAuthCallback = window.location.pathname === "/auth/callback";
 
   /* -------------------- Start OAuth -------------------- */
   const handleGitHubLogin = () => {
     setIsRedirecting(true);
     setError(null);
 
-    const redirectUri = 'http://localhost:5000/github/callback';
+    const redirectUri = "http://localhost:5000/github/callback";
+
     const githubAuthUrl =
-      `https://github.com/login/oauth/authorize` +
+      "https://github.com/login/oauth/authorize" +
       `?client_id=${GITHUB_CLIENT_ID}` +
       `&redirect_uri=${redirectUri}` +
       `&scope=read:user`;
@@ -84,28 +94,34 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
     window.location.href = githubAuthUrl;
   };
 
-  /* -------------------- Handle Redirect Back -------------------- */
+  /* -------------------- Authenticate after redirect -------------------- */
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get("username");
+    // Run if modal is open OR we returned from OAuth
+    if (!isOpen && !isOAuthCallback) return;
 
-    if (username) {
-      setIsAuthenticating(true);
+    setIsAuthenticating(true);
+    setError(null);
 
-      // Clean URL
-      window.history.replaceState({}, document.title, "/");
+    getLoggedInUser()
+      .then((user) => {
+        onAuth(user);
 
-      // Notify parent
-      onAuth(username);
+        // Clean URL after OAuth callback
+        if (isOAuthCallback) {
+          window.history.replaceState({}, document.title, "/");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Failed to fetch user data");
+      })
+      .finally(() => {
+        setIsAuthenticating(false);
+        setIsRedirecting(false);
+      });
+  }, [isOpen, onAuth, isOAuthCallback]);
 
-      
-
-      setIsAuthenticating(false);
-      setIsRedirecting(false);
-    }
-  }, [onAuth]);
-
-  const showModal = isOpen || isAuthenticating;
+  const showModal = isOpen || isAuthenticating || error;
 
   return (
     <AnimatePresence>
@@ -160,10 +176,10 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
               ) : (
                 <>
                   <div className="text-center mb-8">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-linear-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                       <Github className="w-8 h-8 text-white" />
                     </div>
-                    <h2 className="text-3xl mb-2 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-bold">
+                    <h2 className="text-3xl mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-bold">
                       Sign in with GitHub
                     </h2>
                     <p className="text-gray-400">
@@ -176,9 +192,11 @@ export function GitHubAuthModal({ isOpen, onClose, onAuth }: GitHubAuthModalProp
                     disabled={isRedirecting}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 bg-linear-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.5)] disabled:opacity-50 flex items-center justify-center gap-2 text-white font-medium"
+                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.5)] disabled:opacity-50 flex items-center justify-center gap-2 text-white font-medium"
                   >
-                    {isRedirecting ? "Redirecting..." : (
+                    {isRedirecting ? (
+                      "Redirecting..."
+                    ) : (
                       <>
                         <Github className="w-5 h-5" />
                         Continue with GitHub
