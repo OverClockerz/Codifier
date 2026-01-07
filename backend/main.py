@@ -29,7 +29,7 @@ mongo.init_app(app)
 # Vital for React + Flask Session Cookies
 CORS(
     app,
-    resources={r"/*": {"origins": "https://office-2fcd2.web.app"}},
+    resources={r"/*": {"origins": ["https://office-2fcd2.web.app","https://office-6f832.web.app"]}},
     supports_credentials=True,
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
