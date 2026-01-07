@@ -15,6 +15,7 @@ def calculate_paid_leaves(player: dict) -> dict:
         excess_days = delta_days - paid_leaves
         player["currentMonthEarnings"] = player.get("currentMonthEarnings", 0) - (20 * excess_days)
         player["reputation"] = player.get("reputation", 0) - (1.5 * excess_days)
+        print("Paid leaves exceeded. Applying penalties.")
         player["paidLeaves"] = 0  # all consumed
     else:
         # Within paid leaves → consume them and adjust mood/stress

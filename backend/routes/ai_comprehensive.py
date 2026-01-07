@@ -1,5 +1,6 @@
 
 import json
+from utils.auth_helper import require_auth
 from flask import Blueprint, jsonify, request
 
 from utils.ai_helpers import generate_response
@@ -7,6 +8,7 @@ from utils.ai_helpers import generate_response
 ai_comprehensive_bp = Blueprint('ai_comprehensive', __name__)
 
 @ai_comprehensive_bp.route('/api/evaluate_comprehensive', methods=['POST'])
+@require_auth
 def evaluate_answer():
     data = request.get_json()
     print(data)
