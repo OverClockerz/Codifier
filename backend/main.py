@@ -29,20 +29,12 @@ mongo.init_app(app)
 # Vital for React + Flask Session Cookies
 CORS(
     app,
-    resources={
-        r"/*": {
-            "origins": [
-                "http://localhost:3000",
-                "https://office-2fcd2.web.app"
-            ]
-        }
-    },
+    resources={r"/*": {"origins": "https://office-2fcd2.web.app"}},
     supports_credentials=True,
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
     expose_headers=["Content-Type"]
 )
-
 
 
 # Register Active Blueprints
