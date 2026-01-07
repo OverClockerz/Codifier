@@ -5,4 +5,4 @@ __pycache__
 backend/env/
 .env
 frontend/config.json
-.vscode
+.vscode 
