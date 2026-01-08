@@ -6,6 +6,7 @@ from routes.githublogin import githublogin_bp
 from routes.api_player import api_player_bp
 from routes.api_quests import api_quests_bp
 from routes.index import index_bp
+from keep_alive import start_keep_alive
 from routes.ai_problems import ai_problems_bp
 from routes.auth_logout import auth_logout_bp
 from routes.ai_comprehensive import ai_comprehensive_bp
@@ -65,7 +66,7 @@ app.register_blueprint(login_bp)
 # ─── KEEP-ALIVE (Gunicorn-safe) ───────────────────────
 # Render sets RENDER_INSTANCE_ID per instance
 # Gunicorn workers share the same instance
-if os.getenv("RENDER_INSTANCE_ID", "0") == "0":
+if os.getenv("ENABLE_KEEP_ALIVE") == "true":
     start_keep_alive()
 
 # ─── LOCAL DEV ONLY ───────────────────────────────────
