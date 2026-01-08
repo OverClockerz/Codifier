@@ -12,7 +12,7 @@ def logout():
         "session_token",          # 👈 MUST match login cookie name
         "",
         httponly=True,
-        secure=True           # True in production (HTTPS)
+        secure=True,           # True in production (HTTPS)
         samesite="None",
         expires=0,
     )
