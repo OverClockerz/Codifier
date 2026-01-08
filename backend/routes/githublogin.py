@@ -115,7 +115,7 @@ def github_callback():
     token,
     httponly=True,   # JS cannot access
     secure=True,     # HTTPS only
-    samesite="Lax",  # allows frontend usage
+    samesite="None",  # allows frontend usage
     max_age=30 * 24 * 60 * 60,  # 30 days
     )
 

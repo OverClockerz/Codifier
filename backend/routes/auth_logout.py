@@ -9,12 +9,12 @@ def logout():
     }))
 
     response.set_cookie(
-        "auth_token",          # 👈 MUST match login cookie name
+        "session_token",          # 👈 MUST match login cookie name
         "",
-        expires=0,
         httponly=True,
-        samesite="Lax",
-        secure=False           # True in production (HTTPS)
+        secure=True           # True in production (HTTPS)
+        samesite="None",
+        expires=0,
     )
 
     return response
