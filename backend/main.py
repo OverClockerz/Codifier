@@ -12,33 +12,42 @@ from routes.ai_comprehensive import ai_comprehensive_bp
 from routes.auth_me import auth_me_bp
 from routes.health import health_bp
 from routes.ai_runner import ai_runner_bp
-from routes.login import login_bp   
-from routes.register import register_bp 
-from routes.dashboard import dashboard_bp   
+from routes.login import login_bp
+from routes.register import register_bp
+from routes.dashboard import dashboard_bp
 from routes.auth import auth_bp
 import os
+
+from keep_alive import start_keep_alive  # 👈 import
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key")
-app.config["MONGO_URI"] = os.getenv("MONGO_URI","mongodb://localhost:27017/mydatabase")
+app.config["MONGO_URI"] = os.getenv(
+    "MONGO_URI", "mongodb://localhost:27017/mydatabase"
+)
 mongo.init_app(app)
 
-# --- CORS CONFIGURATION ---
-# Vital for React + Flask Session Cookies
+# ─── CORS ─────────────────────────────────────────────
 CORS(
     app,
-    resources={r"/*": {"origins": ["https://office-2fcd2.web.app","https://office-6f832.web.app"]}},
+    resources={
+        r"/*": {
+            "origins": [
+                "https://office-2fcd2.web.app",
+                "https://office-6f832.web.app",
+            ]
+        }
+    },
     supports_credentials=True,
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
-    expose_headers=["Content-Type"]
+    expose_headers=["Content-Type"],
 )
 
-
-# Register Active Blueprints
-app.register_blueprint(githublogin_bp)    
+# ─── BLUEPRINTS ───────────────────────────────────────
+app.register_blueprint(githublogin_bp)
 app.register_blueprint(api_player_bp)
 app.register_blueprint(api_quests_bp)
 app.register_blueprint(index_bp)
@@ -53,6 +62,13 @@ app.register_blueprint(dashboard_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(login_bp)
 
-if __name__ == '__main__':
-    print("🚀 Server running")
+# ─── KEEP-ALIVE (Gunicorn-safe) ───────────────────────
+# Render sets RENDER_INSTANCE_ID per instance
+# Gunicorn workers share the same instance
+if os.getenv("RENDER_INSTANCE_ID", "0") == "0":
+    start_keep_alive()
+
+# ─── LOCAL DEV ONLY ───────────────────────────────────
+if __name__ == "__main__":
+    print("🚀 Server running (dev)")
     app.run(port=5000, debug=True)
