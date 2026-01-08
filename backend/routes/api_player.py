@@ -1,7 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request
 from extensions import mongo
-from utils.get_playload import get_payload
 from utils.auth_helper import require_auth
 import jwt
 import os
@@ -12,7 +11,7 @@ api_player_bp = Blueprint("api_player", __name__)
 @api_player_bp.route("/api/player/get", methods=["GET"])
 @require_auth
 def get_player():
-    username = get_payload().get("sub")
+    username = request.user
 
     if not username:
         return jsonify({"error": "Unauthorized"}), 401
@@ -32,7 +31,7 @@ def get_player():
 @api_player_bp.route("/api/player/update", methods=["POST"])
 @require_auth
 def save_player():
-    username = get_payload().get("sub")
+    username = request.user
 
     if not username:
         return jsonify({"error": "Unauthorized"}), 401

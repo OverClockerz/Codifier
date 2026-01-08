@@ -21,7 +21,7 @@ githublogin_bp = Blueprint("githublogin", __name__)
 GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
 JWT_SECRET = os.getenv("JWT_SECRET", "dev_jwt_secret")
-JWT_EXP_SECONDS = 30
+JWT_EXP_DAYS = 30
 
 FRONTEND_URL = os.getenv(
     "FRONTEND_URL",
@@ -104,7 +104,7 @@ def github_callback():
     "github_id": github_id,
     "type": "session",
     "iat": datetime.utcnow(),
-    "exp": datetime.utcnow() + timedelta(days=JWT_EXP_SECONDS),  # session lifetime
+    "exp": datetime.utcnow() + timedelta(days=JWT_EXP_DAYS),  # session lifetime
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
     # ───── Redirect back securely ─────
