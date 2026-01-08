@@ -8,6 +8,8 @@ import copy
 import os
 import requests
 import jwt
+from dotenv import load_dotenv
+
 
 load_dotenv()
 
