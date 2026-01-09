@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { apilogout } from '../services/api';
 
 interface User {
   id: string;
@@ -46,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
+    apilogout();
     sessionStorage.removeItem('office_user');
   };
 

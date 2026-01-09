@@ -108,11 +108,11 @@ export function LevelUpTransition({ show, level, onComplete }: LevelUpTransition
                     duration: 2,
                     repeat: Infinity,
                   }}
-                  className="absolute inset-0 bg-linear-to-r from-blue-500 to-purple-500 rounded-full blur-2xl"
+                  className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-2xl"
                 />
 
                 {/* Badge */}
-                <div className="relative w-32 h-32 rounded-full bg-linear-to-r from-blue-600 to-purple-600 p-1">
+                <div className="relative w-32 h-32 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 p-1">
                   <div className="w-full h-full bg-black rounded-full flex items-center justify-center">
                     <TrendingUp className="w-16 h-16 text-white" />
                   </div>
@@ -159,7 +159,7 @@ export function LevelUpTransition({ show, level, onComplete }: LevelUpTransition
                   ],
                 }}
                 transition={{ duration: 1.5, repeat: Infinity }}
-                className="text-6xl md:text-8xl mb-4 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+                className="text-6xl md:text-8xl mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
               >
                 LEVEL UP!
               </motion.h2>
@@ -188,7 +188,7 @@ export function LevelUpTransition({ show, level, onComplete }: LevelUpTransition
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="mt-8 h-1 w-64 mx-auto bg-linear-to-r from-transparent via-blue-500 to-transparent"
+              className="mt-8 h-1 w-64 mx-auto bg-gradient-to-r from-transparent via-blue-500 to-transparent"
             />
           </div>
 

@@ -109,7 +109,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-linear-to-r from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-6"
+        className="bg-gradient-to-r from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-6"
       >
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           {/* Player Info */}
@@ -194,7 +194,7 @@ export function GameDashboard({ onProfileClick }: { onProfileClick?: () => void 
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${levelProgress}%` }}
-                className="h-full bg-linear-to-r from-blue-500 to-cyan-500"
+                className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
               />
             </div>
           </div>

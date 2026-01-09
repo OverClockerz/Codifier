@@ -77,7 +77,7 @@ export function QuestGenerationManager() {
             // Process zones that need quests
             for (const zone of zonesToGenerate) {
                 try {
-                    const quests = await generateQuests(player.username, zone, 20);
+                    const quests = await generateQuests(zone, 20);
                     const zoneQuests = Array.isArray(quests) ? quests : (quests as any)?.activeQuests || [];
                     if (zoneQuests.length > 0) {
                         allGeneratedQuests.push(...zoneQuests);

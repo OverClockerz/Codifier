@@ -21,7 +21,7 @@ export function PlayerCard({ onClick }: PlayerCardProps) {
         whileTap={{ scale: 0.98 }}
         className="flex items-center gap-4 cursor-pointer group transition-all hover:bg-gray-800/30 rounded-lg p-2 -m-2"
       >
-        <div className="w-14 h-14 rounded-full bg-linear-to-br from-blue-600 to-purple-600 flex items-center justify-center group-hover:from-blue-500 group-hover:to-purple-500 transition-all">
+        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center group-hover:from-blue-500 group-hover:to-purple-500 transition-all">
           <img
             src={player.githubinfo?.avatar_url || user?.avatar || ''}
             alt={player.username}

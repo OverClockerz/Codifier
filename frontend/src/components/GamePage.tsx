@@ -34,7 +34,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
           <div className="flex items-center justify-between">
             {/* Logo & User */}
             <div className="flex items-center gap-4">
-              <h1 className="text-xl md:text-2xl bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h1 className="text-xl md:text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 <ScrambleTextOnHover text="OFFICE" />
               </h1>
               <button
@@ -46,7 +46,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                   alt={player.username}
                   className="w-8 h-8 rounded-full"
                 />
-                <span className="text-sm text-gray-300">{user?.username}</span>
+                <span className="text-sm text-gray-300">{player.username ??'User'}</span>
               </button>
             </div>
 
@@ -127,7 +127,7 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                   className="w-8 h-8 rounded-full"
                 />
                 <div className="flex-1 text-left">
-                  <p className="text-sm text-white">{user?.username}</p>
+                  <p className="text-sm text-white">{player.username?? 'Player'}</p>
                   {/* <p className="text-xs text-gray-400">#EMP-2024-{String(player.currentRun.runNumber).padStart(3, '0')}</p> */}
                 </div>
                 <ChevronRight className="w-5 h-5 text-gray-500" />
@@ -167,8 +167,8 @@ export function GamePage({ onNavigateToProfile }: { onNavigateToProfile: () => v
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-12"
               >
-                <h2 className="text-4xl md:text-6xl mb-3 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Welcome back, {user?.username}!
+                <h2 className="text-4xl md:text-6xl mb-3 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Welcome back, {player.username}!
                 </h2>
                 <p className="text-lg md:text-xl text-gray-400">
                   {player.isBurntOut

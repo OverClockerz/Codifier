@@ -6,8 +6,10 @@ from routes.githublogin import githublogin_bp
 from routes.api_player import api_player_bp
 from routes.api_quests import api_quests_bp
 from routes.index import index_bp
+from routes.auth_logout import auth_logout_bp
 from routes.ai_problems import ai_problems_bp
 from routes.ai_comprehensive import ai_comprehensive_bp
+from routes.auth_me import auth_me_bp
 from routes.ai_runner import ai_runner_bp
 from routes.login import login_bp   
 from routes.register import register_bp 
@@ -39,6 +41,8 @@ app.register_blueprint(githublogin_bp)
 app.register_blueprint(api_player_bp)
 app.register_blueprint(api_quests_bp)
 app.register_blueprint(index_bp)
+app.register_blueprint(auth_logout_bp)
+app.register_blueprint(auth_me_bp)
 app.register_blueprint(ai_problems_bp)
 app.register_blueprint(ai_runner_bp)
 app.register_blueprint(ai_comprehensive_bp)
