@@ -96,8 +96,8 @@ export function GitHubAuthModal({
 
   /* -------------------- Authenticate after redirect -------------------- */
   useEffect(() => {
-    // Run if modal is open OR we returned from OAuth
-    if (!isOpen && !isOAuthCallback) return;
+    // Only run authentication check if we are in the OAuth callback flow
+    if (!isOAuthCallback) return;
 
     setIsAuthenticating(true);
     setError(null);

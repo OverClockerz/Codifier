@@ -170,7 +170,7 @@ export const failQuest = async (
 };
 
 export async function apilogout() {
-  const res = await fetch("http://localhost:5000/auth/logout", {
+  const res = await fetch(`${API_BASE_URL}/api/auth/logout`, {
     method: "POST",
     credentials: "include", // IMPORTANT
   });

@@ -6,3 +6,4 @@ backend/env/
 .env
 frontend/config.json
 .vscode 
+.vite
