@@ -1,7 +1,5 @@
-from datetime import datetime
-
 from utils.unix_overwrite import unix_overwrite
-
+from datetime import datetime
 
 activeQuests = [
   {
