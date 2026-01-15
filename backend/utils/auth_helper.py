@@ -1,10 +1,7 @@
-from flask import request, jsonify
-from dotenv import load_dotenv
 from functools import wraps
+from flask import request, jsonify
 import jwt
 import os
-
-load_dotenv()
 
 JWT_SECRET = os.getenv("JWT_SECRET", "dev_jwt_secret")
 

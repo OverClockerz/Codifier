@@ -1,10 +1,8 @@
-from dotenv import load_dotenv
-from google import genai
+# utils/geminiapi.py
 import json
 import os
 import re
-
-load_dotenv()
+from google import genai
 
 def generate_response(data, num=1, zone="workspace"):
     """

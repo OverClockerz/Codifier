@@ -1,11 +1,12 @@
+import os
+import json
+import random
+import re
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types
 from tenacity import retry, stop_after_attempt, wait_exponential
 from extensions import mongo as db
-from dotenv import load_dotenv
-from google.genai import types
-from google import genai
-import random
-import json
-import os
 
 load_dotenv()
 

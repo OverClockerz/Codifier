@@ -1,15 +1,12 @@
-from dotenv import load_dotenv
 import threading
-import requests
 import time
+import requests
 import os
-
-load_dotenv()
 
 KEEP_ALIVE_INTERVAL = 30  # seconds
 
 def keep_alive():
-    url = os.getenv("KEEP_ALIVE_URL","http://localhost:5000/health")
+    url = os.getenv("KEEP_ALIVE_URL")
     if not url:
         return  # silently skip
 
