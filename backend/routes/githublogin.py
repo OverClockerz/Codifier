@@ -90,6 +90,7 @@ def github_callback():
     else:
         player = copy.deepcopy(InitialPlayerState)
         player["username"] = username
+        player["gameStartDate"] = datetime.utcnow()
         player["githubinfo"] = {
             "github_id": str(github_id),
             "avatar_url": avatar_url,
