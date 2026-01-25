@@ -32,6 +32,10 @@ export function useQuestGeneration({
 }: UseQuestGenerationProps) {
   const lastCheckedDayRef = useRef<number>(player.currentDay);
   const generationInProgressRef = useRef(false);
+  const playerRef = useRef(player);
+
+  // Keep playerRef updated with the latest player state
+  useEffect(() => { playerRef.current = player; }, [player]);
 
   useEffect(() => {
     if (!player.username || generationInProgressRef.current) return;
@@ -62,7 +66,7 @@ export function useQuestGeneration({
 
     try {
       // Get only zones that need quests (≤10 active)
-      const zonesToGenerate = getZonesNeedingQuests(player);
+      const zonesToGenerate = getZonesNeedingQuests(playerRef.current);
       
       if (zonesToGenerate.length === 0) {
         generationInProgressRef.current = false;
@@ -84,7 +88,7 @@ export function useQuestGeneration({
       }
 
       if (allGeneratedQuests.length > 0) {
-        saveQuestGenerationState(player.currentDay, trigger, generatedZoneNames);
+        saveQuestGenerationState(playerRef.current.currentDay, trigger, generatedZoneNames);
         onGenerateComplete(allGeneratedQuests);
 
         // Send success notification only for successful generation

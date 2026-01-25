@@ -21,6 +21,10 @@ export function QuestGenerationManager() {
     const { player, addNotification, setPlayer } = useGame();
     const lastCheckedDayRef = useRef<number>(player.currentDay);
     const generationInProgressRef = useRef(false);
+    const playerRef = useRef(player);
+
+    // Keep playerRef updated with the latest player state to avoid stale closures in async operations
+    useEffect(() => { playerRef.current = player; }, [player]);
 
     useEffect(() => {
         if (!player.username || generationInProgressRef.current) return;
@@ -64,7 +68,7 @@ export function QuestGenerationManager() {
 
         try {
             // Get only zones that need quests (≤10 active)
-            const zonesToGenerate = getZonesNeedingQuests(player);
+            const zonesToGenerate = getZonesNeedingQuests(playerRef.current);
 
             if (zonesToGenerate.length === 0) {
                 generationInProgressRef.current = false;
@@ -92,16 +96,17 @@ export function QuestGenerationManager() {
 
             // Update player with new quests
             if (allGeneratedQuests.length > 0) {
-                const updatedActiveQuests = [...(player.activeQuests || []), ...allGeneratedQuests];
+                const currentPlayer = playerRef.current;
+                const updatedActiveQuests = [...(currentPlayer.activeQuests || []), ...allGeneratedQuests];
                 const updatedPlayer = {
-                    ...player,
+                    ...currentPlayer,
                     activeQuests: updatedActiveQuests,
                 };
                 console.log("Updated Player", updatedPlayer);
                 console.log("All Generated Quests", allGeneratedQuests);
                 setPlayer(updatedPlayer);
-                localStorage.setItem(`office_game_active_quests_${player.username}`, JSON.stringify(updatedActiveQuests));
-                saveQuestGenerationState(player.currentDay, triggerType as any, generatedZoneNames);
+                localStorage.setItem(`office_game_active_quests_${currentPlayer.username}`, JSON.stringify(updatedActiveQuests));
+                saveQuestGenerationState(currentPlayer.currentDay, triggerType as any, generatedZoneNames);
 
                 // Send success notification with zone names
                 const zoneDisplayNames = generatedZoneNames.map(z => {

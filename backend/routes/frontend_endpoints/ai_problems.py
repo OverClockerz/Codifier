@@ -1,5 +1,4 @@
 from utils.auth_helper import require_auth
-from utils.get_playload import get_payload
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 from extensions import mongo as db
@@ -14,7 +13,7 @@ ai_problems_bp = Blueprint("ai_problems", __name__)
 def get_current_problem():
     try:
         # Prefer problems attached to a player's activeQuests
-        username = get_payload().get("sub")
+        username = request.user
         if db is not None and username:
             player = db.db.players.find_one({'username': username}, {'_id': 0, 'activeQuests': 1})
             if player and player.get('activeQuests'):

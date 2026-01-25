@@ -776,31 +776,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
     // is still in-flight; that was causing reverts. Keep loadGame() for
     // explicit reloads only.
     gameLoopRef.current = async () => {
-      if (!isLoadingRef.current) {
-        try {
-          if (user?.username) {
-            try {
-              const backendData = await fetchPlayerData();
-              const localQuestsStr = localStorage.getItem(`office_game_active_quests_${user.username}`);
-              if (localQuestsStr) {
-                const localQuests = JSON.parse(localQuestsStr);
-                const backendQuests = backendData.activeQuests || [];
-                if (Array.isArray(localQuests) && localQuests.length !== backendQuests.length) {
-                  console.log("⚠️ Active quests mismatch detected in loop. Overwriting backend with local storage.");
-                  await updatePlayerData({ ...backendData, activeQuests: localQuests });
-                  localStorage.setItem('quest_sync_reload', 'true');
-                  window.location.reload();
-                }
-              }
-            } catch (e) {
-              console.error("Error syncing local quests in loop:", e);
-            }
-          }
-          await saveGame();
-        } catch (e) {
-          console.error('Game loop auto-save failed:', e);
-        }
-      }
+      // REMOVED: Aggressive sync logic and auto-save in the loop.
+      // The previous logic here was overwriting the database with stale frontend state
+      // immediately after the backend generated new quests.
+      //
+      // We now rely on the useEffect([player, ...]) hook (lines 139-143) to handle
+      // auto-saving whenever the player state actually changes.
     };
   });
 

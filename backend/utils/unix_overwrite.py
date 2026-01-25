@@ -1,4 +1,3 @@
-
 from datetime import datetime, timedelta
 import time
 
@@ -10,4 +9,3 @@ def unix_overwrite(activeQuests):
             days = int(''.join(filter(str.isdigit, raw_deadline)))
             quest["deadline"] = quest["deadline"] = int((datetime.fromtimestamp(time.time()) + timedelta(days=days)).timestamp())
     return activeQuests    
-

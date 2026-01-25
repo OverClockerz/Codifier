@@ -1,6 +1,3 @@
-from datetime import datetime, timedelta
-import time
-from utils.get_playload import get_payload
 from flask import Blueprint, request, jsonify
 from extensions import mongo
 from utils.geminiapi import generate_response
@@ -48,7 +45,7 @@ api_quests_bp = Blueprint('api_quests', __name__)
 @require_auth
 def generate_quests():
     
-    username = get_payload().get("sub")
+    username = request.user
 
     zone = request.args.get("zone")
 

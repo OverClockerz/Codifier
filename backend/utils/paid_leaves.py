@@ -1,16 +1,12 @@
 from datetime import datetime
 
 def calculate_paid_leaves(player: dict) -> dict:
-    print("Calculating paid leaves for player:", player.get("username"))
     last_login = player.get("lastLoginDate")
-    print("Last login date:", last_login)
-
     if not last_login:
         return player  # no login date, nothing to update
 
     current_date = datetime.now(last_login.tzinfo)
     delta_days = (current_date - last_login).days
-    print(f"Days since last login: {delta_days}")
 
     paid_leaves = player.get("paidLeaves", 0)
 

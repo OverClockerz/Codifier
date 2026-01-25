@@ -1,4 +1,3 @@
-
 import json
 from utils.auth_helper import require_auth
 from flask import Blueprint, jsonify, request
