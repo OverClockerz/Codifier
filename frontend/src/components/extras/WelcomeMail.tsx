@@ -20,18 +20,20 @@ export function WelcomeMail({
         ? {
             subject: '🎉 Welcome to the Team!',
             greeting: `Hello ${playerName},`,
-            body: `Welcome to ${companyName}! We're thrilled to have you join our team. As a new member, we've prepared an exciting set of tasks for you to tackle. These assignments will help you get acclimated to our work environment and showcase your skills.
-
+            body: `Welcome to ${companyName}! We're thrilled to have you join our company. As a new member, we've prepared an exciting set of tasks for you to tackle. These assignments will help you get acclimated to our work environment and showcase your skills.
+            Manage your stress and mood, stay focused on your deadlines, and visit the cafeteria if you need a break.
 The HR team is excited to see what you can accomplish. Best of luck with your new journey!`,
-            signature: 'Human Resources Department',
+            signature: `${companyName} HR Department`,
+            note: 'This is an early access game. If you encounter any bugs or have feedback, please reach out to using the feedback link on the main menu. Thank you for your support!',
         }
         : {
             subject: '🚀 Fresh Start at a New Company',
             greeting: `Hello ${playerName},`,
-            body: `After your previous assignment, we're excited to welcome you to ${companyName}! Every professional journey has chapters, and this is the beginning of an exciting new one.
+            body: `We're excited to welcome you to ${companyName}! Every professional journey has chapters, and this is the beginning of an exciting new one.
 
-We've prepared an initial set of tasks to help you settle in and make your mark at this new organization. Looking forward to your contributions!`,
-            signature: 'Human Resources Department',
+We want to see what you can accomplish on this new journey and how you make your mark at this new organization. Looking forward to your contributions!`,
+            signature: `${companyName} HR Department`,
+            note: 'This is an early access game. If you encounter any bugs or have feedback, please reach out to using the feedback link on the main menu. Thank you for your support!',
         };
 
     if (!isOpen) return null;
@@ -68,12 +70,12 @@ We've prepared an initial set of tasks to help you settle in and make your mark 
                                     <p className="text-xs text-gray-500 mt-1">From: Human Resources</p>
                                 </div>
                             </div>
-                            <button
+                            {/* <button
                                 onClick={onClose}
                                 className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-all"
                             >
                                 <X className="w-5 h-5" />
-                            </button>
+                            </button> */}
                         </div>
                     </div>
 
@@ -85,6 +87,9 @@ We've prepared an initial set of tasks to help you settle in and make your mark 
                         </p>
                         <div className="pt-4 border-t border-gray-700">
                             <p className="text-sm text-gray-400">{welcomeContent.signature}</p>
+                        </div>
+                        <div className="pt-2 border-t border-gray-700">
+                            <p className="text-xs text-gray-400">{welcomeContent.note}</p>
                         </div>
                     </div>
 
