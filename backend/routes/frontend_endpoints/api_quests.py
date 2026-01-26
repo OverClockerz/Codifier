@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-import time
 from flask import Blueprint, request, jsonify
 from extensions import mongo
 from utils.geminiapi import generate_response
@@ -76,25 +74,17 @@ def generate_quests():
             case "meeting-room":
                 activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST,TYPING_QUEST], quest_amount,zone))
             case "game-lounge":
-                activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST], quest_amount,zone))
-            case _:
-                return jsonify({"error": "Invalid zone"}), 400
+                activeQuests = json.loads(generate_response([MCQ_QUEST,COMPREHENSIVE_QUEST], quest_amount,zone))   
         print(activeQuests)             
 
     except Exception as e : 
         return jsonify({"error": "Failed to generate quests", "details": str(e)}), 500
     
     activeQuests = unix_overwrite(activeQuests)
-    print(activeQuests)
-
-    if activeQuests:
-        result = mongo.db.players.update_one(
-            {"username": username},
-            {"$push": {"activeQuests": {"$each": activeQuests}}}
-        )
-        if result.modified_count == 0:
-            return jsonify({"error": "Failed to save quests to database", "matched": result.matched_count}), 500
-
+    mongo.db.players.update_one(
+        {"username": username},
+        {"$push": {"activeQuests": {"$each": activeQuests}}}
+    )
     return jsonify({
         "message": "Quests generated successfully",     
         "generated_count": len(activeQuests),

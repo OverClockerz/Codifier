@@ -1,7 +1,11 @@
 from flask import Blueprint, request,jsonify
+from dotenv import load_dotenv
 from extensions import mongo
 import jwt
 import os
+
+load_dotenv()
+
 auth_me_bp = Blueprint("auth_me", __name__)
 
 JWT_SECRET = os.getenv("JWT_SECRET", "dev_jwt_secret")

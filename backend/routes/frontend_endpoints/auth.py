@@ -4,8 +4,6 @@ from extensions import mongo
 
 auth_bp = Blueprint('auth', __name__)
 
-
-
 @auth_bp.route("/auth", methods=["GET", "POST"])
 def auth():
     if request.method == "GET":

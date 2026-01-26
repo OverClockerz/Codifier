@@ -1,15 +1,13 @@
 from flask import Blueprint, request, redirect, jsonify
+from utils.player_templates import InitialPlayerState
+from utils.paid_leaves import calculate_paid_leaves
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from extensions import mongo
-from utils.paid_leaves import calculate_paid_leaves
-from utils.player_templates import InitialPlayerState
-from datetime import datetime, timedelta
-import copy
-import os
 import requests
+import copy
 import jwt
-from dotenv import load_dotenv
-
+import os
 
 load_dotenv()
 

@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template,flash, request,redirect, url_for,session,jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Blueprint, render_template,flash, request,redirect, url_for
+from werkzeug.security import generate_password_hash
 from extensions import mongo
 import secrets,base64
 

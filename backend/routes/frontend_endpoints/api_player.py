@@ -2,8 +2,6 @@ from datetime import datetime
 from flask import Blueprint, jsonify, request
 from extensions import mongo
 from utils.auth_helper import require_auth
-import jwt
-import os
 
 api_player_bp = Blueprint("api_player", __name__)
 
