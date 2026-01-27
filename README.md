@@ -6,7 +6,7 @@ In today's fast-evolving job market, young adults and recent graduates face a si
 
 The result is often a stressful and inefficient onboarding period, high employee turnover, and a sense of disillusionment for young talents. Traditional training methods, like online courses and workshops, can be passive, non-engaging, and fail to simulate the dynamic, high-pressure situations of a real office.
 
-**Our Office RPG, "Office-RPG," provides a solution by simulating a corporate environment where players can learn, practice, and hone essential professional skills in a safe, engaging, and gamified setting.**
+**Our solution, "Office-RPG," provides a solution by simulating a corporate environment where players can learn, practice, and hone essential professional skills in a safe, engaging, and gamified setting.**
 
 ## Sustainable Development Goals (SDGs)
 
