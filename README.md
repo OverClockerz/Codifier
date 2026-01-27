@@ -16,14 +16,14 @@ Our solution directly contributes to the following United Nations Sustainable De
 
 **Goal 8: Decent Work and Economic Growth**
 
-- **Target 8.6:** By 2030, substantially reduce the proportion of youth not in employment, education, or training.
+- **Target 8.1:** By 2030, substantially reduce the proportion of youth not in employment, education, or training.
   - **Our Contribution:** "Office-RPG" acts as an innovative training platform that equips young adults with the practical and technical skills required by modern workplaces. By bridging the skills gap, we increase their employability and prepare them for decent, productive work, thereby stimulating economic growth.
 
 ### Secondary SDGs
 
 **Goal 4: Quality Education**
 
-- **Target 4.4:** By 2030, substantially increase the number of youth and adults who have relevant skills, including technical and vocational skills, for employment, decent jobs, and entrepreneurship.
+- **Target 4.1:** By 2030, substantially increase the number of youth and adults who have relevant skills, including technical and vocational skills, for employment, decent jobs, and entrepreneurship.
   - **Our Contribution:** The game focuses on upscaling skills in a variety of domains—coding, comprehension, typing, and critical thinking—through its diverse quest system. It provides a form of accessible, high-quality vocational training that is both effective and engaging.
 
 **Goal 9: Industry, Innovation, and Infrastructure**
