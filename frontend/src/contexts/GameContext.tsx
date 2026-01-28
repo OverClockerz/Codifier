@@ -114,6 +114,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [completedQuests, setCompletedQuests] = useState<Quest[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [activeBuffs, setActiveBuffs] = useState<ActiveBuff[]>([]);
+  const addNotification = (n: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => setNotifications(prev => [...prev, { ...n, id: Date.now().toString(), timestamp: Date.now(), isRead: false }]);
   const [permanentBuffs, setPermanentBuffs] = useState<Buff[]>([]);
   const [monthlyReports, setMonthlyReports] = useState<MonthlyReport[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -134,6 +135,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isLoadingRef.current = false;
       });
     }
+
   }, [user?.id, user?.username]);
 
   // Safe Auto-Save
@@ -630,6 +632,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const elapsed = gameTimeSince(player);
 
+  console.log("Elapsed Time since last login:", elapsed.monthDiff);
+  if (elapsed.monthDiff > 0 )
+    addNotification({
+      type: 'achievement',
+      title: 'Salary Credited',
+      message: `Welcome to Month ${player.currentMonth + elapsed.monthDiff}!`,
+    });
+
   const saveGame = async () => {
     if (!user?.id) return;
     if (isSavingRef.current) {
@@ -786,7 +796,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
   });
 
   const dismissLevelUp = () => setShowLevelUp(false);
-  const addNotification = (n: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => setNotifications(prev => [...prev, { ...n, id: Date.now().toString(), timestamp: Date.now(), isRead: false }]);
   const markNotificationAsRead = (id: string) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
   const clearAllNotifications = () => setNotifications([]);
   const getUnreadCount = () => notifications.filter(n => !n.isRead).length;

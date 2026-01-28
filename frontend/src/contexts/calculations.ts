@@ -9,7 +9,6 @@ import { PlayerState, Quest, ShopItem, Buff, ActiveBuff, ItemEffect } from '../t
 import { GAME_CONFIG, getExperienceForLevel, getSalaryForLevel, REPUTATION_WEIGHTS } from '../data/gameConfig';
 import { use, useEffect, useRef } from 'react';
 import { updatePlayerData } from '../services/api';
-import { GameProvider } from '../contexts/GameContext';
 
 
 // ===========================
@@ -584,58 +583,34 @@ function normalizeDate(input: DateInput): string {
   return typeof input === "string" ? input : input.$date;
 }
 
-export function gameTimeSince(player: PlayerState): { days: number; months: number; monthDiff: number } {
+export function gameTimeSince(player: PlayerState): { days: number; months: number } {
   const input = player.gameStartDate;
   const dateString = normalizeDate(input);
   const past = new Date(dateString).getTime();
-  const now = Date.now();
+  const now = new Date().getTime();
 
   // Prevent negative differences
   const diffMs = Math.max(0, now - past);
   const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   const months = Math.floor(totalDays / 30) + 1;
-  let monthDiff = 0;
-
-  const lastProcessedMonthRef = useRef<number>(player.currentMonth);
-
-  useEffect(() => {
-    if (months > player.currentMonth) {
-      if (lastProcessedMonthRef.current !== months) {
-        const diff = months - player.currentMonth;
-        monthDiff = diff;
-        salaryIncrement(player, diff);
-        player.currentMonth = months;
-        lastProcessedMonthRef.current = months;
-      }
-    } else {
-      // Sync ref if player state updates from external source (e.g. load game)
-      if (player.currentMonth > lastProcessedMonthRef.current) {
-        lastProcessedMonthRef.current = player.currentMonth;
-      }
-    }
-  }, [months, player, player.currentMonth]);
-
 
   // Days cycle from 1–30
   const days = (totalDays % 30) + 1;
 
   console.log('Total days:', totalDays, 'Calculated months:', months, 'Days:', days);
 
-  return { days, months, monthDiff };
+  return { days, months };
 }
-async function salaryIncrement(player: PlayerState, months: number) {
+export async function salaryIncrement(player: PlayerState, months: number) {
   player.currency += player.baseSalary*months + player.currentMonthEarnings;
   console.log('player currency after increment:', player.currency);
-  player.currentMonthEarnings = 0;
-  player.completedQuests = [];
-  player.currentMonthTasksCompleted = 0;
+  // Note: Clearing currentMonthEarnings, completedQuests, currentMonthTasksCompleted should be handled by GameContext
 
   try {
     const payload = {
-      ...player,
+      ...player, // Spread existing player data
     };
     await updatePlayerData(payload);
-    localStorage.setItem('latest_salary_increment', 'true');
   } catch (error) {
     console.error("Failed to save salary increment:", error);
   }

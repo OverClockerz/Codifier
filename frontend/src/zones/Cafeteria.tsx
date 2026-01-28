@@ -56,11 +56,6 @@ export function Cafeteria() {
     }
   }
 
-  // Get item display icon
-  const getItemIcon = (item: ShopItem) => {
-    return item.icon;
-  };
-
   // ============================================================
   // EVENT HANDLERS
   // ============================================================
@@ -150,7 +145,7 @@ export function Cafeteria() {
               >
                 {/* Item Header */}
                 <div className="flex items-start justify-between mb-3">
-                  <div className="text-3xl">{getItemIcon(item)}</div>
+                  <div className="text-3xl">{item.icon}</div>
                   {purchased && isPermanent && (
                     <div className="flex items-center gap-1 text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
                       <Check className="w-3 h-3" />
