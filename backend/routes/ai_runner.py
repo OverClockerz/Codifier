@@ -14,6 +14,7 @@ def run_custom():
 
         prompt = f"""
         Act as a code compiler.
+        Also check that language syntax is correct before running and that the language matches the code provided.
         Language: {language}
         Code:
         ```
