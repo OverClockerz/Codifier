@@ -11,7 +11,7 @@ from extensions import mongo as db
 load_dotenv()
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3-flash-preview"
 
 client = genai.Client(api_key=API_KEY)
 
@@ -95,9 +95,6 @@ def generate_response(data=None, num=1):
     """
     if data is None: data = {}
     
-    # Use a stable model. Switch to 'gemini-2.0-flash-exp' if you have access.
-    model_name ="gemini-2.5-flash"
-    
     # --- 1. DETERMINE MODE & DEFINE SCHEMA ---
     
     # CASE A: EVALUATION MODE (Grading an answer)
@@ -149,7 +146,7 @@ def generate_response(data=None, num=1):
     # --- 2. CALL GEMINI API ---
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model=GEMINI_MODEL,
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",

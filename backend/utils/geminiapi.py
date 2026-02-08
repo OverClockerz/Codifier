@@ -78,7 +78,7 @@ def generate_response(data, num=1, zone="workspace"):
 
     # Generate content
     response = client.models.generate_content(
-    model="gemini-2.5-flash",
+    model="gemini-3-flash-preview",
     contents=f"[{data_json}] {prompt}"
     )
 
