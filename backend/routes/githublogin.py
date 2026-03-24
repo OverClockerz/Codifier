@@ -1,3 +1,4 @@
+from backend.utils import unix_overwrite
 from flask import Blueprint, request, redirect, jsonify
 from dotenv import load_dotenv
 from extensions import mongo
@@ -90,6 +91,7 @@ def github_callback():
     else:
         player = copy.deepcopy(InitialPlayerState)
         player["username"] = username
+        player["activeQuests"] = unix_overwrite(player["activeQuests"])
         player["gameStartDate"] = datetime.utcnow()
         player["githubinfo"] = {
             "github_id": str(github_id),

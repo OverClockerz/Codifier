@@ -2917,7 +2917,7 @@ InitialPlayerState = {
         "currencyBoost": 0, 
     },
     "permanentItems": [],
-    "activeQuests": unix_overwrite(activeQuests),
+    "activeQuests": activeQuests,
     "completedQuests": [],
     "inventory": []
 }
